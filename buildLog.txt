@@ -1,0 +1,59 @@
+*** starting configuration ***
+specifying that the target system is Linux and the processor is x86_64.
+Setting the path for the toolchain.
+Setting the C and C++ compilers for N.i. Rt linux
+Setting the system root directory for the toolchain.
+Setting the search behavior for various types of files.
+*** TOOL CHAIN AND COMPILER CONFIGURED ***
+
+*** Project specific ***
+project name is set to: daqMxTest
+loading sources and headers
+List of Header Files:
+C:/Users/aldric/Documents/daqMxTest/build/../src/Modbus/libmodbus/modbus-private.h
+C:/Users/aldric/Documents/daqMxTest/build/../src/Modbus/libmodbus/modbus-rtu-private.h
+C:/Users/aldric/Documents/daqMxTest/build/../src/Modbus/libmodbus/modbus-rtu.h
+C:/Users/aldric/Documents/daqMxTest/build/../src/Modbus/libmodbus/modbus-tcp-private.h
+C:/Users/aldric/Documents/daqMxTest/build/../src/Modbus/libmodbus/modbus-tcp.h
+C:/Users/aldric/Documents/daqMxTest/build/../src/Modbus/libmodbus/modbus-version.h
+C:/Users/aldric/Documents/daqMxTest/build/../src/Modbus/libmodbus/modbus.h
+C:/Users/aldric/Documents/daqMxTest/build/../src/Ni modules definitions/NI9208.h
+C:/Users/aldric/Documents/daqMxTest/build/../src/Ni modules definitions/NI9239.h
+C:/Users/aldric/Documents/daqMxTest/build/../src/Ni modules definitions/NI9423.h
+C:/Users/aldric/Documents/daqMxTest/build/../src/Ni modules definitions/NIDeviceModule.h
+C:/Users/aldric/Documents/daqMxTest/build/../src/Ni modules definitions/NIDeviceModuleFactory.h
+C:/Users/aldric/Documents/daqMxTest/build/../src/Ni wrappers/QNiDaqWrapper.h
+C:/Users/aldric/Documents/daqMxTest/build/../src/Ni wrappers/QNiSysConfigWrapper.h
+C:/Users/aldric/Documents/daqMxTest/build/../src/globals/globalConsts.h
+C:/Users/aldric/Documents/daqMxTest/build/../src/stringUtils/stringUtils.h
+List of Source Files:
+C:/Users/aldric/Documents/daqMxTest/build/../src/Ni modules definitions/NI9208.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/Ni modules definitions/NI9239.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/Ni modules definitions/NI9423.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/Ni modules definitions/NIDeviceModule.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/Ni modules definitions/NIDeviceModuleFactory.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/Ni wrappers/QNiDaqWrapper.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/Ni wrappers/QNiSysConfigWrapper.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/main.cpp
+Excutable output file set to bin bin
+build type is: Debug
+threading type is set to linux pthread library
+
+*** daqMx ***
+daqMx include path is set to: C:/Program Files (x86)/National Instruments/NI-DAQ/DAQmx ANSI C Dev/include
+
+List of daqmx Headers:
+C:/Program Files (x86)/National Instruments/NI-DAQ/DAQmx ANSI C Dev/include/NIDAQmx.h
+linux librairies selected: C:/Program Files (x86)/National Instruments/Shared/ExternalCompilerSupport/C/lib64/gcc
+
+List of daqmx linux libraries:
+C:/Program Files (x86)/National Instruments/Shared/ExternalCompilerSupport/C/lib64/gcc/libnidaqmx.so
+C:/Program Files (x86)/National Instruments/Shared/ExternalCompilerSupport/C/lib64/gcc/libnisyscfg.so
+
+List of nisyscfg linux headers:
+C:/Program Files (x86)/National Instruments/Shared/ExternalCompilerSupport/C/include/nisyscfg.h
+C:/Program Files (x86)/National Instruments/Shared/ExternalCompilerSupport/C/include/nisyscfg_errors.h
+C:/Program Files (x86)/National Instruments/Shared/ExternalCompilerSupport/C/include/nisyscfg_wide.h
+all files has been added to linux elf executable 
+daqmx headers direcory is now added to the project
+daqmx libraries are now linked to the project

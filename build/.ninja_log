@@ -1,0 +1,22 @@
+# ninja log v5
+5	1258	7164685663173234	CMakeFiles/daqMxTest.dir/C_/Users/aldric/Documents/daqMxTest/src/Ni_modules_definitions/NI9208.cpp.o	85b138ee8be107ae
+20	1394	7164685664148031	CMakeFiles/daqMxTest.dir/C_/Users/aldric/Documents/daqMxTest/src/Ni_modules_definitions/NIDeviceModule.cpp.o	31d97199f204b9ba
+10	1588	7164685666782848	CMakeFiles/daqMxTest.dir/C_/Users/aldric/Documents/daqMxTest/src/Ni_modules_definitions/NI9239.cpp.o	a08ea43fa11578d5
+38	1607	7164685666919370	CMakeFiles/daqMxTest.dir/C_/Users/aldric/Documents/daqMxTest/src/Ni_wrappers/QNiDaqWrapper.cpp.o	9bcf6af201a2fa3b
+31	1611	7164685666883535	CMakeFiles/daqMxTest.dir/C_/Users/aldric/Documents/daqMxTest/src/Ni_modules_definitions/NIDeviceModuleFactory.cpp.o	1c5ad8ad2aeabbe4
+15	1614	7164685666862909	CMakeFiles/daqMxTest.dir/C_/Users/aldric/Documents/daqMxTest/src/Ni_modules_definitions/NI9423.cpp.o	d84da3dae3e4d3ce
+56	1679	7164685668053245	CMakeFiles/daqMxTest.dir/C_/Users/aldric/Documents/daqMxTest/src/Ni_wrappers/QNiSysConfigWrapper.cpp.o	a274d58f211c7f0c
+1328	2361	7164685674879263	CMakeFiles/daqMxTest.dir/C_/Users/aldric/Documents/daqMxTest/src/main.cpp.o	e7b36e7f9b0b404a
+2365	2667	7164685677947201	bin/daqMxTest	efc5ef3130f89753
+26	804	7164686442040919	CMakeFiles/daqMxTest.dir/C_/Users/aldric/Documents/daqMxTest/src/Ni_wrappers/QNiSysConfigWrapper.cpp.o	a274d58f211c7f0c
+805	1185	7164686445806903	bin/daqMxTest	efc5ef3130f89753
+21	951	7164691009783257	CMakeFiles/daqMxTest.dir/C_/Users/aldric/Documents/daqMxTest/src/Ni_wrappers/QNiSysConfigWrapper.cpp.o	a274d58f211c7f0c
+952	1238	7164691012489028	bin/daqMxTest	efc5ef3130f89753
+35	1279	7164691906194886	CMakeFiles/daqMxTest.dir/C_/Users/aldric/Documents/daqMxTest/src/main.cpp.o	e7b36e7f9b0b404a
+9	1026	7164694729212406	CMakeFiles/daqMxTest.dir/C_/Users/aldric/Documents/daqMxTest/src/Ni_modules_definitions/NIDeviceModuleFactory.cpp.o	1c5ad8ad2aeabbe4
+19	1315	7164694732156060	CMakeFiles/daqMxTest.dir/C_/Users/aldric/Documents/daqMxTest/src/main.cpp.o	e7b36e7f9b0b404a
+20	1139	7164695769270674	CMakeFiles/daqMxTest.dir/C_/Users/aldric/Documents/daqMxTest/src/Ni_wrappers/QNiSysConfigWrapper.cpp.o	a274d58f211c7f0c
+25	1141	7164695769311835	CMakeFiles/daqMxTest.dir/C_/Users/aldric/Documents/daqMxTest/src/main.cpp.o	e7b36e7f9b0b404a
+1142	1430	7164695772143753	bin/daqMxTest	efc5ef3130f89753
+20	895	7164696881092331	CMakeFiles/daqMxTest.dir/C_/Users/aldric/Documents/daqMxTest/src/Ni_wrappers/QNiSysConfigWrapper.cpp.o	a274d58f211c7f0c
+897	1140	7164696883511862	bin/daqMxTest	efc5ef3130f89753

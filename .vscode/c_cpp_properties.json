@@ -1,0 +1,23 @@
+{
+    "env": {
+        "compilerSysroots": "C:/build/23.0/x64/sysroots/"
+    },
+    "configurations": [
+        {
+            "name": "NI Linux Real-Time x64",
+            "compilerPath": "${compilerSysroots}/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/x86_64-nilrt-linux-gcc.exe",
+            "compilerArgs": [
+                "--sysroot=${compilerSysroots}/core2-64-nilrt-linux/"
+            ],
+            "includePath": [
+                "${workspaceFolder}/",
+                "${compilerSysroots}/core2-64-nilrt-linux/usr/include/",
+                "C:/Program Files (x86)/National Instruments/NI-DAQ/DAQmx ANSI C Dev/include",
+				"C:/Program Files (x86)/National Instruments/NI-DAQ/DAQmx ANSI C Dev/lib/msvc",
+                "c:/Program Files (x86)/National Instruments/Shared/ExternalCompilerSupport/C/include"
+            ],
+            "intelliSenseMode": "gcc-x64"
+        }
+    ],
+    "version": 4
+}

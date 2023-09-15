@@ -44,7 +44,8 @@ public:
     virtual moduleType getModuleType()              const;
 
 
-    virtual void setNbChannel(unsigned int nb);
+    virtual void setNbChannel(unsigned int newNbChannels);
+    virtual void setNbDigitalIOPorts(unsigned int newNbPorts);
     virtual void setSlotNb   (unsigned int newSlot);
     virtual void setAlias    (const std::string& newAlias);
     virtual void setChanNames(const std::vector<std::string>& names) = 0;
@@ -56,7 +57,9 @@ public:
 //**********************************
 //***     PURE C++ SIGNALS      ****
 //**********************************
-    std::function<void(int)> slotNumberChangedSignal;  // This is the "signal"
+    std::function<void(unsigned int, NIDeviceModule *sender)>  nbChannelsChangedSignal;
+    std::function<void(unsigned int, NIDeviceModule *sender)>  nbDigitalIoPortsChangedSignal;
+    std::function<void(unsigned int, NIDeviceModule *sender)>  slotNumberChangedSignal;  
 
 };
 

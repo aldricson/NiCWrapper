@@ -148,9 +148,24 @@ moduleType NIDeviceModule::getModuleType() const
     return moduleType();
 }
 
-void NIDeviceModule::setNbChannel(unsigned int nb)
+void NIDeviceModule::setNbChannel(unsigned int newNbChannels)
 {
-    m_nbChannel = nb;
+    m_nbChannel = newNbChannels;
+    //emit signal
+    if (nbChannelsChangedSignal)
+        {
+            nbChannelsChangedSignal(newNbChannels,this);
+        }
+}
+
+void NIDeviceModule::setNbDigitalIOPorts(unsigned int newNbPorts)
+{
+    m_nbDigitalIoPort = newNbPorts;
+    //emit signal
+    if (nbDigitalIoPortsChangedSignal)
+    {
+       nbDigitalIoPortsChangedSignal(newNbPorts,this); 
+    }
 }
 
 void NIDeviceModule::setSlotNb(unsigned int newSlot)
@@ -159,7 +174,7 @@ void NIDeviceModule::setSlotNb(unsigned int newSlot)
     //if the signal is connected then emit it
     if (slotNumberChangedSignal) 
       {  // Check if the signal is connected to a slot
-            slotNumberChangedSignal(newSlot);
+            slotNumberChangedSignal(newSlot,this);
       }
 
 }

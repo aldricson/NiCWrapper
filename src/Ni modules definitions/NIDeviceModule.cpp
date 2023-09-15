@@ -122,3 +122,38 @@ void NIDeviceModule::setAlias(const std::string &newAlias)
 {
     m_alias=newAlias;
 }
+
+void NIDeviceModule::setModuleType(moduleType newType)
+{
+    type = newType;
+}
+
+unsigned int NIDeviceModule::getNbChannel() const
+{
+    return nbChannel;
+}
+
+unsigned int NIDeviceModule::getSlotNb() const
+{
+    return slotNumber;
+}
+
+unsigned int NIDeviceModule::getNbDigitalIOPorts() const
+{
+    return nbDigitalIoPort;
+}
+
+moduleType NIDeviceModule::getModuleType() const
+{
+    return moduleType();
+}
+
+void NIDeviceModule::setNbChannel(unsigned int nb)
+{
+    nbChannel = nb;
+}
+
+void NIDeviceModule::setSlotNb(unsigned int newSlot)
+{
+    slotNumber = newSlot;
+}

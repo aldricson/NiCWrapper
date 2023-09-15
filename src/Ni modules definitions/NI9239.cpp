@@ -4,7 +4,6 @@
 NI9239::NI9239() 
 {
     initModule();  // Initialize the module with default values
-    NIDeviceModule::loadFromFile("NI9239.ini");  // Load from file if exists, otherwise use default values
 }
 
 void NI9239::initModule() 
@@ -22,55 +21,30 @@ void NI9239::initModule()
         chanNames.push_back("/a" + std::to_string(i));
     }
 
-        // Check if the file NI9208.ini exists using ifstream
-    std::ifstream file("NI9239.ini");
-    if (!file)
-    {
-        // If the file doesn't exist, call saveToFile to create it
-        NIDeviceModule::saveToFile("NI9239.ini");
-    }
 }
 
 // The rest of the methods are the same as in NI9208
 void NI9239::saveConfig() 
 {
-   NIDeviceModule::saveToFile("NI9239.ini");
+   NIDeviceModule::saveToFile("NI9239_"+std::to_string(NIDeviceModule::getSlotNb())+".ini");
 }
 
 
 //***************  setters  ************
-void NI9239::setNbChannel(unsigned int nb)
-{
-    nbChannel = nb;
-}
-
 void NI9239::setChanNames(const std::vector<std::string>& names)
 {
     chanNames = names;
 }
 
-void NI9239::setModuleType(moduleType newType)
+void NI9239::loadConfig()
 {
-    type = newType;
+    NIDeviceModule::loadFromFile("NI9239_"+std::to_string(NIDeviceModule::getSlotNb())+".ini");
 }
 
 //************* getters ************
-unsigned int NI9239::getNbChannel() const 
-{
-    return nbChannel;
-}
-
-unsigned int NI9239::getNbDigitalIOPorts() const
-{
-    return nbDigitalIoPort;
-}
-
 std::vector<std::string> NI9239::getChanNames() const 
 {
     return chanNames;
 }
 
-moduleType NI9239::getModuleType() const
-{
-    return type;
-}
+

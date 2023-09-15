@@ -66,17 +66,20 @@ std::vector<std::string> QNiSysConfigWrapper::EnumerateCRIOPluggedModules() {
             auto module = NIDeviceModuleFactory::createModule(shortedModuleName);
             if (module) 
             {
-                //moduleList.push_back(std::move(module));
+                //add to our list of modules
                 moduleList.push_back(module);
-                //get what we need
+                //set what we must
+                module->setAlias(std::string(moduleAlias));
+                module->setSlotNb(slotNumber);
+                //load previous config if it exists (otherwise this will be default values of the module)
+                module->loadConfig();
+                //get what we need (or from the config file or default if it's the first run)
                 nb_chan          = module->getNbChannel();
                 modType          = module->getModuleType();
                 nb_digitalIoPort = module->getNbDigitalIOPorts();
-                //set what we must
-                module->setAlias(std::string(moduleAlias));
                 //after setting the properties we could retrieve from NISysConfig
                 //let's ensure our config files stay synchronized
-               // module->saveConfig();
+                module->saveConfig();
                 //convert it to string for debug purpose
                 std::string modTypeAsString = "";
                 switch (modType)

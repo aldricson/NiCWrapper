@@ -19,6 +19,7 @@ class NIDeviceModule {
 protected:
     unsigned int nbChannel       = 16;
     unsigned int nbDigitalIoPort = 0 ;
+    unsigned int slotNumber      = 0 ;
     std::string  m_moduleName    = "";
     std::string  m_alias         = "";        
     std::vector<std::string> chanNames;
@@ -32,21 +33,23 @@ public:
 
 
     virtual std::string getAlias();
-    virtual void setAlias(const std::string& newAlias);
+    
 
-
-    //Pure virtuals 
-
-    virtual void initModule()                       ;
-    virtual unsigned int getNbChannel()             const = 0;
-    virtual unsigned int getNbDigitalIOPorts()      const = 0;
+    virtual void initModule()                       = 0;
+    virtual unsigned int getNbChannel()             const;
+    virtual unsigned int getSlotNb   ()             const;
+    virtual unsigned int getNbDigitalIOPorts()      const;
     virtual std::vector<std::string> getChanNames() const = 0;
-    virtual moduleType getModuleType()              const = 0;
+    virtual moduleType getModuleType()              const;
 
-    virtual void setNbChannel(unsigned int nb) = 0;
+
+    virtual void setNbChannel(unsigned int nb);
+    virtual void setSlotNb   (unsigned int newSlot);
+    virtual void setAlias    (const std::string& newAlias);
     virtual void setChanNames(const std::vector<std::string>& names) = 0;
-    virtual void setModuleType(moduleType type) = 0;
+    virtual void setModuleType(moduleType newType);
      
+    virtual void loadConfig()  = 0;
     virtual void saveConfig()  = 0; 
 };
 

@@ -19,6 +19,7 @@ class NIDeviceModule {
 protected:
     unsigned int nbChannel       = 16;
     unsigned int nbDigitalIoPort = 0 ;
+    std::string  m_moduleName    = "";
     std::string  m_alias         = "";        
     std::vector<std::string> chanNames;
     moduleType type;
@@ -36,7 +37,7 @@ public:
 
     //Pure virtuals 
 
-    virtual void initModule()                       = 0;
+    virtual void initModule()                       ;
     virtual unsigned int getNbChannel()             const = 0;
     virtual unsigned int getNbDigitalIOPorts()      const = 0;
     virtual std::vector<std::string> getChanNames() const = 0;

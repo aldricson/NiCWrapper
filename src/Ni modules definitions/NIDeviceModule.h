@@ -2,9 +2,11 @@
 #define NIDEVICEMODULE_H
 
 #include <vector>
-#include <string>
+#include <cstring>
+#include <string.h>
 #include <fstream>
 #include <functional>
+#include <iostream>
 
 enum moduleType
 {
@@ -50,6 +52,8 @@ public:
     virtual void setAlias    (const std::string& newAlias);
     virtual void setChanNames(const std::vector<std::string>& names) = 0;
     virtual void setModuleType(moduleType newType);
+
+    virtual void showModuleOnConsole() const;
      
     virtual void loadConfig()  = 0;
     virtual void saveConfig()  = 0; 

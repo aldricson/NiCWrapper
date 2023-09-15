@@ -3,12 +3,16 @@
 
 #include <string>
 #include <cstdlib>
+#include ".\Ni wrappers\QNiSysConfigWrapper.h"
 
 class mainMenu {
 public:
-    mainMenu();
+    mainMenu(std::shared_ptr<QNiSysConfigWrapper> aConfigWrapper);
     void displayMenu();
     void clearConsole();
+
+private:
+  std::shared_ptr<QNiSysConfigWrapper> m_cfgWrapper; 
 };
 
 #endif // MAINMENU_H

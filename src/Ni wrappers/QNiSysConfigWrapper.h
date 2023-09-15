@@ -21,6 +21,7 @@ public:
     // Method to enumerate cRIO modules and their properties
     std::vector<std::string> EnumerateCRIOPluggedModules();
     NIDeviceModule * getModuleByIndex(size_t index);
+    NIDeviceModule * getModuleBySlot(unsigned int slotNb);
     NIDeviceModule * getModuleByAlias(const std::string& alias);
     bool IsPropertyPresent(NISysCfgResourceHandle resourceHandle, NISysCfgResourceProperty propertyID);
 

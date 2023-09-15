@@ -128,6 +128,13 @@ void NIDeviceModule::setModuleType(moduleType newType)
     type = newType;
 }
 
+void NIDeviceModule::showModuleOnConsole() const
+{
+    std::cout << "╔════════════════════════════ "<< std::endl;
+    std::cout << "║ Alias: "<<m_alias.c_str()    << std::endl;
+    std::cout << "║ Slot:  "<<m_slotNumber       << std::endl; 
+}
+
 unsigned int NIDeviceModule::getNbChannel() const
 {
     return m_nbChannel;

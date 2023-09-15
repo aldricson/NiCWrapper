@@ -192,3 +192,13 @@ NIDeviceModule * QNiSysConfigWrapper::getModuleByAlias(const std::string& alias)
 }
 
 
+NIDeviceModule * QNiSysConfigWrapper::getModuleBySlot(unsigned int slotNb) {
+        for (auto& module : moduleList) {
+        if (module->getSlotNb() == slotNb) {  
+            return module;
+        }
+    }
+    throw std::invalid_argument("Module with given alias not found");
+
+}
+

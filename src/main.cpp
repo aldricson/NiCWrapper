@@ -8,12 +8,13 @@
 #include ".\Ni wrappers\QNiSysConfigWrapper.h"
 #include ".\Ni wrappers\QNiDaqWrapper.h"
 #include ".\Signals\QSignalTest.h"
+#include "mainMenu.h"
 
 // These wrappers utilize low-level APIs that have hardware access. 
 // Proper destruction is essential to restore certain hardware states when they go out of scope.
 // Using smart pointers like std::unique_ptr ensures safer and automatic resource management.
-std::unique_ptr<QNiSysConfigWrapper> sysConfig;
-std::unique_ptr<QNiDaqWrapper>       daqMx;
+std::shared_ptr<QNiSysConfigWrapper> sysConfig;
+std::shared_ptr<QNiDaqWrapper>       daqMx;
 
 
 int main(void)
@@ -28,7 +29,7 @@ int main(void)
   //-----------------------------------------------------------
   std::cout << "*** Init phase 1: initialize daqMx ***" << std::endl<< std::endl;
    // Using unique_ptr to manage the QNiDaqWrapper object
-  auto daqMx = std::make_unique<QNiDaqWrapper>();
+  auto daqMx = std::make_shared<QNiDaqWrapper>();
   daqMx->GetNumberOfModules();
   
   int32 numberOfModules = daqMx->GetNumberOfModules();
@@ -43,7 +44,7 @@ int main(void)
    std::cout <<  std::endl;
    
    std::cout << "*** Init phase 2: retrieve modules and load defaults ***" << std::endl<< std::endl;
-   auto daqsysConfigMx = std::make_unique<QNiSysConfigWrapper>();
+   auto daqsysConfigMx = std::make_shared<QNiSysConfigWrapper>();
    std::vector<std::string> modules = daqsysConfigMx->EnumerateCRIOPluggedModules();
    std::cout << "found : "<< std::endl<<std::endl;
    //Show internal of each module
@@ -67,7 +68,7 @@ int main(void)
      delete(slotTestObject);
      slotTestObject=nullptr;
       std::cout << std::endl << "*** SIGNAL SLOT MECHANISM OK ***" << std::endl<< std::endl;
-
+     mainMenu m_mainMenu(daqsysConfigMx);
 
   return EXIT_SUCCESS;
 }

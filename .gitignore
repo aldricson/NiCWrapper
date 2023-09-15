@@ -1,5 +1,5 @@
 # exclude everything except directory foo/bar
-    /buildLog.txt
-    /build/CMakeFiles/
-	/build/*
-    !/build/CMakeLists.txt
+buildLog.txt
+build/CMakeFiles/
+build/*
+!build/CMakeLists.txt

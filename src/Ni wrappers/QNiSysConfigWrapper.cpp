@@ -9,7 +9,7 @@ QNiSysConfigWrapper::QNiSysConfigWrapper()
 {
     // Initialize session
     const char *login = "";
-    const char *password = "root@geowellex";
+    const char *password = "";
     unsigned int timeOut = 1000; //1 second timeout  
     NISysCfgInitializeSession("localhost",login, password, NISysCfgLocaleDefault, NISysCfgBoolFalse, timeOut, NULL, &sessionHandle);
 }
@@ -42,12 +42,9 @@ std::vector<std::string> QNiSysConfigWrapper::EnumerateCRIOPluggedModules() {
     while (NISysCfgNextResource(sessionHandle, resourceEnumHandle, &resourceHandle) == NISysCfg_OK) 
     {
         // Get the name of the module
-        
         NISysCfgGetResourceProperty(resourceHandle, NISysCfgResourcePropertyProductName, moduleName);
-
         // Get the slot number
         NISysCfgGetResourceProperty(resourceHandle, NISysCfgResourcePropertySlotNumber, &slotNumber);
-
         //get the alias
         NISysCfgGetResourceIndexedProperty(resourceHandle, NISysCfgIndexedPropertyExpertUserAlias, 0, moduleAlias);
         

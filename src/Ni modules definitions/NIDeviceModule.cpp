@@ -101,9 +101,9 @@ void NIDeviceModule::saveToFile(const std::string &filename)
     // Use a format string for fprintf
     fprintf(ini, "#\n# %s Configuration\n#\n\n[Channel]\n\n", filename.c_str());
 
-    fprintf(ini, "NumberOfChannels = %u ;\n", nbChannel);
+    fprintf(ini, "NumberOfChannels = %u ;\n", m_nbChannel);
 
-    for (unsigned int i = 0; i < nbChannel; ++i) 
+    for (unsigned int i = 0; i < m_nbChannel; ++i) 
     {
         fprintf(ini, "Channel%d = %s ;\n", i, chanNames[i].c_str());
     }
@@ -130,17 +130,17 @@ void NIDeviceModule::setModuleType(moduleType newType)
 
 unsigned int NIDeviceModule::getNbChannel() const
 {
-    return nbChannel;
+    return m_nbChannel;
 }
 
 unsigned int NIDeviceModule::getSlotNb() const
 {
-    return slotNumber;
+    return m_slotNumber;
 }
 
 unsigned int NIDeviceModule::getNbDigitalIOPorts() const
 {
-    return nbDigitalIoPort;
+    return m_nbDigitalIoPort;
 }
 
 moduleType NIDeviceModule::getModuleType() const
@@ -150,10 +150,16 @@ moduleType NIDeviceModule::getModuleType() const
 
 void NIDeviceModule::setNbChannel(unsigned int nb)
 {
-    nbChannel = nb;
+    m_nbChannel = nb;
 }
 
 void NIDeviceModule::setSlotNb(unsigned int newSlot)
 {
-    slotNumber = newSlot;
+    m_slotNumber = newSlot;
+    //if the signal is connected then emit it
+    if (slotNumberChangedSignal) 
+      {  // Check if the signal is connected to a slot
+            slotNumberChangedSignal(newSlot);
+      }
+
 }

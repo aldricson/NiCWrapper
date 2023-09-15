@@ -14,8 +14,8 @@ NI9208::NI9208()
 void NI9208::initModule() 
 {
     // Set default values
-    nbChannel = 16;
-    nbDigitalIoPort = 0;
+    m_nbChannel = 16;
+    m_nbDigitalIoPort = 0;
     type = isAnalogicInputCurrent;
     for (int i = 0; i < 16; ++i)
     {

@@ -7,6 +7,7 @@
 #include <memory> // for std::unique_ptr
 #include ".\Ni wrappers\QNiSysConfigWrapper.h"
 #include ".\Ni wrappers\QNiDaqWrapper.h"
+#include "..\Signals\QSignalTest.h"
 
 // These wrappers utilize low-level APIs that have hardware access. 
 // Proper destruction is essential to restore certain hardware states when they go out of scope.
@@ -52,6 +53,10 @@ int main(void)
      std::cout << "╚════════════════════════════╝"<< std::endl;
    }
    
+     std::cout << std::endl << "*** TESTING SIGNAL SLOT MECHANISM ***" << std::endl<< std::endl;
+     auto testModule = daqsysConfigMx->getModuleByIndex(0);
+     testModule->slotNumberChangedSignal = 
+    // emitter.onValueChanged = std::bind(&SlotReceiver::valueChangedSlot, &receiver, std::placeholders::_1);
 
   return EXIT_SUCCESS;
 }

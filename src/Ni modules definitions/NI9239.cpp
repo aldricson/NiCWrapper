@@ -9,8 +9,8 @@ NI9239::NI9239()
 void NI9239::initModule() 
 {
     // Set default values
-    nbChannel = 4;  // Assuming NI9239 has 4 channels, change as needed
-    nbDigitalIoPort = 0 ;
+    m_nbChannel = 4;  // Assuming NI9239 has 4 channels, change as needed
+    m_nbDigitalIoPort = 0 ;
 
     type = isAnalogicInputVoltage;  // Set the default module type
     chanNames.clear();  // Clear any existing channel names

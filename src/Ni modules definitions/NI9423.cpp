@@ -9,8 +9,8 @@ NI9423::NI9423()
 void NI9423::initModule() 
 {
     // Set default values
-    nbChannel = 4;  // Assuming NI9423 has 4 channels, change as needed
-    nbDigitalIoPort = 1;
+    m_nbChannel = 4;  // Assuming NI9423 has 4 channels, change as needed
+    m_nbDigitalIoPort = 1;
     type = isDigitalIOAndCounter;  // Set the default module type
     chanNames.clear();  // Clear any existing channel names
 

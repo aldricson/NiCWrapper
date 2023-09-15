@@ -6,6 +6,7 @@
 #include <string>
 #include <fstream>
 
+
 class NI9423 : public NIDeviceModule {
 private:
 
@@ -20,6 +21,8 @@ public:
 
     void loadConfig()  override; 
     void saveConfig()  override;
+
+
 
 };
 

@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <fstream>
+#include <functional>
 
 enum moduleType
 {
@@ -17,9 +18,9 @@ enum moduleType
 
 class NIDeviceModule {
 protected:
-    unsigned int nbChannel       = 16;
-    unsigned int nbDigitalIoPort = 0 ;
-    unsigned int slotNumber      = 0 ;
+    unsigned int m_nbChannel       = 16;
+    unsigned int m_nbDigitalIoPort = 0 ;
+    unsigned int m_slotNumber      = 0 ;
     std::string  m_moduleName    = "";
     std::string  m_alias         = "";        
     std::vector<std::string> chanNames;
@@ -51,6 +52,12 @@ public:
      
     virtual void loadConfig()  = 0;
     virtual void saveConfig()  = 0; 
+
+//**********************************
+//***     PURE C++ SIGNALS      ****
+//**********************************
+    std::function<void(int)> slotNumberChangedSignal;  // This is the "signal"
+
 };
 
 #endif // NIDEVICEMODULE_H

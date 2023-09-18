@@ -64,10 +64,10 @@ public:
 //**********************************
 //***     PURE C++ SIGNALS      ****
 //**********************************
-    std::function<void(unsigned int, NIDeviceModule *sender)>  nbChannelsChangedSignal;
-    std::function<void(unsigned int, NIDeviceModule *sender)>  nbDigitalIoPortsChangedSignal;
-    std::function<void(unsigned int, NIDeviceModule *sender)>  slotNumberChangedSignal;
-    std::function<void(std::string,  NIDeviceModule *sender)>  moduleInfoChangedSignal;  
+    std::function<void(unsigned int, NIDeviceModule *sender)>  nbChannelsChangedSignal       = nullptr;
+    std::function<void(unsigned int, NIDeviceModule *sender)>  nbDigitalIoPortsChangedSignal = nullptr;
+    std::function<void(unsigned int, NIDeviceModule *sender)>  slotNumberChangedSignal       = nullptr;
+    std::function<void(std::string,  NIDeviceModule *sender)>  moduleInfoChangedSignal       = nullptr;  
 
 };
 

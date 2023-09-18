@@ -58,6 +58,24 @@ build CMakeFiles/daqMxTest.dir/C_/Users/aldric/Documents/daqMxTest/src/Menus/mai
   TARGET_COMPILE_PDB = CMakeFiles\daqMxTest.dir\
   TARGET_PDB = bin\daqMxTest.pdb
 
+build CMakeFiles/daqMxTest.dir/C_/Users/aldric/Documents/daqMxTest/src/Menus/moduleByAliasMenu.cpp.o: CXX_COMPILER__daqMxTest_unscanned_Debug C$:/Users/aldric/Documents/daqMxTest/src/Menus/moduleByAliasMenu.cpp || cmake_object_order_depends_target_daqMxTest
+  DEP_FILE = CMakeFiles\daqMxTest.dir\C_\Users\aldric\Documents\daqMxTest\src\Menus\moduleByAliasMenu.cpp.o.d
+  FLAGS = -Wall -fmessage-length=0 -O0 -g3 -std=gnu++17
+  INCLUDES = -I"C:/Program Files (x86)/National Instruments/NI-DAQ/DAQmx ANSI C Dev/include" -I"C:/Program Files (x86)/National Instruments/Shared/ExternalCompilerSupport/C/include" -isystem C:/build/23.0/x64/sysroots/core2-64-nilrtlinux/usr/include/c++/10.3.0 -isystem C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/include/c++/10.3.0/x86_64-nilrtlinux
+  OBJECT_DIR = CMakeFiles\daqMxTest.dir
+  OBJECT_FILE_DIR = CMakeFiles\daqMxTest.dir\C_\Users\aldric\Documents\daqMxTest\src\Menus
+  TARGET_COMPILE_PDB = CMakeFiles\daqMxTest.dir\
+  TARGET_PDB = bin\daqMxTest.pdb
+
+build CMakeFiles/daqMxTest.dir/C_/Users/aldric/Documents/daqMxTest/src/Menus/moduleBySlotMenu.cpp.o: CXX_COMPILER__daqMxTest_unscanned_Debug C$:/Users/aldric/Documents/daqMxTest/src/Menus/moduleBySlotMenu.cpp || cmake_object_order_depends_target_daqMxTest
+  DEP_FILE = CMakeFiles\daqMxTest.dir\C_\Users\aldric\Documents\daqMxTest\src\Menus\moduleBySlotMenu.cpp.o.d
+  FLAGS = -Wall -fmessage-length=0 -O0 -g3 -std=gnu++17
+  INCLUDES = -I"C:/Program Files (x86)/National Instruments/NI-DAQ/DAQmx ANSI C Dev/include" -I"C:/Program Files (x86)/National Instruments/Shared/ExternalCompilerSupport/C/include" -isystem C:/build/23.0/x64/sysroots/core2-64-nilrtlinux/usr/include/c++/10.3.0 -isystem C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/include/c++/10.3.0/x86_64-nilrtlinux
+  OBJECT_DIR = CMakeFiles\daqMxTest.dir
+  OBJECT_FILE_DIR = CMakeFiles\daqMxTest.dir\C_\Users\aldric\Documents\daqMxTest\src\Menus
+  TARGET_COMPILE_PDB = CMakeFiles\daqMxTest.dir\
+  TARGET_PDB = bin\daqMxTest.pdb
+
 build CMakeFiles/daqMxTest.dir/C_/Users/aldric/Documents/daqMxTest/src/Ni_modules_definitions/NI9208.cpp.o: CXX_COMPILER__daqMxTest_unscanned_Debug C$:/Users/aldric/Documents/daqMxTest/src/Ni$ modules$ definitions/NI9208.cpp || cmake_object_order_depends_target_daqMxTest
   DEP_FILE = CMakeFiles\daqMxTest.dir\C_\Users\aldric\Documents\daqMxTest\src\Ni_modules_definitions\NI9208.cpp.o.d
   FLAGS = -Wall -fmessage-length=0 -O0 -g3 -std=gnu++17
@@ -138,7 +156,7 @@ build CMakeFiles/daqMxTest.dir/C_/Users/aldric/Documents/daqMxTest/src/main.cpp.
 #############################################
 # Link the executable bin\daqMxTest
 
-build bin/daqMxTest: CXX_EXECUTABLE_LINKER__daqMxTest_Debug CMakeFiles/daqMxTest.dir/C_/Users/aldric/Documents/daqMxTest/src/Menus/mainMenu.cpp.o CMakeFiles/daqMxTest.dir/C_/Users/aldric/Documents/daqMxTest/src/Ni_modules_definitions/NI9208.cpp.o CMakeFiles/daqMxTest.dir/C_/Users/aldric/Documents/daqMxTest/src/Ni_modules_definitions/NI9239.cpp.o CMakeFiles/daqMxTest.dir/C_/Users/aldric/Documents/daqMxTest/src/Ni_modules_definitions/NI9423.cpp.o CMakeFiles/daqMxTest.dir/C_/Users/aldric/Documents/daqMxTest/src/Ni_modules_definitions/NIDeviceModule.cpp.o CMakeFiles/daqMxTest.dir/C_/Users/aldric/Documents/daqMxTest/src/Ni_modules_definitions/NIDeviceModuleFactory.cpp.o CMakeFiles/daqMxTest.dir/C_/Users/aldric/Documents/daqMxTest/src/Ni_wrappers/QNiDaqWrapper.cpp.o CMakeFiles/daqMxTest.dir/C_/Users/aldric/Documents/daqMxTest/src/Ni_wrappers/QNiSysConfigWrapper.cpp.o CMakeFiles/daqMxTest.dir/C_/Users/aldric/Documents/daqMxTest/src/main.cpp.o | C$:/Program$ Files$ (x86)/National$ Instruments/Shared/ExternalCompilerSupport/C/lib64/gcc/libnidaqmx.so C$:/Program$ Files$ (x86)/National$ Instruments/Shared/ExternalCompilerSupport/C/lib64/gcc/libnisyscfg.so
+build bin/daqMxTest: CXX_EXECUTABLE_LINKER__daqMxTest_Debug CMakeFiles/daqMxTest.dir/C_/Users/aldric/Documents/daqMxTest/src/Menus/mainMenu.cpp.o CMakeFiles/daqMxTest.dir/C_/Users/aldric/Documents/daqMxTest/src/Menus/moduleByAliasMenu.cpp.o CMakeFiles/daqMxTest.dir/C_/Users/aldric/Documents/daqMxTest/src/Menus/moduleBySlotMenu.cpp.o CMakeFiles/daqMxTest.dir/C_/Users/aldric/Documents/daqMxTest/src/Ni_modules_definitions/NI9208.cpp.o CMakeFiles/daqMxTest.dir/C_/Users/aldric/Documents/daqMxTest/src/Ni_modules_definitions/NI9239.cpp.o CMakeFiles/daqMxTest.dir/C_/Users/aldric/Documents/daqMxTest/src/Ni_modules_definitions/NI9423.cpp.o CMakeFiles/daqMxTest.dir/C_/Users/aldric/Documents/daqMxTest/src/Ni_modules_definitions/NIDeviceModule.cpp.o CMakeFiles/daqMxTest.dir/C_/Users/aldric/Documents/daqMxTest/src/Ni_modules_definitions/NIDeviceModuleFactory.cpp.o CMakeFiles/daqMxTest.dir/C_/Users/aldric/Documents/daqMxTest/src/Ni_wrappers/QNiDaqWrapper.cpp.o CMakeFiles/daqMxTest.dir/C_/Users/aldric/Documents/daqMxTest/src/Ni_wrappers/QNiSysConfigWrapper.cpp.o CMakeFiles/daqMxTest.dir/C_/Users/aldric/Documents/daqMxTest/src/main.cpp.o | C$:/Program$ Files$ (x86)/National$ Instruments/Shared/ExternalCompilerSupport/C/lib64/gcc/libnidaqmx.so C$:/Program$ Files$ (x86)/National$ Instruments/Shared/ExternalCompilerSupport/C/lib64/gcc/libnisyscfg.so
   FLAGS = -Wall -fmessage-length=0 -O0 -g3
   LINK_FLAGS = -Wl,-O1 -Wl,--hash-style=gnu -Wl,--as-needed
   LINK_LIBRARIES = -Wl,-rpath,"C:/Program Files (x86)/National Instruments/Shared/ExternalCompilerSupport/C/lib64/gcc"  "C:/Program Files (x86)/National Instruments/Shared/ExternalCompilerSupport/C/lib64/gcc/libnidaqmx.so"  "C:/Program Files (x86)/National Instruments/Shared/ExternalCompilerSupport/C/lib64/gcc/libnisyscfg.so"

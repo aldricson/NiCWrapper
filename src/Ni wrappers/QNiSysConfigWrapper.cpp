@@ -184,8 +184,9 @@ NIDeviceModule *  QNiSysConfigWrapper::getModuleByIndex(size_t index) {
 
 // Function to get a module by its alias
 NIDeviceModule * QNiSysConfigWrapper::getModuleByAlias(const std::string& alias) {
+    std::string lowerAlias = toLowerCase(alias);
     for (auto& module : moduleList) {
-        if (module->getAlias() == alias) {  
+        if (toLowerCase(module->getAlias()) == lowerAlias) {  
             return module;
         }
     }

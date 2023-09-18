@@ -22,7 +22,9 @@ C:/Users/aldric/Documents/daqMxTest/build/../src/Modbus/libmodbus/modbus-version
 C:/Users/aldric/Documents/daqMxTest/build/../src/Modbus/libmodbus/modbus.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/Ni modules definitions/NI9208.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/Ni modules definitions/NI9239.h
+C:/Users/aldric/Documents/daqMxTest/build/../src/Ni modules definitions/NI9411.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/Ni modules definitions/NI9423.h
+C:/Users/aldric/Documents/daqMxTest/build/../src/Ni modules definitions/NI9481.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/Ni modules definitions/NIDeviceModule.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/Ni modules definitions/NIDeviceModuleFactory.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/Ni wrappers/QNiDaqWrapper.h
@@ -36,7 +38,9 @@ C:/Users/aldric/Documents/daqMxTest/build/../src/Menus/moduleByAliasMenu.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/Menus/moduleBySlotMenu.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/Ni modules definitions/NI9208.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/Ni modules definitions/NI9239.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/Ni modules definitions/NI9411.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/Ni modules definitions/NI9423.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/Ni modules definitions/NI9481.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/Ni modules definitions/NIDeviceModule.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/Ni modules definitions/NIDeviceModuleFactory.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/Ni wrappers/QNiDaqWrapper.cpp

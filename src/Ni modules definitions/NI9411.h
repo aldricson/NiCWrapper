@@ -1,5 +1,5 @@
-#ifndef NI9423_H
-#define NI9423_H
+#ifndef NI9411_H
+#define NI9411_H
 
 #include "NIDeviceModule.h"
 #include <vector>
@@ -7,12 +7,12 @@
 #include <fstream>
 
 
-class NI9423 : public NIDeviceModule {
+class NI9411 : public NIDeviceModule {
 private:
 
 
 public:
-    NI9423();
+    NI9411();
 
     void initModule()  override;
     void loadConfig()  override; 
@@ -22,4 +22,4 @@ public:
 
 };
 
-#endif // NI9423_H
+#endif // NI9411_H

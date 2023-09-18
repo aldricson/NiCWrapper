@@ -2,6 +2,8 @@
 #include "NI9208.h"
 #include "NI9239.h"
 #include "NI9423.h"
+#include "NI9411.h"
+#include "NI9481.h"
 // Include other module headers here
 
 NIDeviceModule* NIDeviceModuleFactory::createModule(const std::string& productName) {
@@ -12,12 +14,18 @@ NIDeviceModule* NIDeviceModuleFactory::createModule(const std::string& productNa
     else
         if (productName == "NI9239") {
         return new NI9239;
-        //return std::make_unique<NI9239>();
     }
     else
         if (productName == "NI9423") {
         return new NI9423;
-        //return std::make_unique<NI9423>();
+    }
+    else
+        if (productName == "NI9411") {
+        return new NI9411;
+    }
+        else
+        if (productName == "NI9481") {
+        return new NI9481;
     }
     // Add other product names and their corresponding classes here
     // else if (productName == "NI9215") {

@@ -158,8 +158,8 @@ std::vector<std::string> QNiSysConfigWrapper::EnumerateCRIOPluggedModules() {
                 {
                     //in case of counters
                     moduleInfo += "\n║ 32 bits counters\n";
-                    moduleInfo += "Counter Min Value : " + std::to_string(counterMin);
-                    moduleInfo += "Counter Max Value : " + std::to_string(counterMax);
+                    moduleInfo += "\n║ Counter Min Value : " + std::to_string(counterMin);
+                    moduleInfo += "\n║ Counter Max Value : " + std::to_string(counterMax);
                 }  
               module->setModuleInfo(moduleInfo);
             } 
@@ -237,5 +237,20 @@ NIDeviceModule * QNiSysConfigWrapper::getModuleBySlot(unsigned int slotNb) {
     }
     throw std::invalid_argument("Module with given alias not found");
 
+}
+
+// Getter for moduleList
+std::vector<NIDeviceModule*> QNiSysConfigWrapper::getModuleList() const {
+    return moduleList;
+}
+
+// Setter for moduleList
+void QNiSysConfigWrapper::setModuleList(const std::vector<NIDeviceModule*>& newModuleList) {
+    moduleList = newModuleList;
+
+    // Emit the signal if it's connected
+    if (moduleListChangedSignal) {
+        moduleListChangedSignal(moduleList, this);
+    }
 }
 

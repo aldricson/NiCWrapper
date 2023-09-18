@@ -9,6 +9,7 @@ NI9481::NI9481()
 void NI9481::initModule() 
 {
     // Set default values
+    m_moduleName="NI9481";
     m_nbChannel  = 0;  // Assuming NI9481 has 4 channels, change as needed
     m_nbCounters = 4;
     m_nbDigitalIoPort = 1;

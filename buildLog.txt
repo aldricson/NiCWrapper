@@ -30,6 +30,7 @@ C:/Users/aldric/Documents/daqMxTest/build/../src/Ni modules definitions/NIDevice
 C:/Users/aldric/Documents/daqMxTest/build/../src/Ni wrappers/QNiDaqWrapper.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/Ni wrappers/QNiSysConfigWrapper.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/Signals/QSignalTest.h
+C:/Users/aldric/Documents/daqMxTest/build/../src/channelReaders/analogicReader.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/globals/globalConsts.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/stringUtils/stringUtils.h
 List of Source Files:
@@ -45,6 +46,7 @@ C:/Users/aldric/Documents/daqMxTest/build/../src/Ni modules definitions/NIDevice
 C:/Users/aldric/Documents/daqMxTest/build/../src/Ni modules definitions/NIDeviceModuleFactory.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/Ni wrappers/QNiDaqWrapper.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/Ni wrappers/QNiSysConfigWrapper.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/channelReaders/analogicReader.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/main.cpp
 Excutable output file set to bin bin
 build type is: Debug

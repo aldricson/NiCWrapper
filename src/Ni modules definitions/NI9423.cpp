@@ -9,6 +9,7 @@ NI9423::NI9423()
 void NI9423::initModule() 
 {
     // Set default values
+    m_moduleName="NI9423";
     m_nbChannel  = 0;  // Assuming NI9423 has 4 channels, change as needed
     m_nbCounters = 4;
     m_nbDigitalIoPort = 1;

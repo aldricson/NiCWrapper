@@ -9,6 +9,7 @@ NI9411::NI9411()
 void NI9411::initModule() 
 {
     // Set default values
+    m_moduleName="NI9411";
     m_nbChannel  = 0;  // Assuming NI9411 has 4 channels, change as needed
     m_nbCounters = 4;
     m_nbDigitalIoPort = 1;

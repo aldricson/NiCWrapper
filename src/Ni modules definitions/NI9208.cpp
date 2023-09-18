@@ -6,14 +6,13 @@ NI9208::NI9208()
 {
     
    initModule();
-     // Load from file if exists, otherwise use default values
-    NIDeviceModule::loadFromFile("NI9208.ini");
 }
 
 
 void NI9208::initModule() 
 {
     // Set default values
+    m_moduleName="NI9208";
     m_nbChannel       = 16;
     m_nbCounters      = 0;
     m_nbDigitalIoPort = 0;

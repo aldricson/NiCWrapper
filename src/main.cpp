@@ -7,14 +7,16 @@
 #include <memory> // for std::unique_ptr
 #include ".\Ni wrappers\QNiSysConfigWrapper.h"
 #include ".\Ni wrappers\QNiDaqWrapper.h"
+#include ".\channelReaders\analogicReader.h"
 #include ".\Signals\QSignalTest.h"
 #include ".\Menus\mainMenu.h"
 
 // These wrappers utilize low-level APIs that have hardware access. 
 // Proper destruction is essential to restore certain hardware states when they go out of scope.
-// Using smart pointers like std::unique_ptr ensures safer and automatic resource management.
+// Using smart pointers like std::shared_ptr ensures safer and automatic resource management.
 std::shared_ptr<QNiSysConfigWrapper> sysConfig;
 std::shared_ptr<QNiDaqWrapper>       daqMx;
+std::shared_ptr<AnalogicReader>      analogReader;
 
 
 int main(void)
@@ -30,7 +32,7 @@ int main(void)
   auto closeLambda = []() { std::exit(EXIT_SUCCESS); };
   //-----------------------------------------------------------
   std::cout << "*** Init phase 1: initialize daqMx ***" << std::endl<< std::endl;
-   // Using unique_ptr to manage the QNiDaqWrapper object
+   // Using shared_ptr to manage the QNiDaqWrapper object
   auto daqMx = std::make_shared<QNiDaqWrapper>();
   daqMx->GetNumberOfModules();
   
@@ -47,6 +49,8 @@ int main(void)
    
    std::cout << "*** Init phase 2: retrieve modules and load defaults ***" << std::endl<< std::endl;
    auto daqsysConfigMx = std::make_shared<QNiSysConfigWrapper>();
+   //the good place to create the analog reader
+   auto analogReader = std::make_shared<AnalogicReader>(daqsysConfigMx,daqMx);
    std::vector<std::string> modules = daqsysConfigMx->EnumerateCRIOPluggedModules();
    std::cout << "found : "<< std::endl<<std::endl;
    //Show internal of each module
@@ -70,7 +74,7 @@ int main(void)
      delete(slotTestObject);
      slotTestObject=nullptr;
       std::cout << std::endl << "*** SIGNAL SLOT MECHANISM OK ***" << std::endl<< std::endl;
-     mainMenu m_mainMenu(daqsysConfigMx);
+     mainMenu m_mainMenu(daqsysConfigMx,analogReader);
      m_mainMenu.exitProgramSignal = std::bind(closeLambda);
 
   return EXIT_SUCCESS;

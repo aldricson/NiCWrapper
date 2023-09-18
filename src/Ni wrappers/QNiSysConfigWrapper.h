@@ -25,6 +25,13 @@ public:
     NIDeviceModule * getModuleByAlias(const std::string& alias);
     bool IsPropertyPresent(NISysCfgResourceHandle resourceHandle, NISysCfgResourceProperty propertyID);
 
+     // Getter and Setter for moduleList
+    std::vector<NIDeviceModule*> getModuleList() const;
+    void setModuleList(const std::vector<NIDeviceModule*>& newModuleList);
+
+    // Signal for moduleList changes
+    std::function<void(const std::vector<NIDeviceModule*>&, QNiSysConfigWrapper*)> moduleListChangedSignal;
+
 
 private:
    

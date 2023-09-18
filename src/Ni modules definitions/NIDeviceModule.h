@@ -48,6 +48,7 @@ public:
     
 
     virtual void initModule()                          = 0;
+    virtual std::string  getModuleName()               const;
     virtual unsigned int getNbChannel()                const;
     virtual unsigned int getNbCounters()               const;
     virtual unsigned int getSlotNb   ()                const;
@@ -63,6 +64,7 @@ public:
     virtual std::string getChanUnit  ()                const;   
 
 
+    virtual void setModuleName (const std::string& newModuleName);
     virtual void setNbChannel (unsigned int newNbChannels);
     virtual void setNbCounters(unsigned int newNbCounters);
     virtual void setNbDigitalIOPorts(unsigned int newNbPorts);
@@ -86,6 +88,7 @@ public:
 //**********************************
 //***     PURE C++ SIGNALS      ****
 //**********************************
+    std::function<void(std::string ,             NIDeviceModule *sender)>  moduleNameChangedSignal           = nullptr;
     std::function<void(unsigned int,             NIDeviceModule *sender)>  nbChannelsChangedSignal           = nullptr;
     std::function<void(unsigned int,             NIDeviceModule *sender)>  nbCountersChangedSignal           = nullptr;
     std::function<void(unsigned int,             NIDeviceModule *sender)>  nbDigitalIoPortsChangedSignal     = nullptr;

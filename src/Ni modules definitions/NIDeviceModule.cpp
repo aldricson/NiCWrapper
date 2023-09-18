@@ -71,18 +71,34 @@ void NIDeviceModule::loadFromFile(const std::string& filename)
                 }
             
             }
-           else if (key.find("max chan Value"))
-           {
-               setChanMax(std::stod(value));
-           }
-           else if (key.find("min chan Value"))
-           {
-              setChanMin(std::stod(value)); 
-           }
-           else if (key.find("analog chan unit"))
-           {
+
+            else if (key.find("max chan Value") != std::string::npos)
+            {
+               try 
+               {
+                  setChanMax(std::stod(value));
+               } 
+               catch (const std::invalid_argument& e) 
+               {
+                  std::cerr << "Invalid argument for max chan Value: " << value << std::endl;
+               }
+            }
+            else if (key.find("min chan Value") != std::string::npos)
+            {
+                try 
+                {
+                   setChanMin(std::stod(value));
+                } 
+                catch 
+                (const std::invalid_argument& e) 
+                {
+                   std::cerr << "Invalid argument for min chan Value: " << value << std::endl;
+                }
+            }
+            else if (key.find("analog chan unit"))
+            {
               setChanUnit(value);
-           }
+            }
         }
         else if (section == "Counters")
         {
@@ -93,7 +109,7 @@ void NIDeviceModule::loadFromFile(const std::string& filename)
                 setNbCounters(n);
             }
                  // If the key starts with "Channel", it specifies the name of a channel
-            else if (key.find("Counter") != std::string::npos)
+            else if ((key.find("Counter") != std::string::npos) && (getNbCounters()>0))
             {
                  // Extract the channel index from the key (e.g., "Channel7" -> index = 7)
                 unsigned int index = std::stoi(key.substr(7));
@@ -122,6 +138,11 @@ void NIDeviceModule::loadFromFile(const std::string& filename)
 
                 // Update the module type using the setter method
                 setModuleType(newType);
+            }
+            else if (key == "Module Name")
+            {
+                std::string newName=value;
+                setModuleName(newName);
             }
         }
     }
@@ -159,6 +180,7 @@ void NIDeviceModule::saveToFile(const std::string &filename)
 
 
     fprintf(ini, "\n[Module]\n\nType = %d ;\n", static_cast<int>(getModuleType()));
+    fprintf(ini, "Module Name = %s\n",m_moduleName.c_str());
     fprintf(ini, "Alias = %s\n", m_alias.c_str());
     fclose(ini);
 }
@@ -264,6 +286,11 @@ void NIDeviceModule::showModuleOnConsole() const
  
 }
 
+std::string NIDeviceModule::getModuleName() const
+{
+  return m_moduleName;
+}
+
 unsigned int NIDeviceModule::getNbChannel() const
 {
     return m_nbChannel;
@@ -327,6 +354,15 @@ unsigned int NIDeviceModule::getmaxCounters() const
 std::string NIDeviceModule::getChanUnit() const
 {
     return m_analogUnit;
+}
+
+void NIDeviceModule::setModuleName(const std::string &newModuleName)
+{
+    m_moduleName = newModuleName;
+    if (moduleNameChangedSignal)
+    {
+        moduleNameChangedSignal(m_moduleName,this);
+    }
 }
 
 void NIDeviceModule::setNbChannel(unsigned int newNbChannels)

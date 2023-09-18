@@ -9,6 +9,7 @@ NI9239::NI9239()
 void NI9239::initModule() 
 {
     // Set default values
+    m_moduleName="NI9239";
     m_nbChannel       = 4;  // Assuming NI9239 has 4 channels, change as needed
     m_nbCounters      = 0;
     m_nbDigitalIoPort = 0 ;

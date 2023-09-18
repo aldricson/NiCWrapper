@@ -15,87 +15,48 @@ mainMenu::mainMenu(std::shared_ptr<QNiSysConfigWrapper> aConfigWrapper) {
 }
 
 
-/*void mainMenu::displayMenu() 
-{
-    std::string choice;
-    while (true) 
-    {
-        clearConsole();
-        std::cout << "✩░▒▓▒░░░▒░░░▒░░░▒░░░▒░░░▒░░░░░░▒▓▒░✩" << std::endl;
-        std::cout << "✩░▒▓                            ▓▒░✩" << std::endl;
-        std::cout << "✩░▒▓          MAIN MENU         ▓▒░✩" << std::endl;
-        std::cout << "✩░▒▓                            ▓▒░✩" << std::endl;
-        std::cout << "✩░▒▓▒░░░▒░░░▒░░░▒░░░▒░░░▒░░░░░░▒▓▒░✩" << std::endl;
-        std::cout << "✩░▒▓                            ▓▒░✩" << std::endl;
-        std::cout << "✩░▒▓   1. show module by Alias  ▓▒░✩" << std::endl;
-        std::cout << "✩░▒▓   2. show module by Slot   ▓▒░✩" << std::endl;
-        std::cout << "✩░▒▓   X.       exit            ▓▒░✩" << std::endl;
-        std::cout << "✩░▒▓                            ▓▒░✩" << std::endl;
-        std::cout << "✩░▒▓▒░░░▒░░░▒░░░▒░░░▒░░░▒░░░░░░▒▓▒░✩" << std::endl;
-        std::cout << "Enter your choice: ";
-        std::cin >> choice;
-
-        if (choice == "1") 
-        {
-            m_moduleByAliasMenu->displayMenu();
-        } 
-        else if (choice == "2") 
-        {
-            m_moduleBySlotMenu->displayMenu();
-
-        }
-        else if (choice == "x" || choice == "X") 
-        {
-            std::cout << "Exiting..." << std::endl;
-            break;
-        } 
-        else 
-        {
-            std::cout << "Invalid choice. Try again." << std::endl;
-        }
-    }
-}*/
-
 void mainMenu::displayMenu() 
 {
     std::string choice;
-    while (true) 
+    clearConsole();
+    std::cout << "✩░▒▓▒░░░▒░░░▒░░░▒░░░▒░░░▒░░░░░░▒▓▒░✩" << std::endl;
+    std::cout << "✩░▒▓                            ▓▒░✩" << std::endl;
+    std::cout << "✩░▒▓          MAIN MENU         ▓▒░✩" << std::endl;
+    std::cout << "✩░▒▓                            ▓▒░✩" << std::endl;
+    std::cout << "✩░▒▓▒░░░▒░░░▒░░░▒░░░▒░░░▒░░░░░░▒▓▒░✩" << std::endl;
+    std::cout << "✩░▒▓                            ▓▒░✩" << std::endl;
+    std::cout << "✩░▒▓   1. show module by Alias  ▓▒░✩" << std::endl;
+    std::cout << "✩░▒▓   2. show module by Slot   ▓▒░✩" << std::endl;
+    std::cout << "✩░▒▓   X.       exit            ▓▒░✩" << std::endl;
+    std::cout << "✩░▒▓                            ▓▒░✩" << std::endl;
+    std::cout << "✩░▒▓▒░░░▒░░░▒░░░▒░░░▒░░░▒░░░░░░▒▓▒░✩" << std::endl;
+    std::cout << "Enter your choice: ";
+    choice = std::cin.get();    
+    std::cin.clear();
+    std::cin.ignore();
+    if (choice == "1") 
     {
-        clearConsole();
-        std::cout << "✩░▒▓▒░░░▒░░░▒░░░▒░░░▒░░░▒░░░░░░▒▓▒░✩" << std::endl;
-        std::cout << "✩░▒▓                            ▓▒░✩" << std::endl;
-        std::cout << "✩░▒▓          MAIN MENU         ▓▒░✩" << std::endl;
-        std::cout << "✩░▒▓                            ▓▒░✩" << std::endl;
-        std::cout << "✩░▒▓▒░░░▒░░░▒░░░▒░░░▒░░░▒░░░░░░▒▓▒░✩" << std::endl;
-        std::cout << "✩░▒▓                            ▓▒░✩" << std::endl;
-        std::cout << "✩░▒▓   1. show module by Alias  ▓▒░✩" << std::endl;
-        std::cout << "✩░▒▓   2. show module by Slot   ▓▒░✩" << std::endl;
-        std::cout << "✩░▒▓   X.       exit            ▓▒░✩" << std::endl;
-        std::cout << "✩░▒▓                            ▓▒░✩" << std::endl;
-        std::cout << "✩░▒▓▒░░░▒░░░▒░░░▒░░░▒░░░▒░░░░░░▒▓▒░✩" << std::endl;
-        std::cout << "Enter your choice: ";
-        std::cin >> choice;
-
-        
-
-        if (choice == "1") 
-        {
-            m_moduleByAliasMenu->displayMenu();
-        } 
-        else if (choice == "2") 
-        {
-            m_moduleBySlotMenu->displayMenu();
-        }
-        else if (choice == "x" || choice == "X") 
-        {
-            std::cout << "Exiting..." << std::endl;
-            break;
-        } 
-        else 
-        {
-            std::cout << "Invalid choice. Try again." << std::endl;
-        }
+        m_moduleByAliasMenu->displayMenu();
+    } 
+    else if (choice == "2") 
+    {
+         m_moduleBySlotMenu->displayMenu();
     }
+    else if (choice == "x" || choice == "X") 
+    {
+        
+        std::cout << "Exiting..." << std::endl;
+        if (exitProgramSignal)
+        {
+                exitProgramSignal();
+        }
+    } 
+    else 
+    {
+            std::cout << "Invalid choice. Try again." << std::endl;
+            displayMenu();
+    }
+    
 }
 
 
@@ -108,7 +69,5 @@ void mainMenu::clearConsole()
 
 void mainMenu::onDisplayMainMenu()
 {
-    // Clear the buffer
-    std::cin.clear() ;
     displayMenu();
 }

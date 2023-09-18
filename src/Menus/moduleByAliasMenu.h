@@ -17,6 +17,7 @@ private:
   std::shared_ptr<QNiSysConfigWrapper> m_cfgWrapper;
 
 public:
+  //signals
   std::function<void()>  showMainMenuSignal; 
 };
 

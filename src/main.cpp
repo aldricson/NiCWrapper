@@ -27,6 +27,8 @@ int main(void)
   std::cout << "*********************************************" << std::endl;
   std::cout << std::endl;
   //-----------------------------------------------------------
+  auto closeLambda = []() { std::exit(EXIT_SUCCESS); };
+  //-----------------------------------------------------------
   std::cout << "*** Init phase 1: initialize daqMx ***" << std::endl<< std::endl;
    // Using unique_ptr to manage the QNiDaqWrapper object
   auto daqMx = std::make_shared<QNiDaqWrapper>();
@@ -69,6 +71,7 @@ int main(void)
      slotTestObject=nullptr;
       std::cout << std::endl << "*** SIGNAL SLOT MECHANISM OK ***" << std::endl<< std::endl;
      mainMenu m_mainMenu(daqsysConfigMx);
+     m_mainMenu.exitProgramSignal = std::bind(closeLambda);
 
   return EXIT_SUCCESS;
 }

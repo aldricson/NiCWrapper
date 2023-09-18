@@ -17,6 +17,9 @@ public:
     void displayMenu();
     void clearConsole();
 
+    //signals
+    std::function<void()>  exitProgramSignal; 
+
 private:
   std::shared_ptr<QNiSysConfigWrapper> m_cfgWrapper;
   std::shared_ptr<moduleBySlotMenu>    m_moduleBySlotMenu;

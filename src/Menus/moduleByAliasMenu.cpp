@@ -8,9 +8,11 @@ moduleByAliasMenu::moduleByAliasMenu(std::shared_ptr<QNiSysConfigWrapper> aConfi
 void moduleByAliasMenu::displayMenu() 
 {
     std::string alias;
-
+    std::cin.clear();
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     while (true) 
     {
+       
         clearConsole();
         std::cout << "✩░▒▓▒░░░▒░░░▒░░░▒░░░▒░░░▒░░░░░░▒▓▒░✩" << std::endl;
         std::cout << "✩░▒▓                            ▓▒░✩" << std::endl;

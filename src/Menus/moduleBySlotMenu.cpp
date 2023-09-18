@@ -99,7 +99,8 @@ moduleBySlotMenu::moduleBySlotMenu(std::shared_ptr<QNiSysConfigWrapper> aConfigW
 void moduleBySlotMenu::displayMenu() 
 {
     std::string choice;
-
+    std::cin.clear();
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); 
     while (true) 
     {
         clearConsole();

@@ -24,7 +24,8 @@ protected:
     unsigned int m_nbDigitalIoPort = 0 ;
     unsigned int m_slotNumber      = 0 ;
     std::string  m_moduleName    = "";
-    std::string  m_alias         = "";        
+    std::string  m_alias         = "";
+    std::string  m_moduleInfo    = "";        
     std::vector<std::string> chanNames;
     moduleType type;
 
@@ -42,12 +43,14 @@ public:
     virtual unsigned int getNbChannel()             const;
     virtual unsigned int getSlotNb   ()             const;
     virtual unsigned int getNbDigitalIOPorts()      const;
+    virtual std::string  getModuleInfo()            const;
     virtual std::vector<std::string> getChanNames() const = 0;
     virtual moduleType getModuleType()              const;
 
 
     virtual void setNbChannel(unsigned int newNbChannels);
     virtual void setNbDigitalIOPorts(unsigned int newNbPorts);
+    virtual void setModuleInfo(std::string newModuleInfo); 
     virtual void setSlotNb   (unsigned int newSlot);
     virtual void setAlias    (const std::string& newAlias);
     virtual void setChanNames(const std::vector<std::string>& names) = 0;
@@ -63,7 +66,8 @@ public:
 //**********************************
     std::function<void(unsigned int, NIDeviceModule *sender)>  nbChannelsChangedSignal;
     std::function<void(unsigned int, NIDeviceModule *sender)>  nbDigitalIoPortsChangedSignal;
-    std::function<void(unsigned int, NIDeviceModule *sender)>  slotNumberChangedSignal;  
+    std::function<void(unsigned int, NIDeviceModule *sender)>  slotNumberChangedSignal;
+    std::function<void(std::string,  NIDeviceModule *sender)>  moduleInfoChangedSignal;  
 
 };
 

@@ -8,7 +8,7 @@
 #include ".\Ni wrappers\QNiSysConfigWrapper.h"
 #include ".\Ni wrappers\QNiDaqWrapper.h"
 #include ".\Signals\QSignalTest.h"
-#include "mainMenu.h"
+#include ".\Menus\mainMenu.h"
 
 // These wrappers utilize low-level APIs that have hardware access. 
 // Proper destruction is essential to restore certain hardware states when they go out of scope.

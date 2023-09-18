@@ -126,14 +126,15 @@ std::vector<std::string> QNiSysConfigWrapper::EnumerateCRIOPluggedModules() {
                 {
                    moduleInfo += "\n║ ╬"+ channelNames[i];
                 }
-
+              module->setModuleInfo(moduleInfo);
             } 
             else 
             {
                moduleInfo += "\n║ Module inner definition not yet implemented";
             }
-                                                    
+                                                
             modules.push_back(moduleInfo);
+            
         }
 
         // Close the resource handle

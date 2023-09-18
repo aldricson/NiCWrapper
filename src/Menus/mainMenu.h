@@ -3,7 +3,7 @@
 
 #include <string>
 #include <cstdlib>
-#include ".\Ni wrappers\QNiSysConfigWrapper.h"
+#include "..\Ni wrappers\QNiSysConfigWrapper.h"
 
 class mainMenu {
 public:

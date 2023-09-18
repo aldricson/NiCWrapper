@@ -130,9 +130,10 @@ void NIDeviceModule::setModuleType(moduleType newType)
 
 void NIDeviceModule::showModuleOnConsole() const
 {
-    std::cout << "╔════════════════════════════ "<< std::endl;
-    std::cout << "║ Alias: "<<m_alias.c_str()    << std::endl;
-    std::cout << "║ Slot:  "<<m_slotNumber       << std::endl; 
+
+  std::cout<<"Enter showModuleOnConsole())"<<std::endl;
+  std::cout<<std::endl<<m_moduleInfo.c_str()<<std::endl;
+ 
 }
 
 unsigned int NIDeviceModule::getNbChannel() const
@@ -148,6 +149,11 @@ unsigned int NIDeviceModule::getSlotNb() const
 unsigned int NIDeviceModule::getNbDigitalIOPorts() const
 {
     return m_nbDigitalIoPort;
+}
+
+std::string NIDeviceModule::getModuleInfo() const
+{
+    return m_moduleInfo;
 }
 
 moduleType NIDeviceModule::getModuleType() const
@@ -174,6 +180,18 @@ void NIDeviceModule::setNbDigitalIOPorts(unsigned int newNbPorts)
        nbDigitalIoPortsChangedSignal(newNbPorts,this); 
     }
 }
+
+void NIDeviceModule::setModuleInfo(std::string newModuleInfo)
+{
+     m_moduleInfo = newModuleInfo;
+        //emit signal
+    if (moduleInfoChangedSignal)
+    {
+       moduleInfoChangedSignal(newModuleInfo,this); 
+    }
+    
+}
+
 
 void NIDeviceModule::setSlotNb(unsigned int newSlot)
 {

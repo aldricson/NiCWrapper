@@ -16,7 +16,6 @@ public:
     void initModule()                       override;  // Initialize the module with default values
     std::vector<std::string> getChanNames() const override;  // Get the names of the channels
 
-    void setChanNames(const std::vector<std::string>& names) override;  // Set the names of the channels
     void loadConfig()  override ;
     void saveConfig()  override ;  // Save the module configuration to a file
 };

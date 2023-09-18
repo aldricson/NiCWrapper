@@ -17,7 +17,6 @@ public:
     void initModule()                       override;
     std::vector<std::string> getChanNames() const override;
 
-    void setChanNames(const std::vector<std::string>& names) override;
 
     void loadConfig()  override; 
     void saveConfig()  override;

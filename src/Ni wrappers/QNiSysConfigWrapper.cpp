@@ -30,7 +30,13 @@ std::vector<std::string> QNiSysConfigWrapper::EnumerateCRIOPluggedModules() {
     char moduleName      [shortStringSize]; //product name of the module
     char moduleAlias     [shortStringSize]; //alias of the module e.g mod1
     unsigned int nb_chan          = 0;      //number of channels in the module
+    unsigned int nb_counters      = 0;
     unsigned int nb_digitalIoPort = 0;      //number of digital io port in the module
+    double       analogChanMin    = 0.0;
+    double       analogChanMax    = 10.0;
+    unsigned int counterMin       = 0.0;
+    unsigned int counterMax       = 4294967295;
+    std::string  analogUnits      = "";
     moduleType modType;
     int slotNumber;       //slot where is the module
 
@@ -75,8 +81,15 @@ std::vector<std::string> QNiSysConfigWrapper::EnumerateCRIOPluggedModules() {
                 module->loadConfig();
                 //get what we need (or from the config file or default if it's the first run)
                 nb_chan          = module->getNbChannel();
+                nb_counters      = module->getNbCounters();
                 modType          = module->getModuleType();
                 nb_digitalIoPort = module->getNbDigitalIOPorts();
+                analogChanMax    = module->getChanMax();
+                analogChanMin    = module->getChanMin();
+                analogUnits      = module->getChanUnit();
+                counterMax       = module->getmaxCounters();
+                counterMin       = module->getminCounters();
+
                 //after setting the properties we could retrieve from NISysConfig
                 //let's ensure our config files stay synchronized
                 module->saveConfig();
@@ -120,12 +133,34 @@ std::vector<std::string> QNiSysConfigWrapper::EnumerateCRIOPluggedModules() {
                               "\n║ nb digital IO port: "  + 
                                 std::to_string(nb_digitalIoPort) +
                               "\n║ nb channels: "  + 
-                                std::to_string(nb_chan);
+                                std::to_string(nb_chan)+
+                              "\n║ nb counters: "+
+                               std::to_string(nb_counters);
                 std::vector<std::string> channelNames = module->getChanNames();
                 for (long unsigned int i=0;i<channelNames.size();++i)
                 {
                    moduleInfo += "\n║ ╬"+ channelNames[i];
                 }
+                if (channelNames.size()>0)
+                {
+                    moduleInfo += "\n║ Analog min value  : "   + std::to_string(analogChanMin);
+                    moduleInfo += "\n║ Analog max value  : "   + std::to_string(analogChanMax);
+                    moduleInfo += "\n║ Analog input unit : "   + analogUnits;
+                }
+
+                std::vector<std::string> counterNames = module->getCounterNames();
+                for (long unsigned int i=0;i<counterNames.size();++i)
+                {
+                   moduleInfo += "\n║ ╬"+ counterNames[i];
+                }
+
+                if (counterNames.size()>0)
+                {
+                    //in case of counters
+                    moduleInfo += "\n║ 32 bits counters\n";
+                    moduleInfo += "Counter Min Value : " + std::to_string(counterMin);
+                    moduleInfo += "Counter Max Value : " + std::to_string(counterMax);
+                }  
               module->setModuleInfo(moduleInfo);
             } 
             else 

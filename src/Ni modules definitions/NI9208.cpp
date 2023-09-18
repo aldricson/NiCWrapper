@@ -14,15 +14,17 @@ NI9208::NI9208()
 void NI9208::initModule() 
 {
     // Set default values
-    m_nbChannel = 16;
+    m_nbChannel       = 16;
+    m_nbCounters      = 0;
     m_nbDigitalIoPort = 0;
     type = isAnalogicInputCurrent;
     for (int i = 0; i < 16; ++i)
     {
-        chanNames.push_back("/a" + std::to_string(i));
+        m_chanNames.push_back("/a" + std::to_string(i));
     }
-
-
+    m_analogChanMax =  20.0;
+    m_analogChanMin = -20.0;
+    m_analogUnit    = "mA"; 
 }
 
 
@@ -38,18 +40,12 @@ void NI9208::loadConfig()
 }
 
 
-//***************  setters  ************
-
-void NI9208::setChanNames(const std::vector<std::string>& names)
-{
-    chanNames = names;
-}
 
 
 
 //************* getters ************
 std::vector<std::string> NI9208::getChanNames() const 
 {
-    return chanNames;
+    return m_chanNames;
 }
 

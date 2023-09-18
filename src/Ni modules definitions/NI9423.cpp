@@ -9,16 +9,19 @@ NI9423::NI9423()
 void NI9423::initModule() 
 {
     // Set default values
-    m_nbChannel = 4;  // Assuming NI9423 has 4 channels, change as needed
+    m_nbChannel  = 0;  // Assuming NI9423 has 4 channels, change as needed
+    m_nbCounters = 4;
     m_nbDigitalIoPort = 1;
     type = isDigitalIOAndCounter;  // Set the default module type
-    chanNames.clear();  // Clear any existing channel names
+    m_counterNames.clear();  // Clear any existing channel names
 
     // Initialize channel names with default values
-    for (int i = 0; i < 4; ++i)  // Assuming NI9423 has 4 channels, change as needed
+    for (unsigned int i = 0; i < m_nbCounters; ++i)  // Assuming NI9423 has 4 channels, change as needed
     {
-        chanNames.push_back("/ctr" + std::to_string(i));
+        m_counterNames.push_back("/ctr" + std::to_string(i));
     }
+    m_counterMin = 0;
+    m_counterMax = 4294967295;
 }
 
 void NI9423::loadConfig()
@@ -34,18 +37,11 @@ void NI9423::saveConfig()
 
 
 
-//***************  setters  ************
-
-
-void NI9423::setChanNames(const std::vector<std::string>& names)
-{
-    chanNames = names;
-}
 
 
 //************* getters ************
 std::vector<std::string> NI9423::getChanNames() const 
 {
-    return chanNames;
+    return m_chanNames;
 }
 

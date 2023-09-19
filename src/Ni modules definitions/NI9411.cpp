@@ -24,7 +24,8 @@ void NI9411::initModule()
     m_counterMin = 0;
     m_counterMax = 4294967295;
     m_shuntLocation = noShunt;
-    m_shuntValue    = -999999.999;  
+    m_shuntValue    = -999999.999;
+    m_moduleTerminalConfig = noTerminalConfig;      
 }
 
 void NI9411::loadConfig()

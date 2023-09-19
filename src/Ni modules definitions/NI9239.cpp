@@ -20,13 +20,14 @@ void NI9239::initModule()
     // Initialize channel names with default values
     for (int i = 0; i < 4; ++i)  // Assuming NI9239 has 4 channels, change as needed
     {
-        m_chanNames.push_back("/a" + std::to_string(i));
+        m_chanNames.push_back("/ai" + std::to_string(i));
     }
     m_analogChanMax = 10.0;
     m_analogChanMin = -10.0;
     m_analogUnit    = "V";
     m_shuntLocation = noShunt;
-    m_shuntValue    = -999999.999; 
+    m_shuntValue    = -999999.999;
+    m_moduleTerminalConfig = differencial; 
 }
 
 // The rest of the methods are the same as in NI9208

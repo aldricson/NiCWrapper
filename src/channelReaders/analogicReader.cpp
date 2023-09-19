@@ -243,6 +243,7 @@ void AnalogicReader::displayChooseChannelMenu()
                               m_manuallySelectedModule->getChanNames()[selectedChannel].c_str(),
                              sizeof(m_manuallySelectedChanName) - 1);
                  m_manuallySelectedChanName[sizeof(m_manuallySelectedChanName) - 1] = '\0';  // Null-terminate just in case
+                 m_manuallySelectedChanIndex = selectedChannel;
                  displayShowValueMenu();
             }
             else 
@@ -291,7 +292,32 @@ void AnalogicReader::displayShowValueMenu()
     std::cout << "░     x .  previous menu       ░"<< std::endl;
     std::cout << "░                              ░"<< std::endl;
     std::cout << "░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░"<< std::endl;
+    std::cout << std::endl;
+    std::cout << "Enter your choice: ";
+    std::cin >> choice; 
+    std::cin.clear();
+    std::cin.ignore();
 
+    if (choice == "x" || choice == "X")
+    {
+        displayChooseModuleMenu();
+    }
+    else
+    {
+        unsigned int selectedAction;
+        std::stringstream ss(choice);
+        if (ss >> selectedAction && ss.eof()) 
+        {
+            switch (selectedAction)
+            {
+                case 0:
+                {
+                    manualReadOneShot();
+                    break;
+                }
+            }
+        }
+    }
     
 }
 
@@ -299,6 +325,108 @@ void AnalogicReader::clearConsole()
 {
     // ANSI escape sequence to clear screen for Unix-like systems
     std::cout << "\033[2J\033[1;1H";
+}
+
+void AnalogicReader::manualReadOneShot()
+{
+    if (!m_manuallySelectedModule)
+    {
+        std::cout << "Error in :manualReadOneShot(), m_manuallySelectedModule is nullptr\n Press enter to try again." << std::endl;
+        std::cin.get();
+        std::cin.clear();
+        std::cin.ignore();
+        displayChooseModuleMenu();
+        return;   
+    }
+    
+    const unsigned int nbChars=12;
+    const std::string line ="░░░░░░░░░░░░";
+    // Function to center-align a string within a given width
+    auto centerAlignString = [nbChars](const std::string& str) 
+    {
+        unsigned int totalSpaces = nbChars - str.length();
+        unsigned int spacesBefore = totalSpaces / 2;
+        unsigned int spacesAfter = totalSpaces - spacesBefore;
+        std::string spacesBeforeStr(spacesBefore, ' ');
+        std::string spacesAfterStr(spacesAfter, ' ');
+        return "░" + spacesBeforeStr + str + spacesAfterStr + "░";
+    };
+
+    moduleType modType = m_manuallySelectedModule->getModuleType();
+
+    switch (modType)
+    {
+        case isAnalogicInputCurrent:
+        {
+            if (!m_daqMx)
+            {
+                std::cout << "Error in :manualReadOneShot(), m_daqMxis nullptr\n Press enter to try again." << std::endl;
+                std::cin.get();
+                std::cin.clear();
+                std::cin.ignore();
+                displayChooseModuleMenu();  
+            }
+            
+            double value = m_daqMx->readCurrent(m_manuallySelectedModule,m_manuallySelectedChanIndex);
+            clearConsole();
+            std::cout << line << std::endl;
+            std::cout << centerAlignString(" ").c_str() << std::endl;
+            std::cout << centerAlignString(std::to_string(value)).c_str() << std::endl;
+            std::cout << centerAlignString(" ").c_str() << std::endl;
+            std::cout << line << std::endl;
+            break;
+        }
+
+        case isAnalogicInputVoltage:
+        {
+            std::cout << "isAnalogicInputVoltage not implemented yet" << std::endl;
+            std::cin.get();
+            std::cin.clear();
+            std::cin.ignore();
+            displayChooseModuleMenu(); 
+            break;
+        }
+
+        case isDigitalInputVoltage:
+        {
+            std::cout << "isDigitalInputVoltage not implemented yet (may be to remove, even)" << std::endl;
+            std::cin.get();
+            std::cin.clear();
+            std::cin.ignore();
+            displayChooseModuleMenu(); 
+            break;
+        }
+
+        case isDigitalIOAndCounter:
+        {
+            std::cout << "isDigitalIOAndCounter not implemented yet" << std::endl;
+            std::cin.get();
+            std::cin.clear();
+            std::cin.ignore();
+            displayChooseModuleMenu(); 
+            break;
+        }
+
+        case isDigitalIO:
+        {
+            std::cout << "isDigitalIO not implemented yet" << std::endl;
+            std::cin.get();
+            std::cin.clear();
+            std::cin.ignore();
+            displayChooseModuleMenu(); 
+            break;
+        }
+
+       case isCounter:
+        {
+            std::cout << "isCounter not implemented yet" << std::endl;
+            std::cin.get();
+            std::cin.clear();
+            std::cin.ignore();
+            displayChooseModuleMenu(); 
+            break;
+        }
+    }
 }
 
 // Getters

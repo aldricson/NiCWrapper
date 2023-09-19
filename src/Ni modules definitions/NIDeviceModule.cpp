@@ -167,8 +167,12 @@ void NIDeviceModule::loadFromFile(const std::string& filename)
                 {
                    std::cerr << "Invalid argument for shunt Value: " << value << std::endl;
                 }
-
-
+            }
+            else if (key.find("Terminal Config") != std::string::npos)
+            {
+                // Convert the value to an enum of type 'moduleType'
+                moduleTerminalConfig newTerminalConfig = static_cast<moduleTerminalConfig>(std::stoi(value));
+                setModuleTerminalCfg(newTerminalConfig);
             }
         }
     }
@@ -205,11 +209,13 @@ void NIDeviceModule::saveToFile(const std::string &filename)
     }
 
 
-    fprintf(ini, "\n[Module]\n\nType = %d ;\n", static_cast<int>(getModuleType()));
+    fprintf(ini, "\n[Module]\n\n");
+    fprintf(ini, "Type = %d ;\n", static_cast<int>(getModuleType()));
     fprintf(ini, "Module Name = %s\n",m_moduleName.c_str());
     fprintf(ini, "Alias = %s\n", m_alias.c_str());
     fprintf(ini, "Shunt Location = %d\n",m_shuntLocation);
     fprintf(ini, "Shunt Value = %.3f\n", m_shuntValue);
+    fprintf(ini, "Terminal Config = %d\n",static_cast<int>(m_moduleTerminalConfig));
     fclose(ini);
 }
 
@@ -369,6 +375,11 @@ double NIDeviceModule::getModuleShuntValue() const
     return m_shuntValue;
 }
 
+moduleTerminalConfig NIDeviceModule::getModuleTerminalCfg() const
+{
+    return m_moduleTerminalConfig;
+}
+
 double NIDeviceModule::getChanMin() const
 {
     return m_analogChanMin;
@@ -455,9 +466,18 @@ void NIDeviceModule::setModuleShuntLocation(moduleShuntLocation newLocation)
 void NIDeviceModule::setModuleShuntValue(double newValue)
 {
     m_shuntValue = newValue;
-    if (moduleShuntValueChanged)
+    if (moduleShuntValueChangedSignal)
     {
-        moduleShuntValueChanged(m_shuntValue,this);
+        moduleShuntValueChangedSignal(m_shuntValue,this);
+    }
+}
+
+void NIDeviceModule::setModuleTerminalCfg(moduleTerminalConfig newTerminalConfig)
+{
+    m_moduleTerminalConfig = newTerminalConfig;
+    if(moduleTerminalConfigChangedSignal)
+    {
+        moduleTerminalConfigChangedSignal(m_moduleTerminalConfig,this);
     }
 }
 

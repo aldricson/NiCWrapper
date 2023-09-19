@@ -142,9 +142,16 @@ std::vector<std::string> QNiSysConfigWrapper::EnumerateCRIOPluggedModules() {
                         break;
                     }
 
+                    case defaultLocation :
+                    {
+                        moduleInfo += "\n║ shunt location: default" ;
+                        moduleInfo += "\n║ shunt value   : "+std::to_string(shuntVal);
+                        break;
+                    }
+
                     case internalLocation :
                     {
-                        moduleInfo += "\n║ shunt location: internal (default)" ;
+                        moduleInfo += "\n║ shunt location: internal" ;
                         moduleInfo += "\n║ shunt value   : "+std::to_string(shuntVal);
                         break;
                     }

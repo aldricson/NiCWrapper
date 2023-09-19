@@ -15,6 +15,7 @@ private:
 
     char m_manuallySelectedModuleName[256] = "";
     char m_manuallySelectedChanName  [256] = "";
+    unsigned int m_manuallySelectedChanIndex = 0;
     NIDeviceModule *m_manuallySelectedModule = nullptr;
 
 public:

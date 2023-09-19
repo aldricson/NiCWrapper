@@ -20,6 +20,7 @@ void AnalogicReader::displayChooseModuleMenu()
     clearConsole();
     std::vector<std::string> moduleNamesVector;
     unsigned int nbChars = 0;
+    //prepare the list of modules
     for (unsigned int i = 0; i < m_sysConfig->getModuleList().size(); ++i)
     {
         std::string str = std::to_string(i) + " . " + m_sysConfig->getModuleList()[i]->getAlias();
@@ -53,13 +54,23 @@ void AnalogicReader::displayChooseModuleMenu()
     {
         std::cout << centerAlignString(moduleName) << std::endl;
     }
+    
+    std::cout << centerAlignString("x . main menu") << std::endl;
 
+    //bottom of the "table"
     std::cout << line.c_str()<<"░░"  << std::endl;
+
+    //Show what is selected
     if (std::strcmp(m_manuallySelectedModuleName, "") != 0)
     {
-     std::cout << "Selected: " << m_manuallySelectedModuleName << std::endl;
-     displayChooseChannelMenu();
+     std::cout << "Selected: " << m_manuallySelectedModuleName;
     }
+    
+    if (std::strcmp(m_manuallySelectedChanName, "") != 0)
+    {
+       std::cout << m_manuallySelectedChanName;
+    }
+
     std::cout << "Enter your choice: ";
     std::cin >> choice; 
     std::cin.clear();
@@ -100,7 +111,7 @@ void AnalogicReader::displayChooseModuleMenu()
                  m_manuallySelectedModule      = m_sysConfig->getModuleList()[selectedModule];
                  std::strncpy(m_manuallySelectedModuleName, m_manuallySelectedModule->getAlias().c_str(), sizeof(m_manuallySelectedModuleName) - 1);
                  m_manuallySelectedModuleName[sizeof(m_manuallySelectedModuleName) - 1] = '\0';  // Null-terminate just in case
- 
+                 displayChooseChannelMenu();
             }
             else 
             {
@@ -129,17 +140,24 @@ void AnalogicReader::displayChooseModuleMenu()
 
 void AnalogicReader::displayChooseChannelMenu()
 {
-  
-   //TODO
-
-   /* std::string choice;
-    clearConsole();
-    std::vector<std::string> moduleNamesVector;
-    unsigned int nbChars = 0;
-    for (unsigned int i = 0; i < m_sysConfig->getModuleList().size(); ++i)
+    if (!m_manuallySelectedModule)
     {
-        std::string str = std::to_string(i) + " . " + m_sysConfig->getModuleList()[i]->getAlias();
-        moduleNamesVector.push_back(str);
+            std::cout << "Error in :displayChooseChannelMenu(), m_manuallySelectedModule is nullptr\n Press enter to try again." << std::endl;
+            std::cin.get();
+            std::cin.clear();
+            std::cin.ignore();
+            displayChooseModuleMenu();
+            return;
+    }        
+    std::string choice;
+    clearConsole();
+    std::vector<std::string> channelNamesVector;
+    unsigned int nbChars = 0;
+    
+    for (unsigned int i = 0; i < m_manuallySelectedModule->getChanNames().size(); ++i)
+    {
+        std::string str = std::to_string(i) + " . " + m_manuallySelectedModule->getChanNames()[i];
+        channelNamesVector.push_back(str);
         if (str.length() > nbChars) nbChars = str.length();
     }
     std::string title = "Choose the Channel";
@@ -160,11 +178,121 @@ void AnalogicReader::displayChooseChannelMenu()
     };
 
     // Output the centered title
+    std::cout << line.c_str()             <<"░░"       << std::endl;
+    std::cout << centerAlignString(title)              << std::endl;
+    std::cout << line.c_str()             <<"░░"       << std::endl;
+
+    // Output each centered channel name
+    for (const auto& channelName : channelNamesVector)
+    {
+        std::cout << centerAlignString(channelName) << std::endl;
+    }
+
+    std::cout << centerAlignString("x . previous menu") << std::endl;
+
+
+    //bottom of the "table"
     std::cout << line.c_str()<<"░░"  << std::endl;
-    std::cout << centerAlignString(title) << std::endl;
-    std::cout << line.c_str()<<"░░"  << std::endl;
-    */
-   
+
+    //Show what is selected
+    if (std::strcmp(m_manuallySelectedModuleName, "") != 0)
+    {
+     std::cout << "Selected: " << m_manuallySelectedModuleName;
+    }
+    
+    if (std::strcmp(m_manuallySelectedChanName, "") != 0)
+    {
+       std::cout << m_manuallySelectedChanName;
+    }
+
+    std::cout << std::endl;
+    std::cout << "Enter your choice: ";
+    std::cin >> choice; 
+    std::cin.clear();
+    std::cin.ignore();
+
+    if (choice == "x" || choice == "X")
+    {
+        displayChooseModuleMenu();
+    }
+
+    else
+    {
+         unsigned int selectedChannel;
+        std::stringstream ss(choice);
+        if (ss >> selectedChannel && ss.eof()) 
+        {
+            // 'selectedChannel' now contains the unsigned int value entered by the user
+                        //last security checks
+            if ( m_manuallySelectedModule->getChanNames().size()==0)
+            {
+                std::cout  << "No channel found" << std::endl;
+                std::cout << "press Enter to return to main menu" << std::endl;
+                std::cin.get();
+                std::cin.clear();
+                std::cin.ignore();
+                if (showMainMenuSignal)
+                {
+                    showMainMenuSignal();
+                }
+                return;
+            }
+            if (selectedChannel < m_sysConfig->getModuleList().size())   
+            {
+                 std::strncpy(m_manuallySelectedChanName, 
+                              m_manuallySelectedModule->getChanNames()[selectedChannel].c_str(),
+                             sizeof(m_manuallySelectedChanName) - 1);
+                 m_manuallySelectedChanName[sizeof(m_manuallySelectedChanName) - 1] = '\0';  // Null-terminate just in case
+                 displayShowValueMenu();
+            }
+            else 
+            {
+                std::cout << "Invalid channel selection. Press enter to choose one" << std::endl;
+                std::cin.get();
+                std::cin.clear();
+                std::cin.ignore();
+                displayChooseChannelMenu();
+            }
+        }
+        else 
+        {
+            std::cout << "Invalid input. Press enter to choose one" << std::endl;
+            std::cin.get();
+            std::cin.clear();
+            std::cin.ignore();
+            displayChooseChannelMenu();
+        }
+    }
+
+}
+
+void AnalogicReader::displayShowValueMenu()
+{
+    if (!m_manuallySelectedModule)
+    {
+            std::cout << "Error in :displayShowValueMenu(), m_manuallySelectedModule is nullptr\n Press enter to try again." << std::endl;
+            std::cin.get();
+            std::cin.clear();
+            std::cin.ignore();
+            displayChooseModuleMenu();
+            return;
+    }        
+    std::string choice;
+    clearConsole();
+
+    std::cout << "░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░"<< std::endl;
+    std::cout << "░░                            ░░"<< std::endl;
+    std::cout << "░░        Read  Value         ░░"<< std::endl;
+    std::cout << "░░                            ░░"<< std::endl;
+    std::cout << "░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░"<< std::endl;
+    std::cout << "░                              ░"<< std::endl;
+    std::cout << "░     0 .  Read one shot       ░"<< std::endl;
+    std::cout << "░     1 .  Read loop           ░"<< std::endl;
+    std::cout << "░     x .  previous menu       ░"<< std::endl;
+    std::cout << "░                              ░"<< std::endl;
+    std::cout << "░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░"<< std::endl;
+
+    
 }
 
 void AnalogicReader::clearConsole()

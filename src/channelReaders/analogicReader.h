@@ -14,6 +14,7 @@ private:
     std::shared_ptr<QNiDaqWrapper> m_daqMx;
 
     char m_manuallySelectedModuleName[256] = "";
+    char m_manuallySelectedChanName  [256] = "";
     NIDeviceModule *m_manuallySelectedModule = nullptr;
 
 public:
@@ -24,7 +25,9 @@ public:
 
     void displayChooseModuleMenu();
     void displayChooseChannelMenu();
+    void displayShowValueMenu();
     void clearConsole();
+    void manualReadOneShot();
 
     // Getters
     std::shared_ptr<QNiSysConfigWrapper> getSysConfig() const;

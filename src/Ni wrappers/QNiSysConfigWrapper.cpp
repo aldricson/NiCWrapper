@@ -39,6 +39,7 @@ std::vector<std::string> QNiSysConfigWrapper::EnumerateCRIOPluggedModules() {
     std::string  analogUnits      = "";
     moduleType modType;
     moduleShuntLocation shuntLoc;
+    double              shuntVal = 0.0; 
     int slotNumber;       //slot where is the module
 
     // Find hardware
@@ -91,6 +92,7 @@ std::vector<std::string> QNiSysConfigWrapper::EnumerateCRIOPluggedModules() {
                 counterMax       = module->getmaxCounters        ();
                 counterMin       = module->getminCounters        ();
                 shuntLoc         = module->getModuleShuntLocation();
+                shuntVal         = module->getModuleShuntValue   ();
                 //after setting the properties we could retrieve from NISysConfig
                 //let's ensure our config files stay synchronized
                 module->saveConfig();
@@ -143,11 +145,13 @@ std::vector<std::string> QNiSysConfigWrapper::EnumerateCRIOPluggedModules() {
                     case internalLocation :
                     {
                         moduleInfo += "\n║ shunt location: internal (default)" ;
+                        moduleInfo += "\n║ shunt value   : "+std::to_string(shuntVal);
                         break;
                     }
                     case externalLocation :
                     {
                         moduleInfo += "\n║ shunt location: external" ;
+                        moduleInfo += "\n║ shunt value   : "+std::to_string(shuntVal);
                         break;
                     }
                     default :
@@ -186,7 +190,7 @@ std::vector<std::string> QNiSysConfigWrapper::EnumerateCRIOPluggedModules() {
                 if (counterNames.size()>0)
                 {
                     //in case of counters
-                    moduleInfo += "\n║ 32 bits counters\n";
+                    moduleInfo += "\n║ 32 bits counters";
                     moduleInfo += "\n║ Counter Min Value : " + std::to_string(counterMin);
                     moduleInfo += "\n║ Counter Max Value : " + std::to_string(counterMax);
                 }  

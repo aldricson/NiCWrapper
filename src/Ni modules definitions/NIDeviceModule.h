@@ -13,9 +13,9 @@ enum moduleType
     isAnalogicInputCurrent = 0,
     isAnalogicInputVoltage = 1,
     isDigitalInputVoltage  = 2,
-    isDigitalIO            = 8,
-    isCounter              = 9,
-    isDigitalIOAndCounter  = 10   
+    isDigitalIO            = 3,
+    isCounter              = 4,
+    isDigitalIOAndCounter  = 5   
 };
 
 enum moduleShuntLocation
@@ -44,6 +44,7 @@ protected:
     std::string  m_alias           = "";
     std::string  m_moduleInfo      = "";        
     moduleShuntLocation m_shuntLocation = defaultLocation;
+    double              m_shuntValue    = 0.0;
     std::vector<std::string> m_chanNames;
     std::vector<std::string> m_counterNames;
     moduleType m_moduleType;
@@ -69,6 +70,7 @@ public:
     virtual std::vector<std::string> getCounterNames        () const;
     virtual moduleType               getModuleType          () const;
     virtual moduleShuntLocation      getModuleShuntLocation () const;
+    virtual double                   getModuleShuntValue    () const;
     virtual double                   getChanMin             () const;
     virtual double                   getChanMax             () const;
     virtual unsigned int             getminCounters         () const;
@@ -82,6 +84,7 @@ public:
     virtual void setNbDigitalIOPorts(unsigned int newNbPorts);
     virtual void setModuleInfo   (std::string newModuleInfo); 
     virtual void setModuleShuntLocation (moduleShuntLocation newLocation);
+    virtual void setModuleShuntValue    (double newValue); 
     virtual void setSlotNb       (unsigned int newSlot);
     virtual void setAlias        (const std::string& newAlias);
     virtual void setChanNames    (const std::vector<std::string>& names);
@@ -115,6 +118,7 @@ public:
     std::function<void(std::vector<std::string>, NIDeviceModule *sender)>  chanNamesChangedSignal            = nullptr;    
     std::function<void(std::vector<std::string>, NIDeviceModule *sender)>  counterNamesChangedSignal         = nullptr;
     std::function<void(moduleShuntLocation     , NIDeviceModule *sender)>  moduleShuntLocationChangedSgnal   = nullptr;
+    std::function<void(double                  , NIDeviceModule *sender)>  moduleShuntValueChanged           = nullptr;
 };
 
 #endif // NIDEVICEMODULE_H

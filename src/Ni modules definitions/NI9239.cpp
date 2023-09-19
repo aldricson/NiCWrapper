@@ -25,7 +25,8 @@ void NI9239::initModule()
     m_analogChanMax = 10.0;
     m_analogChanMin = -10.0;
     m_analogUnit    = "V";
-    m_shuntLocation = noShunt; 
+    m_shuntLocation = noShunt;
+    m_shuntValue    = -999999.999; 
 }
 
 // The rest of the methods are the same as in NI9208

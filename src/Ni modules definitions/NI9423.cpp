@@ -23,7 +23,8 @@ void NI9423::initModule()
     }
     m_counterMin = 0;
     m_counterMax = 4294967295;
-    m_shuntLocation = noShunt; 
+    m_shuntLocation = noShunt;
+    m_shuntValue    = -999999.999;  
 }
 
 void NI9423::loadConfig()

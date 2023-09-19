@@ -123,10 +123,6 @@ void NIDeviceModule::loadFromFile(const std::string& filename)
             } 
 
         }
-
-
-
-
         // Check if the current line belongs to the "Module" section
         else if (section == "Module")
         {
@@ -159,6 +155,20 @@ void NIDeviceModule::loadFromFile(const std::string& filename)
                 {
                     std::cerr << "Out of range for Shunt Location: " << value << std::endl;
                  }
+            }
+            else if (key.find("Shunt Value") != std::string::npos)
+            {
+                try 
+                {
+                   setModuleShuntValue(std::stod(value));
+                } 
+                catch 
+                (const std::invalid_argument& e) 
+                {
+                   std::cerr << "Invalid argument for shunt Value: " << value << std::endl;
+                }
+
+
             }
         }
     }
@@ -199,6 +209,7 @@ void NIDeviceModule::saveToFile(const std::string &filename)
     fprintf(ini, "Module Name = %s\n",m_moduleName.c_str());
     fprintf(ini, "Alias = %s\n", m_alias.c_str());
     fprintf(ini, "Shunt Location = %d\n",m_shuntLocation);
+    fprintf(ini, "Shunt Value = %.3f\n", m_shuntValue);
     fclose(ini);
 }
 
@@ -345,12 +356,17 @@ std::vector<std::string> NIDeviceModule::getCounterNames() const
 
 moduleType NIDeviceModule::getModuleType() const
 {
-    return moduleType();
+    return m_moduleType;
 }
 
 moduleShuntLocation NIDeviceModule::getModuleShuntLocation() const
 {
     return m_shuntLocation;
+}
+
+double NIDeviceModule::getModuleShuntValue() const
+{
+    return m_shuntValue;
 }
 
 double NIDeviceModule::getChanMin() const
@@ -433,6 +449,15 @@ void NIDeviceModule::setModuleShuntLocation(moduleShuntLocation newLocation)
     if (moduleShuntLocationChangedSgnal)
     {
         moduleShuntLocationChangedSgnal(m_shuntLocation,this);
+    }
+}
+
+void NIDeviceModule::setModuleShuntValue(double newValue)
+{
+    m_shuntValue = newValue;
+    if (moduleShuntValueChanged)
+    {
+        moduleShuntValueChanged(m_shuntValue,this);
     }
 }
 

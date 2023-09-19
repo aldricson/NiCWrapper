@@ -14,7 +14,7 @@ void NI9239::initModule()
     m_nbCounters      = 0;
     m_nbDigitalIoPort = 0 ;
 
-    type = isAnalogicInputVoltage;  // Set the default module type
+    m_moduleType = isAnalogicInputVoltage;  // Set the default module type
     m_chanNames.clear();  // Clear any existing channel names
 
     // Initialize channel names with default values
@@ -24,7 +24,8 @@ void NI9239::initModule()
     }
     m_analogChanMax = 10.0;
     m_analogChanMin = -10.0;
-    m_analogUnit    = "V"; 
+    m_analogUnit    = "V";
+    m_shuntLocation = noShunt; 
 }
 
 // The rest of the methods are the same as in NI9208

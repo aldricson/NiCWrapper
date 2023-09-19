@@ -13,7 +13,7 @@ void NI9423::initModule()
     m_nbChannel  = 0;  // Assuming NI9423 has 4 channels, change as needed
     m_nbCounters = 4;
     m_nbDigitalIoPort = 1;
-    type = isDigitalIOAndCounter;  // Set the default module type
+    m_moduleType = isDigitalIOAndCounter;  // Set the default module type
     m_counterNames.clear();  // Clear any existing channel names
 
     // Initialize channel names with default values
@@ -23,6 +23,7 @@ void NI9423::initModule()
     }
     m_counterMin = 0;
     m_counterMax = 4294967295;
+    m_shuntLocation = noShunt; 
 }
 
 void NI9423::loadConfig()

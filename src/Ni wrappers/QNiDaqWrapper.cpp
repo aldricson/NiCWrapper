@@ -113,7 +113,7 @@ double QNiDaqWrapper::readCurrent(NIDeviceModule *deviceModule, unsigned int cha
         throw std::invalid_argument("Null pointer passed for deviceModule.");
     }
 
-    int32 error;
+    int32   error;
     float64 readValue;
 
     // Extract necessary information from the NIDeviceModule object

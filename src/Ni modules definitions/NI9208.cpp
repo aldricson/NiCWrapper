@@ -16,14 +16,15 @@ void NI9208::initModule()
     m_nbChannel       = 16;
     m_nbCounters      = 0;
     m_nbDigitalIoPort = 0;
-    type = isAnalogicInputCurrent;
+    m_moduleType = isAnalogicInputCurrent;
     for (int i = 0; i < 16; ++i)
     {
         m_chanNames.push_back("/a" + std::to_string(i));
     }
     m_analogChanMax =  20.0;
     m_analogChanMin = -20.0;
-    m_analogUnit    = "mA"; 
+    m_analogUnit    = "mA";
+    m_shuntLocation = defaultLocation;
 }
 
 

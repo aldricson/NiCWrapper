@@ -144,6 +144,22 @@ void NIDeviceModule::loadFromFile(const std::string& filename)
                 std::string newName=value;
                 setModuleName(newName);
             }
+            else if (key == "Shunt Location")
+            {
+                try 
+                {
+                    moduleShuntLocation newLocation = static_cast<moduleShuntLocation>(std::stoi(value));
+                    setModuleShuntLocation(newLocation);  // Assuming you have a setter like this
+                } 
+                catch (const std::invalid_argument& e) 
+                {
+                    std::cerr << "Invalid argument for Shunt Location: " << value << std::endl;
+                }
+                catch (const std::out_of_range& e)
+                {
+                    std::cerr << "Out of range for Shunt Location: " << value << std::endl;
+                 }
+            }
         }
     }
 
@@ -182,6 +198,7 @@ void NIDeviceModule::saveToFile(const std::string &filename)
     fprintf(ini, "\n[Module]\n\nType = %d ;\n", static_cast<int>(getModuleType()));
     fprintf(ini, "Module Name = %s\n",m_moduleName.c_str());
     fprintf(ini, "Alias = %s\n", m_alias.c_str());
+    fprintf(ini, "Shunt Location = %d\n",m_shuntLocation);
     fclose(ini);
 }
 
@@ -216,7 +233,7 @@ void NIDeviceModule::setCounterNames(const std::vector<std::string> &names)
 
 void NIDeviceModule::setModuleType(moduleType newType)
 {
-    type = newType;
+    m_moduleType = newType;
 }
 
 void NIDeviceModule::setChanMin(double newChanMin)
@@ -331,6 +348,11 @@ moduleType NIDeviceModule::getModuleType() const
     return moduleType();
 }
 
+moduleShuntLocation NIDeviceModule::getModuleShuntLocation() const
+{
+    return m_shuntLocation;
+}
+
 double NIDeviceModule::getChanMin() const
 {
     return m_analogChanMin;
@@ -405,6 +427,14 @@ void NIDeviceModule::setModuleInfo(std::string newModuleInfo)
     
 }
 
+void NIDeviceModule::setModuleShuntLocation(moduleShuntLocation newLocation)
+{
+    m_shuntLocation = newLocation;
+    if (moduleShuntLocationChangedSgnal)
+    {
+        moduleShuntLocationChangedSgnal(m_shuntLocation,this);
+    }
+}
 
 void NIDeviceModule::setSlotNb(unsigned int newSlot)
 {

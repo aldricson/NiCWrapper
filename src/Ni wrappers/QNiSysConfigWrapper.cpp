@@ -38,6 +38,7 @@ std::vector<std::string> QNiSysConfigWrapper::EnumerateCRIOPluggedModules() {
     unsigned int counterMax       = 4294967295;
     std::string  analogUnits      = "";
     moduleType modType;
+    moduleShuntLocation shuntLoc;
     int slotNumber;       //slot where is the module
 
     // Find hardware
@@ -80,16 +81,16 @@ std::vector<std::string> QNiSysConfigWrapper::EnumerateCRIOPluggedModules() {
                 //load previous config if it exists (otherwise this will be default values of the module)
                 module->loadConfig();
                 //get what we need (or from the config file or default if it's the first run)
-                nb_chan          = module->getNbChannel();
-                nb_counters      = module->getNbCounters();
-                modType          = module->getModuleType();
-                nb_digitalIoPort = module->getNbDigitalIOPorts();
-                analogChanMax    = module->getChanMax();
-                analogChanMin    = module->getChanMin();
-                analogUnits      = module->getChanUnit();
-                counterMax       = module->getmaxCounters();
-                counterMin       = module->getminCounters();
-
+                nb_chan          = module->getNbChannel          ();
+                nb_counters      = module->getNbCounters         ();
+                modType          = module->getModuleType         ();
+                nb_digitalIoPort = module->getNbDigitalIOPorts   ();
+                analogChanMax    = module->getChanMax            ();
+                analogChanMin    = module->getChanMin            ();
+                analogUnits      = module->getChanUnit           ();
+                counterMax       = module->getmaxCounters        ();
+                counterMin       = module->getminCounters        ();
+                shuntLoc         = module->getModuleShuntLocation();
                 //after setting the properties we could retrieve from NISysConfig
                 //let's ensure our config files stay synchronized
                 module->saveConfig();
@@ -129,6 +130,34 @@ std::vector<std::string> QNiSysConfigWrapper::EnumerateCRIOPluggedModules() {
                    }
 
                 } 
+                
+           
+                switch (shuntLoc)
+                { 
+                    case noShunt :
+                    {
+                        moduleInfo += "\n║ No shunt resistor for this module" ;
+                        break;
+                    }
+
+                    case internalLocation :
+                    {
+                        moduleInfo += "\n║ shunt location: internal (default)" ;
+                        break;
+                    }
+                    case externalLocation :
+                    {
+                        moduleInfo += "\n║ shunt location: external" ;
+                        break;
+                    }
+                    default :
+                    {
+                        moduleInfo += "\n║ shunt location: /!\\ NOT RECOGNIZED" ;
+                        break;
+                    }
+                }
+                
+
                 moduleInfo += modTypeAsString+
                               "\n║ nb digital IO port: "  + 
                                 std::to_string(nb_digitalIoPort) +

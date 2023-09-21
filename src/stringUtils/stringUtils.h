@@ -1,3 +1,5 @@
+#ifndef STRINGUTILS_H
+#define STRINGUTILS_H
 #include <iostream>
 #include <cstring>
 #include <string>
@@ -34,3 +36,5 @@ static inline std::string centerAlignString(const std::string& str, unsigned int
     std::string spacesAfterStr(spacesAfter, ' ');
     return "░" + spacesBeforeStr + str + spacesAfterStr + "░";
 }
+
+#endif

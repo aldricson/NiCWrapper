@@ -5,7 +5,7 @@ void AnalogicReader::onOneShotValueReaded(double aValue)
             clearConsole();
             const unsigned int nb_char = 30;
             const std::string line ="░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░";
-            const std::string spacer = centerAlignString(" ",nb_char).c_str():
+            const std::string spacer = centerAlignString(" ",nb_char).c_str();
             std::cout << line << std::endl;
             std::cout << centerAlignString(" ",nb_char).c_str() << std::endl;
             std::cout << centerAlignString(std::to_string(aValue),nb_char).c_str() << std::endl;

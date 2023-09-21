@@ -71,11 +71,43 @@ double readCurrentFromMod1AI0() {
 int main(void)
 {
 
+
+             
+
+
+
+
+
+
+
+  
+  std::cout <<"          `^^^^^^^`              ______ _       _"<< std::endl;
+  std::cout <<"      `4$$$c.$$$..e$$P\"         |  ____| |     | |            "<< std::endl;
+  std::cout <<"    \"$$c.   `$b$F    .d$P\"      | |__  | |_   _| |_ ___  __ _ "<< std::endl;
+  std::cout <<"  ^$$.      $$ d$\"      d$P     |  __| | | | | | __/ _ \\/ _` |"<< std::endl;
+  std::cout <<" `\"$c.      4$.  $$       .$$   | |____| | |_| | ||  __/ (_| |"<< std::endl;
+  std::cout <<"'$P$$$$$$$$$$$$$$$$$$$$$$$$$$   |______|_|\\__, |\\__\\___|\\__, |"<< std::endl;
+  std::cout <<"$$e$P\"    $b     d$`    \"$$c$F             __/ |           | |"<< std::endl;
+  std::cout <<"$b  .$$\" $$      .$$ \"4$b.  $$            |___/            |_|"<< std::endl;
+  std::cout <<"$$     e$$F       4$$b.     $$ "<< std::endl;
+  std::cout <<"$P     `$L$$P` `\"$$d$\"      $$ "<< std::endl;
+  std::cout <<"d$     $$   z$$$e   $$     '$. "<< std::endl;
+  std::cout <<" $F   *$. \"$$e.e$$\" 4$F   ^$b  "<< std::endl;
+  std::cout <<"  .$$ 4$L*$$.     .$$Pd$  '$b  "<< std::endl;
+  std::cout <<"   $$$$$.           .$$$*$.    "<< std::endl;
+  std::cout <<"    .d$P"            "$$c      "<< std::endl;
+  std::cout <<"       .d$$$******$$$$c.       "<< std::endl;
+  std::cout <<"            ______             "<< std::endl;
+
   std::cout << "*********************************************" << std::endl;
   std::cout << "*** WELCOME TO ELYTEQ COMPATIBILITY LAYER ***" << std::endl;
   std::cout << "***   proudly coded by Aldric Gilbert     ***" << std::endl;
   std::cout << "***         and  Sidali Klalesh           ***" << std::endl;
   std::cout << "*********************************************" << std::endl;
+
+
+
+
   std::cout << std::endl;
   try {
         double current = readCurrentFromMod1AI0();

@@ -2,23 +2,82 @@
 
 void AnalogicReader::onOneShotValueReaded(double aValue)
 {
-            clearConsole();
-            const unsigned int nb_char = 30;
-            const std::string line ="░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░";
-            const std::string spacer = centerAlignString(" ",nb_char).c_str();
-            std::cout << line << std::endl;
-            std::cout << centerAlignString(" ",nb_char).c_str() << std::endl;
-            std::cout << centerAlignString(std::to_string(aValue),nb_char).c_str() << std::endl;
-            std::cout << centerAlignString(" ",nb_char).c_str() << std::endl;
-            std::cout << line << std::endl;
-            std::cout << centerAlignString(" ",nb_char).c_str() << std::endl;
-            std::cout << centerAlignString("1 . Read again",nb_char).c_str() << std::endl;
-            std::cout << centerAlignString("2 . Choose another channel",nb_char).c_str() << std::endl;
-            std::cout << centerAlignString("3 . Choose another module",nb_char).c_str() << std::endl;
-            std::cout << centerAlignString("x . Main Menu",nb_char).c_str() << std::endl;
-            std::cout << centerAlignString(" ",nb_char).c_str() << std::endl;
-            std::cout << line << std::endl;
+   clearConsole();
+   const unsigned int nb_char = 30;
+   const std::string line ="░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░";
+   const std::string spacer = centerAlignString(" ",nb_char).c_str();
+   std::cout << line << std::endl;
+   std::cout << centerAlignString(" ",nb_char).c_str() << std::endl;
+   std::cout << centerAlignString(std::to_string(aValue),nb_char).c_str() << std::endl;
+   std::cout << centerAlignString(" ",nb_char).c_str() << std::endl;
+   std::cout << line << std::endl;
+   std::cout << centerAlignString(" ",nb_char).c_str() << std::endl;
+   std::cout << centerAlignString("1 . Read again",nb_char).c_str() << std::endl;
+   std::cout << centerAlignString("2 . Choose another channel",nb_char).c_str() << std::endl;
+   std::cout << centerAlignString("3 . Choose another module",nb_char).c_str() << std::endl;
+   std::cout << centerAlignString("x . Main Menu",nb_char).c_str() << std::endl;
+   std::cout << centerAlignString(" ",nb_char).c_str() << std::endl;
+   std::cout << line << std::endl;
+   std::cout << "Enter your choice: ";
+   std::string choice;
+   std::cin >> choice; 
+   std::cin.clear();
+   std::cin.ignore();
+   if (choice == "x" || choice == "X")
+   {
+       if (showMainMenuSignal)
+       {
+           showMainMenuSignal();
+       }
+   }
+   else
+   {
+       unsigned int selectedChoice;
+       std::stringstream ss(choice);
+       if (ss >> selectedChoice && ss.eof()) 
+       {
+           switch (selectedChoice)
+           {
+               case 1:
+               {
+                   //read again
+                   manualReadOneShot();
+                   break;
+               }
+               case 2:
+               {
+                   displayChooseChannelMenu();
+                   break;
+               }
+               case 3:
+               {
+                   displayChooseModuleMenu();
+                   break;
+               }
+               default:
+               {
+                 std::cout << "Invalid menu selection. Press enter to choose one" << std::endl;
+                 std::cin.get();
+                 std::cin.clear();
+                 std::cin.ignore();
+                 onOneShotValueReaded(aValue);
+
+               }
+           }
+       }
+       else
+       {
+        std::cout << "Invalid menu selection. Press enter to choose one" << std::endl;
+        std::cin.get();
+        std::cin.clear();
+        std::cin.ignore();
+        onOneShotValueReaded(aValue);
+       }
+   }
 }
+    
+
+
 
 AnalogicReader::AnalogicReader(std::shared_ptr<QNiSysConfigWrapper> aSysConfigInstance,
                                std::shared_ptr<QNiDaqWrapper> aDaqMxInstance)
@@ -51,17 +110,6 @@ void AnalogicReader::displayChooseModuleMenu()
     nbChars += 2;
     std::string line = "";
     for (unsigned int i = 0; i < nbChars; ++i) line += "░";
-    
-
-    // Function to center-align a string within a given width
-   /* auto centerAlignString = [nbChars](const std::string& str) {
-        unsigned int totalSpaces = nbChars - str.length();
-        unsigned int spacesBefore = totalSpaces / 2;
-        unsigned int spacesAfter = totalSpaces - spacesBefore;
-        std::string spacesBeforeStr(spacesBefore, ' ');
-        std::string spacesAfterStr(spacesAfter, ' ');
-        return "░" + spacesBeforeStr + str + spacesAfterStr + "░";
-    };*/
 
     // Output the centered title
     std::cout << line.c_str()<<"░░"  << std::endl;
@@ -185,16 +233,6 @@ void AnalogicReader::displayChooseChannelMenu()
     std::string line = "";
     for (unsigned int i = 0; i < nbChars; ++i) line += "░";
     
-
-    // Function to center-align a string within a given width
- /*   auto centerAlignString = [nbChars](const std::string& str) {
-        unsigned int totalSpaces = nbChars - str.length();
-        unsigned int spacesBefore = totalSpaces / 2;
-        unsigned int spacesAfter = totalSpaces - spacesBefore;
-        std::string spacesBeforeStr(spacesBefore, ' ');
-        std::string spacesAfterStr(spacesAfter, ' ');
-        return "░" + spacesBeforeStr + str + spacesAfterStr + "░";
-    };*/
 
     // Output the centered title
     std::cout << line.c_str()             <<"░░"            << std::endl;
@@ -358,17 +396,6 @@ void AnalogicReader::manualReadOneShot()
         return;   
     }
     
-
-    // Function to center-align a string within a given width
-  /*  auto centerAlignString = [nbChars](const std::string& str) 
-    {
-        unsigned int totalSpaces = nbChars - str.length();
-        unsigned int spacesBefore = totalSpaces / 2;
-        unsigned int spacesAfter = totalSpaces - spacesBefore;
-        std::string spacesBeforeStr(spacesBefore, ' ');
-        std::string spacesAfterStr(spacesAfter, ' ');
-        return "░" + spacesBeforeStr + str + spacesAfterStr + "░";
-    };*/
 
     moduleType modType = m_manuallySelectedModule->getModuleType();
 

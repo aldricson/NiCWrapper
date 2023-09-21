@@ -5,37 +5,29 @@ moduleByAliasMenu::moduleByAliasMenu(std::shared_ptr<QNiSysConfigWrapper> aConfi
     m_cfgWrapper = aConfigWrapper;
 }
 
-void moduleByAliasMenu::displayMenu() 
+void moduleByAliasMenu::displayAliasMenu() 
 {
+    std::string title = "Choose the alias";
+    std::vector<std::string> options;
+    options.push_back(" type the Alias of the module (e.g. : Mod1)");
+    options.push_back(" 0 . Main Menu");
+    clearConsole();
+    displayMenu(title,options);
     std::string alias;
+    std::cout << "Enter alias: ";
+    std::cin >> alias;
     std::cin.clear();
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-    while (true) 
+    std::cin.ignore();
+    if (alias == "0") 
     {
-       
-        clearConsole();
-        std::cout << "✩░▒▓▒░░░▒░░░▒░░░▒░░░▒░░░▒░░░░░░▒▓▒░✩" << std::endl;
-        std::cout << "✩░▒▓                            ▓▒░✩" << std::endl;
-        std::cout << "✩░▒▓        Choose the alias    ▓▒░✩" << std::endl;
-        std::cout << "✩░▒▓  X -> return to main menu  ▓▒░✩" << std::endl;
-        std::cout << "✩░▒▓                            ▓▒░✩" << std::endl;
-        std::cout << "✩░▒▓▒░░░▒░░░▒░░░▒░░░▒░░░▒░░░░░░▒▓▒░✩" << std::endl; 
-        std::cout << "Enter alias: ";
-        std::cin >> alias;
-
-        // Clear the buffer
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-        if (alias == "x" || alias == "X") 
-        {
             if (showMainMenuSignal)
             {
                 showMainMenuSignal();
             }
-            break;
-        }
-
-        try 
+    }
+    else
+    {
+          try 
         {
             auto module = m_cfgWrapper->getModuleByAlias(alias);
             if (module != nullptr) 
@@ -43,24 +35,17 @@ void moduleByAliasMenu::displayMenu()
                 module->showModuleOnConsole();
                 std::cout << "Press Enter to continue...";
                 std::cin.get();
-                continue;
+                displayAliasMenu();
             } 
         } 
         catch (const std::invalid_argument& e) 
         {
             std::cout << "Invalid alias. No such module exists." << std::endl;
+            std::cout << "Press Enter to continue...";
+            std::cin.get();
+            displayAliasMenu();
         }
 
-        std::cout << "Press Enter to select a new one or x to return to main menu...";
-        char decision = std::cin.get();
-        if (decision == 'x' || decision == 'X') 
-        {
-            if (showMainMenuSignal)
-            {
-                showMainMenuSignal();
-            }
-            break;
-        }
     }
 }
 

@@ -4,13 +4,14 @@
 #include <string>
 #include <cstdlib>
 #include "..\Ni wrappers\QNiSysConfigWrapper.h"
+#include "..\stringUtils\stringUtils.h"
 #include <functional>
 #include <limits>
 
 class moduleByAliasMenu {
 public:
     moduleByAliasMenu(std::shared_ptr<QNiSysConfigWrapper> aConfigWrapper);
-    void displayMenu();
+    void displayAliasMenu();
     void clearConsole();
 
 private:

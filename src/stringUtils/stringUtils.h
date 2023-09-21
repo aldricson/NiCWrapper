@@ -24,3 +24,13 @@ static inline std::string toLowerCase(const std::string& str) {
     std::transform(lowerStr.begin(), lowerStr.end(), lowerStr.begin(), ::tolower);
     return lowerStr;
 }
+
+//function to center align in text menus
+static inline std::string centerAlignString(const std::string& str, unsigned int nbChars) {
+    unsigned int totalSpaces = nbChars - str.length();
+    unsigned int spacesBefore = totalSpaces / 2;
+    unsigned int spacesAfter = totalSpaces - spacesBefore;
+    std::string spacesBeforeStr(spacesBefore, ' ');
+    std::string spacesAfterStr(spacesAfter, ' ');
+    return "░" + spacesBeforeStr + str + spacesAfterStr + "░";
+}

@@ -7,6 +7,7 @@
 #include "..\Ni wrappers\QNiSysConfigWrapper.h"
 #include "..\Ni wrappers\QNiDaqWrapper.h"
 #include "..\Ni modules definitions\NIDeviceModule.h"
+#include "..\stringUtils\stringUtils.h"
 
 class AnalogicReader {
 private:
@@ -17,6 +18,8 @@ private:
     char m_manuallySelectedChanName  [256] = "";
     unsigned int m_manuallySelectedChanIndex = 0;
     NIDeviceModule *m_manuallySelectedModule = nullptr;
+    //slots
+    void onOneShotValueReaded(double aValue);
 
 public:
     // Constructors and destructors

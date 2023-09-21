@@ -32,8 +32,8 @@ double readCurrentFromMod1AI0() {
 
     // Create an analog input current channel
     error = DAQmxCreateAICurrentChan(taskHandle,
-                                     "cRIO1/Mod1/ai0", // Physical channel name
-                                     "Mod1/ai0",        // Name to assign to channel (empty to use physical name)
+                                     "Mod1/ai0", // Physical channel name
+                                     "",        // Name to assign to channel (empty to use physical name)
                                      DAQmx_Val_RSE,     // Terminal configuration
                                      -0.02,             // Min value in Amps (-20 mA)
                                      0.02,              // Max value in Amps (20 mA)
@@ -41,17 +41,15 @@ double readCurrentFromMod1AI0() {
                                      DAQmx_Val_Internal,// Shunt Resistor Location
                                      30.01,             // External Shunt Resistor Value in Ohms
                                      NULL);             // Custom Scale Name
-    if (error) {
-        DAQmxClearTask(taskHandle);
-        throw std::runtime_error("Failed to create analog input channel.");
-    }
-
-    // Start the task
-    error = DAQmxStartTask(taskHandle);
-    if (error) {
-        DAQmxClearTask(taskHandle);
-        throw std::runtime_error("Failed to start task for reading current.");
-    }
+        if (error) 
+               {
+                  //error handling  
+                  char errBuff[2048] = {'\0'};
+                  DAQmxGetExtendedErrorInfo(errBuff, 2048);
+                  std::cerr << "Channel Creation Failed: " << errBuff << std::endl;
+                  DAQmxClearTask(taskHandle);
+                  throw std::runtime_error("Failed to create channel.");
+                } 
 
     // Read the current value
     error = DAQmxReadAnalogScalarF64(taskHandle, 10.0, &readValue, nullptr);
@@ -63,7 +61,10 @@ double readCurrentFromMod1AI0() {
     // Stop the task and clear it
     DAQmxStopTask(taskHandle);
     DAQmxClearTask(taskHandle);
-
+    if (!error)
+    {
+        std::cout<<"Reading test passed with success"<<std::endl;
+    }
     return static_cast<double>(readValue);
 }
 

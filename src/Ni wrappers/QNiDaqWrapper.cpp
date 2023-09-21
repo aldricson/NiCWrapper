@@ -137,7 +137,7 @@ double QNiDaqWrapper::readCurrent(NIDeviceModule *deviceModule, unsigned int cha
         throw std::runtime_error("Failed to create task for reading current.");
     }
     
-    std::string fullChannelName = "cRIO1/" + std::string(deviceName) + std::string(channelName);
+    std::string fullChannelName = std::string(deviceName) + std::string(channelName);
     std::cout << "Channel Name: " << fullChannelName.c_str() << std::endl;
 
 

@@ -1,5 +1,24 @@
 #include "AnalogicReader.h"
 
+void AnalogicReader::onOneShotValueReaded(double aValue)
+{
+            clearConsole();
+            const unsigned int nb_char = 30;
+            const std::string line ="░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░";
+            const std::string spacer = centerAlignString(" ",nb_char).c_str():
+            std::cout << line << std::endl;
+            std::cout << centerAlignString(" ",nb_char).c_str() << std::endl;
+            std::cout << centerAlignString(std::to_string(aValue),nb_char).c_str() << std::endl;
+            std::cout << centerAlignString(" ",nb_char).c_str() << std::endl;
+            std::cout << line << std::endl;
+            std::cout << centerAlignString(" ",nb_char).c_str() << std::endl;
+            std::cout << centerAlignString("1 . Read again",nb_char).c_str() << std::endl;
+            std::cout << centerAlignString("2 . Choose another channel",nb_char).c_str() << std::endl;
+            std::cout << centerAlignString("3 . Choose another module",nb_char).c_str() << std::endl;
+            std::cout << centerAlignString("x . Main Menu",nb_char).c_str() << std::endl;
+            std::cout << centerAlignString(" ",nb_char).c_str() << std::endl;
+            std::cout << line << std::endl;
+}
 
 AnalogicReader::AnalogicReader(std::shared_ptr<QNiSysConfigWrapper> aSysConfigInstance,
                                std::shared_ptr<QNiDaqWrapper> aDaqMxInstance)
@@ -35,27 +54,27 @@ void AnalogicReader::displayChooseModuleMenu()
     
 
     // Function to center-align a string within a given width
-    auto centerAlignString = [nbChars](const std::string& str) {
+   /* auto centerAlignString = [nbChars](const std::string& str) {
         unsigned int totalSpaces = nbChars - str.length();
         unsigned int spacesBefore = totalSpaces / 2;
         unsigned int spacesAfter = totalSpaces - spacesBefore;
         std::string spacesBeforeStr(spacesBefore, ' ');
         std::string spacesAfterStr(spacesAfter, ' ');
         return "░" + spacesBeforeStr + str + spacesAfterStr + "░";
-    };
+    };*/
 
     // Output the centered title
     std::cout << line.c_str()<<"░░"  << std::endl;
-    std::cout << centerAlignString(title) << std::endl;
+    std::cout << centerAlignString(title,nbChars).c_str() << std::endl;
     std::cout << line.c_str()<<"░░"  << std::endl;
 
     // Output each centered module name
     for (const auto& moduleName : moduleNamesVector)
     {
-        std::cout << centerAlignString(moduleName) << std::endl;
+        std::cout << centerAlignString(moduleName,nbChars).c_str() << std::endl;
     }
     
-    std::cout << centerAlignString("x . main menu") << std::endl;
+    std::cout << centerAlignString("x . main menu",nbChars).c_str() << std::endl;
 
     //bottom of the "table"
     std::cout << line.c_str()<<"░░"  << std::endl;
@@ -168,27 +187,27 @@ void AnalogicReader::displayChooseChannelMenu()
     
 
     // Function to center-align a string within a given width
-    auto centerAlignString = [nbChars](const std::string& str) {
+ /*   auto centerAlignString = [nbChars](const std::string& str) {
         unsigned int totalSpaces = nbChars - str.length();
         unsigned int spacesBefore = totalSpaces / 2;
         unsigned int spacesAfter = totalSpaces - spacesBefore;
         std::string spacesBeforeStr(spacesBefore, ' ');
         std::string spacesAfterStr(spacesAfter, ' ');
         return "░" + spacesBeforeStr + str + spacesAfterStr + "░";
-    };
+    };*/
 
     // Output the centered title
-    std::cout << line.c_str()             <<"░░"       << std::endl;
-    std::cout << centerAlignString(title)              << std::endl;
-    std::cout << line.c_str()             <<"░░"       << std::endl;
+    std::cout << line.c_str()             <<"░░"            << std::endl;
+    std::cout << centerAlignString(title,nbChars).c_str()   << std::endl;
+    std::cout << line.c_str()             <<"░░"            << std::endl;
 
     // Output each centered channel name
     for (const auto& channelName : channelNamesVector)
     {
-        std::cout << centerAlignString(channelName) << std::endl;
+        std::cout << centerAlignString(channelName,nbChars).c_str() << std::endl;
     }
 
-    std::cout << centerAlignString("x . previous menu") << std::endl;
+    std::cout << centerAlignString("x . previous menu",nbChars).c_str() << std::endl;
 
 
     //bottom of the "table"
@@ -339,10 +358,9 @@ void AnalogicReader::manualReadOneShot()
         return;   
     }
     
-    const unsigned int nbChars=12;
-    const std::string line ="░░░░░░░░░░░░";
+
     // Function to center-align a string within a given width
-    auto centerAlignString = [nbChars](const std::string& str) 
+  /*  auto centerAlignString = [nbChars](const std::string& str) 
     {
         unsigned int totalSpaces = nbChars - str.length();
         unsigned int spacesBefore = totalSpaces / 2;
@@ -350,7 +368,7 @@ void AnalogicReader::manualReadOneShot()
         std::string spacesBeforeStr(spacesBefore, ' ');
         std::string spacesAfterStr(spacesAfter, ' ');
         return "░" + spacesBeforeStr + str + spacesAfterStr + "░";
-    };
+    };*/
 
     moduleType modType = m_manuallySelectedModule->getModuleType();
 
@@ -368,12 +386,7 @@ void AnalogicReader::manualReadOneShot()
             }
             
             double value = m_daqMx->readCurrent(m_manuallySelectedModule,m_manuallySelectedChanIndex);
-            clearConsole();
-            std::cout << line << std::endl;
-            std::cout << centerAlignString(" ").c_str() << std::endl;
-            std::cout << centerAlignString(std::to_string(value)).c_str() << std::endl;
-            std::cout << centerAlignString(" ").c_str() << std::endl;
-            std::cout << line << std::endl;
+            onOneShotValueReaded(value);
             break;
         }
 

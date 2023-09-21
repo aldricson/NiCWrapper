@@ -2,78 +2,17 @@
 
 void AnalogicReader::onOneShotValueReaded(double aValue)
 {
-   clearConsole();
-   const unsigned int nb_char = 30;
-   const std::string line ="░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░";
-   const std::string spacer = centerAlignString(" ",nb_char).c_str();
-   std::cout << line << std::endl;
-   std::cout << centerAlignString(" ",nb_char).c_str() << std::endl;
-   std::cout << centerAlignString(std::to_string(aValue),nb_char).c_str() << std::endl;
-   std::cout << centerAlignString(" ",nb_char).c_str() << std::endl;
-   std::cout << line << std::endl;
-   std::cout << centerAlignString(" ",nb_char).c_str() << std::endl;
-   std::cout << centerAlignString("1 . Read again",nb_char).c_str() << std::endl;
-   std::cout << centerAlignString("2 . Choose another channel",nb_char).c_str() << std::endl;
-   std::cout << centerAlignString("3 . Choose another module",nb_char).c_str() << std::endl;
-   std::cout << centerAlignString("x . Main Menu",nb_char).c_str() << std::endl;
-   std::cout << centerAlignString(" ",nb_char).c_str() << std::endl;
-   std::cout << line << std::endl;
-   std::cout << "Enter your choice: ";
-   std::string choice;
-   std::cin >> choice; 
-   std::cin.clear();
-   std::cin.ignore();
-   if (choice == "x" || choice == "X")
-   {
-       if (showMainMenuSignal)
-       {
-           showMainMenuSignal();
-       }
-   }
-   else
-   {
-       unsigned int selectedChoice;
-       std::stringstream ss(choice);
-       if (ss >> selectedChoice && ss.eof()) 
-       {
-           switch (selectedChoice)
-           {
-               case 1:
-               {
-                   //read again
-                   manualReadOneShot();
-                   break;
-               }
-               case 2:
-               {
-                   displayChooseChannelMenu();
-                   break;
-               }
-               case 3:
-               {
-                   displayChooseModuleMenu();
-                   break;
-               }
-               default:
-               {
-                 std::cout << "Invalid menu selection. Press enter to choose one" << std::endl;
-                 std::cin.get();
-                 std::cin.clear();
-                 std::cin.ignore();
-                 onOneShotValueReaded(aValue);
-
-               }
-           }
-       }
-       else
-       {
-        std::cout << "Invalid menu selection. Press enter to choose one" << std::endl;
-        std::cin.get();
-        std::cin.clear();
-        std::cin.ignore();
-        onOneShotValueReaded(aValue);
-       }
-   }
+    std::vector<std::string>           options;
+    std::vector<std::function<void()>> actions;
+    std::function<void()>              retryFunction;
+    options.push_back(" 0 . Read again"             );    actions.push_back( [this](){this->manualReadOneShot();} );
+    options.push_back(" 1 . Choose another channel" );    actions.push_back( [this](){this->displayChooseChannelMenu();});  
+    options.push_back(" 2 . Choose another module"  );    actions.push_back( [this](){this->displayChooseChannelMenu();});
+    options.push_back(" 3 . Main Menu"              );    actions.push_back( [this](){  if (this->showMainMenuSignal) {this->showMainMenuSignal();}});
+    retryFunction =  [this,aValue](){this->onOneShotValueReaded(aValue);};
+    clearConsole();
+    displayMenu(std::to_string(aValue), options, actions, retryFunction); 
+ 
 }
     
 
@@ -96,36 +35,15 @@ void AnalogicReader::displayChooseModuleMenu()
 {
     std::string choice;
     clearConsole();
+    // Prepare the list of modules
     std::vector<std::string> moduleNamesVector;
-    unsigned int nbChars = 0;
-    //prepare the list of modules
-    for (unsigned int i = 0; i < m_sysConfig->getModuleList().size(); ++i)
+    for (unsigned int i = 0; i < m_sysConfig->getModuleList().size(); ++i) 
     {
-        std::string str = std::to_string(i) + " . " + m_sysConfig->getModuleList()[i]->getAlias();
+        std::string str = " "+std::to_string(i) + " . " + m_sysConfig->getModuleList()[i]->getAlias();
         moduleNamesVector.push_back(str);
-        if (str.length() > nbChars) nbChars = str.length();
     }
-    std::string title = "Choose the module";
-    if (title.length() > nbChars) nbChars = title.length();
-    nbChars += 2;
-    std::string line = "";
-    for (unsigned int i = 0; i < nbChars; ++i) line += "░";
-
-    // Output the centered title
-    std::cout << line.c_str()<<"░░"  << std::endl;
-    std::cout << centerAlignString(title,nbChars).c_str() << std::endl;
-    std::cout << line.c_str()<<"░░"  << std::endl;
-
-    // Output each centered module name
-    for (const auto& moduleName : moduleNamesVector)
-    {
-        std::cout << centerAlignString(moduleName,nbChars).c_str() << std::endl;
-    }
-    
-    std::cout << centerAlignString("x . main menu",nbChars).c_str() << std::endl;
-
-    //bottom of the "table"
-    std::cout << line.c_str()<<"░░"  << std::endl;
+    moduleNamesVector.push_back(" x . Main Menu");
+    displayMenu("Choose the module", moduleNamesVector);
 
     //Show what is selected
     if (std::strcmp(m_manuallySelectedModuleName, "") != 0)
@@ -218,38 +136,16 @@ void AnalogicReader::displayChooseChannelMenu()
     }        
     std::string choice;
     clearConsole();
+    // Prepare the list of channel names
     std::vector<std::string> channelNamesVector;
-    unsigned int nbChars = 0;
-    
-    for (unsigned int i = 0; i < m_manuallySelectedModule->getChanNames().size(); ++i)
+    for (unsigned int i = 0; i < m_manuallySelectedModule->getChanNames().size(); ++i) 
     {
-        std::string str = std::to_string(i) + " . " + m_manuallySelectedModule->getChanNames()[i];
-        channelNamesVector.push_back(str);
-        if (str.length() > nbChars) nbChars = str.length();
+        std::string str = " "+std::to_string(i) + " . " + m_manuallySelectedModule->getChanNames()[i];
+        channelNamesVector.push_back(str);  
     }
-    std::string title = "Choose the Channel";
-    if (title.length() > nbChars) nbChars = title.length();
-    nbChars += 2;
-    std::string line = "";
-    for (unsigned int i = 0; i < nbChars; ++i) line += "░";
-    
+    channelNamesVector.push_back(" x . Previous Menu");
+    displayMenu("Choose the Channel", channelNamesVector);
 
-    // Output the centered title
-    std::cout << line.c_str()             <<"░░"            << std::endl;
-    std::cout << centerAlignString(title,nbChars).c_str()   << std::endl;
-    std::cout << line.c_str()             <<"░░"            << std::endl;
-
-    // Output each centered channel name
-    for (const auto& channelName : channelNamesVector)
-    {
-        std::cout << centerAlignString(channelName,nbChars).c_str() << std::endl;
-    }
-
-    std::cout << centerAlignString("x . previous menu",nbChars).c_str() << std::endl;
-
-
-    //bottom of the "table"
-    std::cout << line.c_str()<<"░░"  << std::endl;
 
     //Show what is selected
     if (std::strcmp(m_manuallySelectedModuleName, "") != 0)
@@ -336,19 +232,14 @@ void AnalogicReader::displayShowValueMenu()
             return;
     }        
     std::string choice;
+    std::vector<std::string> options;
+    options.push_back(" 0 .  Read one shot");
+    options.push_back(" 1 .  Read loop");
+    options.push_back(" x .  Previous Menu");
     clearConsole();
+    displayMenu("Read Value", options); 
+     
 
-    std::cout << "░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░"<< std::endl;
-    std::cout << "░░                            ░░"<< std::endl;
-    std::cout << "░░        Read  Value         ░░"<< std::endl;
-    std::cout << "░░                            ░░"<< std::endl;
-    std::cout << "░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░"<< std::endl;
-    std::cout << "░                              ░"<< std::endl;
-    std::cout << "░     0 .  Read one shot       ░"<< std::endl;
-    std::cout << "░     1 .  Read loop           ░"<< std::endl;
-    std::cout << "░     x .  previous menu       ░"<< std::endl;
-    std::cout << "░                              ░"<< std::endl;
-    std::cout << "░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░"<< std::endl;
     std::cout << std::endl;
     std::cout << "Enter your choice: ";
     std::cin >> choice; 

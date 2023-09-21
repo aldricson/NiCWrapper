@@ -16,13 +16,32 @@ mainMenu::mainMenu(std::shared_ptr<QNiSysConfigWrapper> aConfigWrapper,
     m_moduleByAliasMenu->showMainMenuSignal = std::bind(&mainMenu::onDisplayMainMenu,this);
     m_analogicReader   ->showMainMenuSignal = std::bind(&mainMenu::onDisplayMainMenu,this);
     clearConsole();
-    displayMenu();
+    displayMainMenu();
 }
 
 
-void mainMenu::displayMenu() 
+void mainMenu::displayMainMenu() 
 {
-    std::string choice;
+    std::vector<std::string>           options;
+    std::vector<std::function<void()>> actions;
+    std::function<void()>              retryFunction;
+    options.push_back(" 0 . show module by Alias" );    actions.push_back( [this](){this->m_moduleByAliasMenu->displayMenu();} );
+    options.push_back(" 1 . show module by Slotl" );    actions.push_back( [this](){this->m_moduleBySlotMenu->displayMenu();});  
+    options.push_back(" 2 . read a channel value" );    actions.push_back( [this](){this-> m_analogicReader->displayChooseModuleMenu();});
+    options.push_back(" 3 . Exit"                 );    actions.push_back( [this](){   std::cout << "Exiting..." << std::endl;
+                                                                                        if (this->exitProgramSignal)
+                                                                                            {
+                                                                                                this->exitProgramSignal();
+                                                                                            }
+                                                                                    });
+
+    retryFunction =  [this]() {  this->displayMainMenu();};
+    clearConsole();
+    displayMenu("MAIN MENU", options, actions, retryFunction); 
+    
+    
+    
+  /*  std::string choice;
     clearConsole();
     std::cout << "✩░▒▓▒░░░▒░░░▒░░░▒░░░▒░░░▒░░░░░░▒▓▒░✩" << std::endl;
     std::cout << "✩░▒▓                            ▓▒░✩" << std::endl;
@@ -65,7 +84,7 @@ void mainMenu::displayMenu()
     {
             std::cout << "Invalid choice. Try again." << std::endl;
             displayMenu();
-    }
+    }*/
     
 }
 
@@ -79,5 +98,5 @@ void mainMenu::clearConsole()
 
 void mainMenu::onDisplayMainMenu()
 {
-    displayMenu();
+    displayMainMenu();
 }

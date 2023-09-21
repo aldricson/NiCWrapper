@@ -120,8 +120,8 @@ events:
     checks:
       - "Detecting C compiler ABI info"
     directories:
-      source: "C:/Users/aldric/Documents/daqMxTest/build/CMakeFiles/CMakeScratch/TryCompile-fj8ib5"
-      binary: "C:/Users/aldric/Documents/daqMxTest/build/CMakeFiles/CMakeScratch/TryCompile-fj8ib5"
+      source: "C:/Users/aldric/Documents/daqMxTest/build/CMakeFiles/CMakeScratch/TryCompile-9kz6zn"
+      binary: "C:/Users/aldric/Documents/daqMxTest/build/CMakeFiles/CMakeScratch/TryCompile-9kz6zn"
     cmakeVariables:
       CMAKE_C_FLAGS: "-O2 -pipe -g -feliminate-unused-debug-types"
       CMAKE_C_FLAGS_DEBUG: "-g"
@@ -131,10 +131,10 @@ events:
       variable: "CMAKE_C_ABI_COMPILED"
       cached: true
       stdout: |
-        Change Dir: 'C:/Users/aldric/Documents/daqMxTest/build/CMakeFiles/CMakeScratch/TryCompile-fj8ib5'
+        Change Dir: 'C:/Users/aldric/Documents/daqMxTest/build/CMakeFiles/CMakeScratch/TryCompile-9kz6zn'
         
-        Run Build Command(s): C:/PROGRA~2/ninja/ninja.exe -v cmTC_6cf2c
-        [1/2] C:\\build\\23.0\\x64\\sysroots\\x86_64-w64-mingw32\\usr\\bin\\x86_64-nilrt-linux\\x86_64-nilrt-linux-gcc.exe --sysroot=C:/build/23.0/x64/sysroots/core2-64-nilrt-linux   -O2 -pipe -g -feliminate-unused-debug-types    -v -o CMakeFiles/cmTC_6cf2c.dir/CMakeCCompilerABI.c.o -c "C:/Program Files/CMake/share/cmake-3.27/Modules/CMakeCCompilerABI.c"
+        Run Build Command(s): C:/PROGRA~2/ninja/ninja.exe -v cmTC_a927a
+        [1/2] C:\\build\\23.0\\x64\\sysroots\\x86_64-w64-mingw32\\usr\\bin\\x86_64-nilrt-linux\\x86_64-nilrt-linux-gcc.exe --sysroot=C:/build/23.0/x64/sysroots/core2-64-nilrt-linux   -O2 -pipe -g -feliminate-unused-debug-types    -v -o CMakeFiles/cmTC_a927a.dir/CMakeCCompilerABI.c.o -c "C:/Program Files/CMake/share/cmake-3.27/Modules/CMakeCCompilerABI.c"
         Using built-in specs.
         COLLECT_GCC=C:\\build\\23.0\\x64\\sysroots\\x86_64-w64-mingw32\\usr\\bin\\x86_64-nilrt-linux\\x86_64-nilrt-linux-gcc.exe
         Target: x86_64-nilrt-linux
@@ -142,9 +142,9 @@ events:
         Thread model: posix
         Supported LTO compression algorithms: zlib
         gcc version 10.3.0 (GCC) 
-        COLLECT_GCC_OPTIONS='--sysroot=C:/build/23.0/x64/sysroots/core2-64-nilrt-linux' '-O2' '-pipe' '-g' '-feliminate-unused-debug-types' '-v' '-o' 'CMakeFiles/cmTC_6cf2c.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64'
-         c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/cc1.exe -quiet -v -iprefix c:\\build\\23.0\\x64\\sysroots\\x86_64-w64-mingw32\\usr\\bin\\x86_64-nilrt-linux\\../../lib/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/ -isysroot C:/build/23.0/x64/sysroots/core2-64-nilrt-linux C:/Program Files/CMake/share/cmake-3.27/Modules/CMakeCCompilerABI.c -quiet -dumpbase CMakeCCompilerABI.c -mtune=generic -march=x86-64 -auxbase-strip CMakeFiles/cmTC_6cf2c.dir/CMakeCCompilerABI.c.o -g -O2 -version -feliminate-unused-debug-types -o - |
-         c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/as.exe -v --64 -o CMakeFiles/cmTC_6cf2c.dir/CMakeCCompilerABI.c.o
+        COLLECT_GCC_OPTIONS='--sysroot=C:/build/23.0/x64/sysroots/core2-64-nilrt-linux' '-O2' '-pipe' '-g' '-feliminate-unused-debug-types' '-v' '-o' 'CMakeFiles/cmTC_a927a.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64'
+         c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/cc1.exe -quiet -v -iprefix c:\\build\\23.0\\x64\\sysroots\\x86_64-w64-mingw32\\usr\\bin\\x86_64-nilrt-linux\\../../lib/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/ -isysroot C:/build/23.0/x64/sysroots/core2-64-nilrt-linux C:/Program Files/CMake/share/cmake-3.27/Modules/CMakeCCompilerABI.c -quiet -dumpbase CMakeCCompilerABI.c -mtune=generic -march=x86-64 -auxbase-strip CMakeFiles/cmTC_a927a.dir/CMakeCCompilerABI.c.o -g -O2 -version -feliminate-unused-debug-types -o - |
+         c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/as.exe -v --64 -o CMakeFiles/cmTC_a927a.dir/CMakeCCompilerABI.c.o
         GNU C17 (GCC) version 10.3.0 (x86_64-nilrt-linux)
         	compiled by GNU C version 10.3.0, GMP version 6.2.1, MPFR version 4.1.0, MPC version 1.2.1, isl version none
         GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
@@ -167,8 +167,8 @@ events:
         GNU assembler version 2.36.1 (x86_64-nilrt-linux) using BFD version (GNU Binutils) 2.36.1.20210703
         COMPILER_PATH=c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/;c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/
         LIBRARY_PATH=c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../lib/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/;c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../lib/x86_64-nilrt-linux/gcc/;C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/lib/../lib/;C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/x86_64-nilrt-linux/10.3.0/;C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/x86_64-nilrt-linux/10.3.0/;C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/;C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/lib/;C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/\x0d
-        COLLECT_GCC_OPTIONS='--sysroot=C:/build/23.0/x64/sysroots/core2-64-nilrt-linux' '-O2' '-pipe' '-g' '-feliminate-unused-debug-types' '-v' '-o' 'CMakeFiles/cmTC_6cf2c.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64'\x0d
-        [2/2] cmd.exe /C "cd . && C:\\build\\23.0\\x64\\sysroots\\x86_64-w64-mingw32\\usr\\bin\\x86_64-nilrt-linux\\x86_64-nilrt-linux-gcc.exe --sysroot=C:/build/23.0/x64/sysroots/core2-64-nilrt-linux -O2 -pipe -g -feliminate-unused-debug-types -Wl,-O1 -Wl,--hash-style=gnu -Wl,--as-needed -v CMakeFiles/cmTC_6cf2c.dir/CMakeCCompilerABI.c.o -o cmTC_6cf2c   && cd ."
+        COLLECT_GCC_OPTIONS='--sysroot=C:/build/23.0/x64/sysroots/core2-64-nilrt-linux' '-O2' '-pipe' '-g' '-feliminate-unused-debug-types' '-v' '-o' 'CMakeFiles/cmTC_a927a.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64'\x0d
+        [2/2] cmd.exe /C "cd . && C:\\build\\23.0\\x64\\sysroots\\x86_64-w64-mingw32\\usr\\bin\\x86_64-nilrt-linux\\x86_64-nilrt-linux-gcc.exe --sysroot=C:/build/23.0/x64/sysroots/core2-64-nilrt-linux -O2 -pipe -g -feliminate-unused-debug-types -Wl,-O1 -Wl,--hash-style=gnu -Wl,--as-needed -v CMakeFiles/cmTC_a927a.dir/CMakeCCompilerABI.c.o -o cmTC_a927a   && cd ."
         Using built-in specs.
         COLLECT_GCC=C:\\build\\23.0\\x64\\sysroots\\x86_64-w64-mingw32\\usr\\bin\\x86_64-nilrt-linux\\x86_64-nilrt-linux-gcc.exe
         COLLECT_LTO_WRAPPER=c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/lto-wrapper.exe
@@ -179,9 +179,9 @@ events:
         gcc version 10.3.0 (GCC) 
         COMPILER_PATH=c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/;c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/
         LIBRARY_PATH=c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../lib/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/;c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../lib/x86_64-nilrt-linux/gcc/;C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/lib/../lib/;C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/x86_64-nilrt-linux/10.3.0/;C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/x86_64-nilrt-linux/10.3.0/;C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/;C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/lib/;C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/
-        COLLECT_GCC_OPTIONS='--sysroot=C:/build/23.0/x64/sysroots/core2-64-nilrt-linux' '-O2' '-pipe' '-g' '-feliminate-unused-debug-types' '-v' '-o' 'cmTC_6cf2c' '-mtune=generic' '-march=x86-64'
-         c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/collect2.exe -plugin c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/liblto_plugin-0.dll -plugin-opt=c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/lto-wrapper.exe -plugin-opt=-fresolution=C:\\Users\\aldric\\AppData\\Local\\Temp\\cc87dH5Q.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --sysroot=C:/build/23.0/x64/sysroots/core2-64-nilrt-linux --build-id --eh-frame-hdr --hash-style=gnu -m elf_x86_64 -dynamic-linker /lib/ld-linux-x86-64.so.2 -o cmTC_6cf2c C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/crt1.o C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/crti.o C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/x86_64-nilrt-linux/10.3.0/crtbegin.o -Lc:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../lib/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0 -Lc:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../lib/x86_64-nilrt-linux/gcc -LC:/build/23.0/x64/sysroots/core2-64-nilrt-linux/lib/../lib -LC:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/x86_64-nilrt-linux/10.3.0 -LC:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/x86_64-nilrt-linux/10.3.0 -LC:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib -LC:/build/23.0/x64/sysroots/core2-64-nilrt-linux/lib -LC:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib -O1 --hash-style=gnu --as-needed CMakeFiles/cmTC_6cf2c.dir/CMakeCCompilerABI.c.o -lgcc --push-state --as-needed -lgcc_s --pop-state -lc -lgcc --push-state --as-needed -lgcc_s --pop-state C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/x86_64-nilrt-linux/10.3.0/crtend.o C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/crtn.o
-        COLLECT_GCC_OPTIONS='--sysroot=C:/build/23.0/x64/sysroots/core2-64-nilrt-linux' '-O2' '-pipe' '-g' '-feliminate-unused-debug-types' '-v' '-o' 'cmTC_6cf2c' '-mtune=generic' '-march=x86-64'\x0d
+        COLLECT_GCC_OPTIONS='--sysroot=C:/build/23.0/x64/sysroots/core2-64-nilrt-linux' '-O2' '-pipe' '-g' '-feliminate-unused-debug-types' '-v' '-o' 'cmTC_a927a' '-mtune=generic' '-march=x86-64'
+         c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/collect2.exe -plugin c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/liblto_plugin-0.dll -plugin-opt=c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/lto-wrapper.exe -plugin-opt=-fresolution=C:\\Users\\aldric\\AppData\\Local\\Temp\\cc0o5PAh.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --sysroot=C:/build/23.0/x64/sysroots/core2-64-nilrt-linux --build-id --eh-frame-hdr --hash-style=gnu -m elf_x86_64 -dynamic-linker /lib/ld-linux-x86-64.so.2 -o cmTC_a927a C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/crt1.o C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/crti.o C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/x86_64-nilrt-linux/10.3.0/crtbegin.o -Lc:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../lib/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0 -Lc:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../lib/x86_64-nilrt-linux/gcc -LC:/build/23.0/x64/sysroots/core2-64-nilrt-linux/lib/../lib -LC:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/x86_64-nilrt-linux/10.3.0 -LC:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/x86_64-nilrt-linux/10.3.0 -LC:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib -LC:/build/23.0/x64/sysroots/core2-64-nilrt-linux/lib -LC:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib -O1 --hash-style=gnu --as-needed CMakeFiles/cmTC_a927a.dir/CMakeCCompilerABI.c.o -lgcc --push-state --as-needed -lgcc_s --pop-state -lc -lgcc --push-state --as-needed -lgcc_s --pop-state C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/x86_64-nilrt-linux/10.3.0/crtend.o C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/crtn.o
+        COLLECT_GCC_OPTIONS='--sysroot=C:/build/23.0/x64/sysroots/core2-64-nilrt-linux' '-O2' '-pipe' '-g' '-feliminate-unused-debug-types' '-v' '-o' 'cmTC_a927a' '-mtune=generic' '-march=x86-64'\x0d
         
       exitCode: 0
   -
@@ -213,10 +213,10 @@ events:
     message: |
       Parsed C implicit link information:
         link line regex: [^( *|.*[/\\])(x86_64-nilrt-linux-ld\\.exe|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\\]+-)?ld|collect2)[^/\\]*( |$)]
-        ignore line: [Change Dir: 'C:/Users/aldric/Documents/daqMxTest/build/CMakeFiles/CMakeScratch/TryCompile-fj8ib5']
+        ignore line: [Change Dir: 'C:/Users/aldric/Documents/daqMxTest/build/CMakeFiles/CMakeScratch/TryCompile-9kz6zn']
         ignore line: []
-        ignore line: [Run Build Command(s): C:/PROGRA~2/ninja/ninja.exe -v cmTC_6cf2c]
-        ignore line: [[1/2] C:\\build\\23.0\\x64\\sysroots\\x86_64-w64-mingw32\\usr\\bin\\x86_64-nilrt-linux\\x86_64-nilrt-linux-gcc.exe --sysroot=C:/build/23.0/x64/sysroots/core2-64-nilrt-linux   -O2 -pipe -g -feliminate-unused-debug-types    -v -o CMakeFiles/cmTC_6cf2c.dir/CMakeCCompilerABI.c.o -c "C:/Program Files/CMake/share/cmake-3.27/Modules/CMakeCCompilerABI.c"]
+        ignore line: [Run Build Command(s): C:/PROGRA~2/ninja/ninja.exe -v cmTC_a927a]
+        ignore line: [[1/2] C:\\build\\23.0\\x64\\sysroots\\x86_64-w64-mingw32\\usr\\bin\\x86_64-nilrt-linux\\x86_64-nilrt-linux-gcc.exe --sysroot=C:/build/23.0/x64/sysroots/core2-64-nilrt-linux   -O2 -pipe -g -feliminate-unused-debug-types    -v -o CMakeFiles/cmTC_a927a.dir/CMakeCCompilerABI.c.o -c "C:/Program Files/CMake/share/cmake-3.27/Modules/CMakeCCompilerABI.c"]
         ignore line: [Using built-in specs.]
         ignore line: [COLLECT_GCC=C:\\build\\23.0\\x64\\sysroots\\x86_64-w64-mingw32\\usr\\bin\\x86_64-nilrt-linux\\x86_64-nilrt-linux-gcc.exe]
         ignore line: [Target: x86_64-nilrt-linux]
@@ -224,9 +224,9 @@ events:
         ignore line: [Thread model: posix]
         ignore line: [Supported LTO compression algorithms: zlib]
         ignore line: [gcc version 10.3.0 (GCC) ]
-        ignore line: [COLLECT_GCC_OPTIONS='--sysroot=C:/build/23.0/x64/sysroots/core2-64-nilrt-linux' '-O2' '-pipe' '-g' '-feliminate-unused-debug-types' '-v' '-o' 'CMakeFiles/cmTC_6cf2c.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64']
-        ignore line: [ c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/cc1.exe -quiet -v -iprefix c:\\build\\23.0\\x64\\sysroots\\x86_64-w64-mingw32\\usr\\bin\\x86_64-nilrt-linux\\../../lib/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/ -isysroot C:/build/23.0/x64/sysroots/core2-64-nilrt-linux C:/Program Files/CMake/share/cmake-3.27/Modules/CMakeCCompilerABI.c -quiet -dumpbase CMakeCCompilerABI.c -mtune=generic -march=x86-64 -auxbase-strip CMakeFiles/cmTC_6cf2c.dir/CMakeCCompilerABI.c.o -g -O2 -version -feliminate-unused-debug-types -o - |]
-        ignore line: [ c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/as.exe -v --64 -o CMakeFiles/cmTC_6cf2c.dir/CMakeCCompilerABI.c.o]
+        ignore line: [COLLECT_GCC_OPTIONS='--sysroot=C:/build/23.0/x64/sysroots/core2-64-nilrt-linux' '-O2' '-pipe' '-g' '-feliminate-unused-debug-types' '-v' '-o' 'CMakeFiles/cmTC_a927a.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64']
+        ignore line: [ c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/cc1.exe -quiet -v -iprefix c:\\build\\23.0\\x64\\sysroots\\x86_64-w64-mingw32\\usr\\bin\\x86_64-nilrt-linux\\../../lib/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/ -isysroot C:/build/23.0/x64/sysroots/core2-64-nilrt-linux C:/Program Files/CMake/share/cmake-3.27/Modules/CMakeCCompilerABI.c -quiet -dumpbase CMakeCCompilerABI.c -mtune=generic -march=x86-64 -auxbase-strip CMakeFiles/cmTC_a927a.dir/CMakeCCompilerABI.c.o -g -O2 -version -feliminate-unused-debug-types -o - |]
+        ignore line: [ c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/as.exe -v --64 -o CMakeFiles/cmTC_a927a.dir/CMakeCCompilerABI.c.o]
         ignore line: [GNU C17 (GCC) version 10.3.0 (x86_64-nilrt-linux)]
         ignore line: [	compiled by GNU C version 10.3.0  GMP version 6.2.1  MPFR version 4.1.0  MPC version 1.2.1  isl version none]
         ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
@@ -257,8 +257,8 @@ events:
         ignore line: [C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/]
         ignore line: [C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/lib/]
         ignore line: [C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/\x0d]
-        ignore line: [COLLECT_GCC_OPTIONS='--sysroot=C:/build/23.0/x64/sysroots/core2-64-nilrt-linux' '-O2' '-pipe' '-g' '-feliminate-unused-debug-types' '-v' '-o' 'CMakeFiles/cmTC_6cf2c.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64'\x0d]
-        ignore line: [[2/2] cmd.exe /C "cd . && C:\\build\\23.0\\x64\\sysroots\\x86_64-w64-mingw32\\usr\\bin\\x86_64-nilrt-linux\\x86_64-nilrt-linux-gcc.exe --sysroot=C:/build/23.0/x64/sysroots/core2-64-nilrt-linux -O2 -pipe -g -feliminate-unused-debug-types -Wl -O1 -Wl --hash-style=gnu -Wl --as-needed -v CMakeFiles/cmTC_6cf2c.dir/CMakeCCompilerABI.c.o -o cmTC_6cf2c   && cd ."]
+        ignore line: [COLLECT_GCC_OPTIONS='--sysroot=C:/build/23.0/x64/sysroots/core2-64-nilrt-linux' '-O2' '-pipe' '-g' '-feliminate-unused-debug-types' '-v' '-o' 'CMakeFiles/cmTC_a927a.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64'\x0d]
+        ignore line: [[2/2] cmd.exe /C "cd . && C:\\build\\23.0\\x64\\sysroots\\x86_64-w64-mingw32\\usr\\bin\\x86_64-nilrt-linux\\x86_64-nilrt-linux-gcc.exe --sysroot=C:/build/23.0/x64/sysroots/core2-64-nilrt-linux -O2 -pipe -g -feliminate-unused-debug-types -Wl -O1 -Wl --hash-style=gnu -Wl --as-needed -v CMakeFiles/cmTC_a927a.dir/CMakeCCompilerABI.c.o -o cmTC_a927a   && cd ."]
         ignore line: [Using built-in specs.]
         ignore line: [COLLECT_GCC=C:\\build\\23.0\\x64\\sysroots\\x86_64-w64-mingw32\\usr\\bin\\x86_64-nilrt-linux\\x86_64-nilrt-linux-gcc.exe]
         ignore line: [COLLECT_LTO_WRAPPER=c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/lto-wrapper.exe]
@@ -277,13 +277,13 @@ events:
         ignore line: [C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/]
         ignore line: [C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/lib/]
         ignore line: [C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/]
-        ignore line: [COLLECT_GCC_OPTIONS='--sysroot=C:/build/23.0/x64/sysroots/core2-64-nilrt-linux' '-O2' '-pipe' '-g' '-feliminate-unused-debug-types' '-v' '-o' 'cmTC_6cf2c' '-mtune=generic' '-march=x86-64']
-        link line: [ c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/collect2.exe -plugin c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/liblto_plugin-0.dll -plugin-opt=c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/lto-wrapper.exe -plugin-opt=-fresolution=C:\\Users\\aldric\\AppData\\Local\\Temp\\cc87dH5Q.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --sysroot=C:/build/23.0/x64/sysroots/core2-64-nilrt-linux --build-id --eh-frame-hdr --hash-style=gnu -m elf_x86_64 -dynamic-linker /lib/ld-linux-x86-64.so.2 -o cmTC_6cf2c C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/crt1.o C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/crti.o C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/x86_64-nilrt-linux/10.3.0/crtbegin.o -Lc:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../lib/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0 -Lc:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../lib/x86_64-nilrt-linux/gcc -LC:/build/23.0/x64/sysroots/core2-64-nilrt-linux/lib/../lib -LC:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/x86_64-nilrt-linux/10.3.0 -LC:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/x86_64-nilrt-linux/10.3.0 -LC:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib -LC:/build/23.0/x64/sysroots/core2-64-nilrt-linux/lib -LC:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib -O1 --hash-style=gnu --as-needed CMakeFiles/cmTC_6cf2c.dir/CMakeCCompilerABI.c.o -lgcc --push-state --as-needed -lgcc_s --pop-state -lc -lgcc --push-state --as-needed -lgcc_s --pop-state C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/x86_64-nilrt-linux/10.3.0/crtend.o C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/crtn.o]
+        ignore line: [COLLECT_GCC_OPTIONS='--sysroot=C:/build/23.0/x64/sysroots/core2-64-nilrt-linux' '-O2' '-pipe' '-g' '-feliminate-unused-debug-types' '-v' '-o' 'cmTC_a927a' '-mtune=generic' '-march=x86-64']
+        link line: [ c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/collect2.exe -plugin c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/liblto_plugin-0.dll -plugin-opt=c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/lto-wrapper.exe -plugin-opt=-fresolution=C:\\Users\\aldric\\AppData\\Local\\Temp\\cc0o5PAh.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --sysroot=C:/build/23.0/x64/sysroots/core2-64-nilrt-linux --build-id --eh-frame-hdr --hash-style=gnu -m elf_x86_64 -dynamic-linker /lib/ld-linux-x86-64.so.2 -o cmTC_a927a C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/crt1.o C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/crti.o C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/x86_64-nilrt-linux/10.3.0/crtbegin.o -Lc:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../lib/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0 -Lc:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../lib/x86_64-nilrt-linux/gcc -LC:/build/23.0/x64/sysroots/core2-64-nilrt-linux/lib/../lib -LC:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/x86_64-nilrt-linux/10.3.0 -LC:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/x86_64-nilrt-linux/10.3.0 -LC:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib -LC:/build/23.0/x64/sysroots/core2-64-nilrt-linux/lib -LC:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib -O1 --hash-style=gnu --as-needed CMakeFiles/cmTC_a927a.dir/CMakeCCompilerABI.c.o -lgcc --push-state --as-needed -lgcc_s --pop-state -lc -lgcc --push-state --as-needed -lgcc_s --pop-state C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/x86_64-nilrt-linux/10.3.0/crtend.o C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/crtn.o]
           arg [c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/collect2.exe] ==> ignore
           arg [-plugin] ==> ignore
           arg [c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/liblto_plugin-0.dll] ==> ignore
           arg [-plugin-opt=c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/lto-wrapper.exe] ==> ignore
-          arg [-plugin-opt=-fresolution=C:\\Users\\aldric\\AppData\\Local\\Temp\\cc87dH5Q.res] ==> ignore
+          arg [-plugin-opt=-fresolution=C:\\Users\\aldric\\AppData\\Local\\Temp\\cc0o5PAh.res] ==> ignore
           arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
           arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
           arg [-plugin-opt=-pass-through=-lc] ==> ignore
@@ -298,7 +298,7 @@ events:
           arg [-dynamic-linker] ==> ignore
           arg [/lib/ld-linux-x86-64.so.2] ==> ignore
           arg [-o] ==> ignore
-          arg [cmTC_6cf2c] ==> ignore
+          arg [cmTC_a927a] ==> ignore
           arg [C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/crt1.o] ==> obj [C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/crt1.o]
           arg [C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/crti.o] ==> obj [C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/crti.o]
           arg [C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/x86_64-nilrt-linux/10.3.0/crtbegin.o] ==> obj [C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/x86_64-nilrt-linux/10.3.0/crtbegin.o]
@@ -313,7 +313,7 @@ events:
           arg [-O1] ==> ignore
           arg [--hash-style=gnu] ==> ignore
           arg [--as-needed] ==> ignore
-          arg [CMakeFiles/cmTC_6cf2c.dir/CMakeCCompilerABI.c.o] ==> ignore
+          arg [CMakeFiles/cmTC_a927a.dir/CMakeCCompilerABI.c.o] ==> ignore
           arg [-lgcc] ==> lib [gcc]
           arg [--push-state] ==> ignore
           arg [--as-needed] ==> ignore
@@ -355,8 +355,8 @@ events:
     checks:
       - "Detecting CXX compiler ABI info"
     directories:
-      source: "C:/Users/aldric/Documents/daqMxTest/build/CMakeFiles/CMakeScratch/TryCompile-9fjchz"
-      binary: "C:/Users/aldric/Documents/daqMxTest/build/CMakeFiles/CMakeScratch/TryCompile-9fjchz"
+      source: "C:/Users/aldric/Documents/daqMxTest/build/CMakeFiles/CMakeScratch/TryCompile-xwtx6g"
+      binary: "C:/Users/aldric/Documents/daqMxTest/build/CMakeFiles/CMakeScratch/TryCompile-xwtx6g"
     cmakeVariables:
       CMAKE_CXX_FLAGS: "-Wall -fmessage-length=0"
       CMAKE_CXX_FLAGS_DEBUG: "-O0 -g3"
@@ -366,10 +366,10 @@ events:
       variable: "CMAKE_CXX_ABI_COMPILED"
       cached: true
       stdout: |
-        Change Dir: 'C:/Users/aldric/Documents/daqMxTest/build/CMakeFiles/CMakeScratch/TryCompile-9fjchz'
+        Change Dir: 'C:/Users/aldric/Documents/daqMxTest/build/CMakeFiles/CMakeScratch/TryCompile-xwtx6g'
         
-        Run Build Command(s): C:/PROGRA~2/ninja/ninja.exe -v cmTC_3a391
-        [1/2] C:\\build\\23.0\\x64\\sysroots\\x86_64-w64-mingw32\\usr\\bin\\x86_64-nilrt-linux\\x86_64-nilrt-linux-g++.exe --sysroot=C:/build/23.0/x64/sysroots/core2-64-nilrt-linux   -Wall -fmessage-length=0  -std=gnu++17   -v -o CMakeFiles/cmTC_3a391.dir/CMakeCXXCompilerABI.cpp.o -c "C:/Program Files/CMake/share/cmake-3.27/Modules/CMakeCXXCompilerABI.cpp"
+        Run Build Command(s): C:/PROGRA~2/ninja/ninja.exe -v cmTC_c09d8
+        [1/2] C:\\build\\23.0\\x64\\sysroots\\x86_64-w64-mingw32\\usr\\bin\\x86_64-nilrt-linux\\x86_64-nilrt-linux-g++.exe --sysroot=C:/build/23.0/x64/sysroots/core2-64-nilrt-linux   -Wall -fmessage-length=0  -std=gnu++17   -v -o CMakeFiles/cmTC_c09d8.dir/CMakeCXXCompilerABI.cpp.o -c "C:/Program Files/CMake/share/cmake-3.27/Modules/CMakeCXXCompilerABI.cpp"
         Using built-in specs.
         COLLECT_GCC=C:\\build\\23.0\\x64\\sysroots\\x86_64-w64-mingw32\\usr\\bin\\x86_64-nilrt-linux\\x86_64-nilrt-linux-g++.exe
         Target: x86_64-nilrt-linux
@@ -377,8 +377,8 @@ events:
         Thread model: posix
         Supported LTO compression algorithms: zlib
         gcc version 10.3.0 (GCC) 
-        COLLECT_GCC_OPTIONS='--sysroot=C:/build/23.0/x64/sysroots/core2-64-nilrt-linux' '-Wall' '-fmessage-length=0' '-std=gnu++17' '-v' '-o' 'CMakeFiles/cmTC_3a391.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
-         c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/cc1plus.exe -quiet -v -iprefix c:\\build\\23.0\\x64\\sysroots\\x86_64-w64-mingw32\\usr\\bin\\x86_64-nilrt-linux\\../../lib/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/ -isysroot C:/build/23.0/x64/sysroots/core2-64-nilrt-linux -D_GNU_SOURCE C:/Program Files/CMake/share/cmake-3.27/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpbase CMakeCXXCompilerABI.cpp -mtune=generic -march=x86-64 -auxbase-strip CMakeFiles/cmTC_3a391.dir/CMakeCXXCompilerABI.cpp.o -Wall -std=gnu++17 -version -fmessage-length=0 -o C:\\Users\\aldric\\AppData\\Local\\Temp\\ccBaH7Xu.s
+        COLLECT_GCC_OPTIONS='--sysroot=C:/build/23.0/x64/sysroots/core2-64-nilrt-linux' '-Wall' '-fmessage-length=0' '-std=gnu++17' '-v' '-o' 'CMakeFiles/cmTC_c09d8.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+         c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/cc1plus.exe -quiet -v -iprefix c:\\build\\23.0\\x64\\sysroots\\x86_64-w64-mingw32\\usr\\bin\\x86_64-nilrt-linux\\../../lib/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/ -isysroot C:/build/23.0/x64/sysroots/core2-64-nilrt-linux -D_GNU_SOURCE C:/Program Files/CMake/share/cmake-3.27/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpbase CMakeCXXCompilerABI.cpp -mtune=generic -march=x86-64 -auxbase-strip CMakeFiles/cmTC_c09d8.dir/CMakeCXXCompilerABI.cpp.o -Wall -std=gnu++17 -version -fmessage-length=0 -o C:\\Users\\aldric\\AppData\\Local\\Temp\\ccGeakBf.s
         GNU C++17 (GCC) version 10.3.0 (x86_64-nilrt-linux)
         	compiled by GNU C version 10.3.0, GMP version 6.2.1, MPFR version 4.1.0, MPC version 1.2.1, isl version none
         GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
@@ -401,13 +401,13 @@ events:
         	compiled by GNU C version 10.3.0, GMP version 6.2.1, MPFR version 4.1.0, MPC version 1.2.1, isl version none
         GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
         Compiler executable checksum: c4addfe64808e642a5cfebdd316fd192
-        COLLECT_GCC_OPTIONS='--sysroot=C:/build/23.0/x64/sysroots/core2-64-nilrt-linux' '-Wall' '-fmessage-length=0' '-std=gnu++17' '-v' '-o' 'CMakeFiles/cmTC_3a391.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
-         c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/as.exe -v --64 -o CMakeFiles/cmTC_3a391.dir/CMakeCXXCompilerABI.cpp.o C:\\Users\\aldric\\AppData\\Local\\Temp\\ccBaH7Xu.s
+        COLLECT_GCC_OPTIONS='--sysroot=C:/build/23.0/x64/sysroots/core2-64-nilrt-linux' '-Wall' '-fmessage-length=0' '-std=gnu++17' '-v' '-o' 'CMakeFiles/cmTC_c09d8.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+         c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/as.exe -v --64 -o CMakeFiles/cmTC_c09d8.dir/CMakeCXXCompilerABI.cpp.o C:\\Users\\aldric\\AppData\\Local\\Temp\\ccGeakBf.s
         GNU assembler version 2.36.1 (x86_64-nilrt-linux) using BFD version (GNU Binutils) 2.36.1.20210703
         COMPILER_PATH=c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/;c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/
         LIBRARY_PATH=c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../lib/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/;c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../lib/x86_64-nilrt-linux/gcc/;C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/lib/../lib/;C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/x86_64-nilrt-linux/10.3.0/;C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/x86_64-nilrt-linux/10.3.0/;C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/;C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/lib/;C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/\x0d
-        COLLECT_GCC_OPTIONS='--sysroot=C:/build/23.0/x64/sysroots/core2-64-nilrt-linux' '-Wall' '-fmessage-length=0' '-std=gnu++17' '-v' '-o' 'CMakeFiles/cmTC_3a391.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64'\x0d
-        [2/2] cmd.exe /C "cd . && C:\\build\\23.0\\x64\\sysroots\\x86_64-w64-mingw32\\usr\\bin\\x86_64-nilrt-linux\\x86_64-nilrt-linux-g++.exe --sysroot=C:/build/23.0/x64/sysroots/core2-64-nilrt-linux -Wall -fmessage-length=0 -Wl,-O1 -Wl,--hash-style=gnu -Wl,--as-needed -v CMakeFiles/cmTC_3a391.dir/CMakeCXXCompilerABI.cpp.o -o cmTC_3a391   && cd ."
+        COLLECT_GCC_OPTIONS='--sysroot=C:/build/23.0/x64/sysroots/core2-64-nilrt-linux' '-Wall' '-fmessage-length=0' '-std=gnu++17' '-v' '-o' 'CMakeFiles/cmTC_c09d8.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64'\x0d
+        [2/2] cmd.exe /C "cd . && C:\\build\\23.0\\x64\\sysroots\\x86_64-w64-mingw32\\usr\\bin\\x86_64-nilrt-linux\\x86_64-nilrt-linux-g++.exe --sysroot=C:/build/23.0/x64/sysroots/core2-64-nilrt-linux -Wall -fmessage-length=0 -Wl,-O1 -Wl,--hash-style=gnu -Wl,--as-needed -v CMakeFiles/cmTC_c09d8.dir/CMakeCXXCompilerABI.cpp.o -o cmTC_c09d8   && cd ."
         Using built-in specs.
         COLLECT_GCC=C:\\build\\23.0\\x64\\sysroots\\x86_64-w64-mingw32\\usr\\bin\\x86_64-nilrt-linux\\x86_64-nilrt-linux-g++.exe
         COLLECT_LTO_WRAPPER=c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/lto-wrapper.exe
@@ -418,9 +418,9 @@ events:
         gcc version 10.3.0 (GCC) 
         COMPILER_PATH=c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/;c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/
         LIBRARY_PATH=c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../lib/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/;c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../lib/x86_64-nilrt-linux/gcc/;C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/lib/../lib/;C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/x86_64-nilrt-linux/10.3.0/;C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/x86_64-nilrt-linux/10.3.0/;C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/;C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/lib/;C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/
-        COLLECT_GCC_OPTIONS='--sysroot=C:/build/23.0/x64/sysroots/core2-64-nilrt-linux' '-Wall' '-fmessage-length=0' '-v' '-o' 'cmTC_3a391' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
-         c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/collect2.exe -plugin c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/liblto_plugin-0.dll -plugin-opt=c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/lto-wrapper.exe -plugin-opt=-fresolution=C:\\Users\\aldric\\AppData\\Local\\Temp\\ccnB8hPA.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --sysroot=C:/build/23.0/x64/sysroots/core2-64-nilrt-linux --build-id --eh-frame-hdr --hash-style=gnu -m elf_x86_64 -dynamic-linker /lib/ld-linux-x86-64.so.2 -o cmTC_3a391 C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/crt1.o C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/crti.o C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/x86_64-nilrt-linux/10.3.0/crtbegin.o -Lc:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../lib/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0 -Lc:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../lib/x86_64-nilrt-linux/gcc -LC:/build/23.0/x64/sysroots/core2-64-nilrt-linux/lib/../lib -LC:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/x86_64-nilrt-linux/10.3.0 -LC:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/x86_64-nilrt-linux/10.3.0 -LC:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib -LC:/build/23.0/x64/sysroots/core2-64-nilrt-linux/lib -LC:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib -O1 --hash-style=gnu --as-needed CMakeFiles/cmTC_3a391.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/x86_64-nilrt-linux/10.3.0/crtend.o C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/crtn.o
-        COLLECT_GCC_OPTIONS='--sysroot=C:/build/23.0/x64/sysroots/core2-64-nilrt-linux' '-Wall' '-fmessage-length=0' '-v' '-o' 'cmTC_3a391' '-shared-libgcc' '-mtune=generic' '-march=x86-64'\x0d
+        COLLECT_GCC_OPTIONS='--sysroot=C:/build/23.0/x64/sysroots/core2-64-nilrt-linux' '-Wall' '-fmessage-length=0' '-v' '-o' 'cmTC_c09d8' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+         c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/collect2.exe -plugin c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/liblto_plugin-0.dll -plugin-opt=c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/lto-wrapper.exe -plugin-opt=-fresolution=C:\\Users\\aldric\\AppData\\Local\\Temp\\cczIvcmb.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --sysroot=C:/build/23.0/x64/sysroots/core2-64-nilrt-linux --build-id --eh-frame-hdr --hash-style=gnu -m elf_x86_64 -dynamic-linker /lib/ld-linux-x86-64.so.2 -o cmTC_c09d8 C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/crt1.o C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/crti.o C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/x86_64-nilrt-linux/10.3.0/crtbegin.o -Lc:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../lib/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0 -Lc:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../lib/x86_64-nilrt-linux/gcc -LC:/build/23.0/x64/sysroots/core2-64-nilrt-linux/lib/../lib -LC:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/x86_64-nilrt-linux/10.3.0 -LC:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/x86_64-nilrt-linux/10.3.0 -LC:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib -LC:/build/23.0/x64/sysroots/core2-64-nilrt-linux/lib -LC:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib -O1 --hash-style=gnu --as-needed CMakeFiles/cmTC_c09d8.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/x86_64-nilrt-linux/10.3.0/crtend.o C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/crtn.o
+        COLLECT_GCC_OPTIONS='--sysroot=C:/build/23.0/x64/sysroots/core2-64-nilrt-linux' '-Wall' '-fmessage-length=0' '-v' '-o' 'cmTC_c09d8' '-shared-libgcc' '-mtune=generic' '-march=x86-64'\x0d
         
       exitCode: 0
   -
@@ -458,10 +458,10 @@ events:
     message: |
       Parsed CXX implicit link information:
         link line regex: [^( *|.*[/\\])(x86_64-nilrt-linux-ld\\.exe|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\\]+-)?ld|collect2)[^/\\]*( |$)]
-        ignore line: [Change Dir: 'C:/Users/aldric/Documents/daqMxTest/build/CMakeFiles/CMakeScratch/TryCompile-9fjchz']
+        ignore line: [Change Dir: 'C:/Users/aldric/Documents/daqMxTest/build/CMakeFiles/CMakeScratch/TryCompile-xwtx6g']
         ignore line: []
-        ignore line: [Run Build Command(s): C:/PROGRA~2/ninja/ninja.exe -v cmTC_3a391]
-        ignore line: [[1/2] C:\\build\\23.0\\x64\\sysroots\\x86_64-w64-mingw32\\usr\\bin\\x86_64-nilrt-linux\\x86_64-nilrt-linux-g++.exe --sysroot=C:/build/23.0/x64/sysroots/core2-64-nilrt-linux   -Wall -fmessage-length=0  -std=gnu++17   -v -o CMakeFiles/cmTC_3a391.dir/CMakeCXXCompilerABI.cpp.o -c "C:/Program Files/CMake/share/cmake-3.27/Modules/CMakeCXXCompilerABI.cpp"]
+        ignore line: [Run Build Command(s): C:/PROGRA~2/ninja/ninja.exe -v cmTC_c09d8]
+        ignore line: [[1/2] C:\\build\\23.0\\x64\\sysroots\\x86_64-w64-mingw32\\usr\\bin\\x86_64-nilrt-linux\\x86_64-nilrt-linux-g++.exe --sysroot=C:/build/23.0/x64/sysroots/core2-64-nilrt-linux   -Wall -fmessage-length=0  -std=gnu++17   -v -o CMakeFiles/cmTC_c09d8.dir/CMakeCXXCompilerABI.cpp.o -c "C:/Program Files/CMake/share/cmake-3.27/Modules/CMakeCXXCompilerABI.cpp"]
         ignore line: [Using built-in specs.]
         ignore line: [COLLECT_GCC=C:\\build\\23.0\\x64\\sysroots\\x86_64-w64-mingw32\\usr\\bin\\x86_64-nilrt-linux\\x86_64-nilrt-linux-g++.exe]
         ignore line: [Target: x86_64-nilrt-linux]
@@ -469,8 +469,8 @@ events:
         ignore line: [Thread model: posix]
         ignore line: [Supported LTO compression algorithms: zlib]
         ignore line: [gcc version 10.3.0 (GCC) ]
-        ignore line: [COLLECT_GCC_OPTIONS='--sysroot=C:/build/23.0/x64/sysroots/core2-64-nilrt-linux' '-Wall' '-fmessage-length=0' '-std=gnu++17' '-v' '-o' 'CMakeFiles/cmTC_3a391.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
-        ignore line: [ c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/cc1plus.exe -quiet -v -iprefix c:\\build\\23.0\\x64\\sysroots\\x86_64-w64-mingw32\\usr\\bin\\x86_64-nilrt-linux\\../../lib/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/ -isysroot C:/build/23.0/x64/sysroots/core2-64-nilrt-linux -D_GNU_SOURCE C:/Program Files/CMake/share/cmake-3.27/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpbase CMakeCXXCompilerABI.cpp -mtune=generic -march=x86-64 -auxbase-strip CMakeFiles/cmTC_3a391.dir/CMakeCXXCompilerABI.cpp.o -Wall -std=gnu++17 -version -fmessage-length=0 -o C:\\Users\\aldric\\AppData\\Local\\Temp\\ccBaH7Xu.s]
+        ignore line: [COLLECT_GCC_OPTIONS='--sysroot=C:/build/23.0/x64/sysroots/core2-64-nilrt-linux' '-Wall' '-fmessage-length=0' '-std=gnu++17' '-v' '-o' 'CMakeFiles/cmTC_c09d8.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
+        ignore line: [ c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/cc1plus.exe -quiet -v -iprefix c:\\build\\23.0\\x64\\sysroots\\x86_64-w64-mingw32\\usr\\bin\\x86_64-nilrt-linux\\../../lib/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/ -isysroot C:/build/23.0/x64/sysroots/core2-64-nilrt-linux -D_GNU_SOURCE C:/Program Files/CMake/share/cmake-3.27/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpbase CMakeCXXCompilerABI.cpp -mtune=generic -march=x86-64 -auxbase-strip CMakeFiles/cmTC_c09d8.dir/CMakeCXXCompilerABI.cpp.o -Wall -std=gnu++17 -version -fmessage-length=0 -o C:\\Users\\aldric\\AppData\\Local\\Temp\\ccGeakBf.s]
         ignore line: [GNU C++17 (GCC) version 10.3.0 (x86_64-nilrt-linux)]
         ignore line: [	compiled by GNU C version 10.3.0  GMP version 6.2.1  MPFR version 4.1.0  MPC version 1.2.1  isl version none]
         ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
@@ -493,8 +493,8 @@ events:
         ignore line: [	compiled by GNU C version 10.3.0  GMP version 6.2.1  MPFR version 4.1.0  MPC version 1.2.1  isl version none]
         ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
         ignore line: [Compiler executable checksum: c4addfe64808e642a5cfebdd316fd192]
-        ignore line: [COLLECT_GCC_OPTIONS='--sysroot=C:/build/23.0/x64/sysroots/core2-64-nilrt-linux' '-Wall' '-fmessage-length=0' '-std=gnu++17' '-v' '-o' 'CMakeFiles/cmTC_3a391.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
-        ignore line: [ c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/as.exe -v --64 -o CMakeFiles/cmTC_3a391.dir/CMakeCXXCompilerABI.cpp.o C:\\Users\\aldric\\AppData\\Local\\Temp\\ccBaH7Xu.s]
+        ignore line: [COLLECT_GCC_OPTIONS='--sysroot=C:/build/23.0/x64/sysroots/core2-64-nilrt-linux' '-Wall' '-fmessage-length=0' '-std=gnu++17' '-v' '-o' 'CMakeFiles/cmTC_c09d8.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
+        ignore line: [ c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/as.exe -v --64 -o CMakeFiles/cmTC_c09d8.dir/CMakeCXXCompilerABI.cpp.o C:\\Users\\aldric\\AppData\\Local\\Temp\\ccGeakBf.s]
         ignore line: [GNU assembler version 2.36.1 (x86_64-nilrt-linux) using BFD version (GNU Binutils) 2.36.1.20210703]
         ignore line: [COMPILER_PATH=c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/]
         ignore line: [c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/]
@@ -506,8 +506,8 @@ events:
         ignore line: [C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/]
         ignore line: [C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/lib/]
         ignore line: [C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/\x0d]
-        ignore line: [COLLECT_GCC_OPTIONS='--sysroot=C:/build/23.0/x64/sysroots/core2-64-nilrt-linux' '-Wall' '-fmessage-length=0' '-std=gnu++17' '-v' '-o' 'CMakeFiles/cmTC_3a391.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64'\x0d]
-        ignore line: [[2/2] cmd.exe /C "cd . && C:\\build\\23.0\\x64\\sysroots\\x86_64-w64-mingw32\\usr\\bin\\x86_64-nilrt-linux\\x86_64-nilrt-linux-g++.exe --sysroot=C:/build/23.0/x64/sysroots/core2-64-nilrt-linux -Wall -fmessage-length=0 -Wl -O1 -Wl --hash-style=gnu -Wl --as-needed -v CMakeFiles/cmTC_3a391.dir/CMakeCXXCompilerABI.cpp.o -o cmTC_3a391   && cd ."]
+        ignore line: [COLLECT_GCC_OPTIONS='--sysroot=C:/build/23.0/x64/sysroots/core2-64-nilrt-linux' '-Wall' '-fmessage-length=0' '-std=gnu++17' '-v' '-o' 'CMakeFiles/cmTC_c09d8.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64'\x0d]
+        ignore line: [[2/2] cmd.exe /C "cd . && C:\\build\\23.0\\x64\\sysroots\\x86_64-w64-mingw32\\usr\\bin\\x86_64-nilrt-linux\\x86_64-nilrt-linux-g++.exe --sysroot=C:/build/23.0/x64/sysroots/core2-64-nilrt-linux -Wall -fmessage-length=0 -Wl -O1 -Wl --hash-style=gnu -Wl --as-needed -v CMakeFiles/cmTC_c09d8.dir/CMakeCXXCompilerABI.cpp.o -o cmTC_c09d8   && cd ."]
         ignore line: [Using built-in specs.]
         ignore line: [COLLECT_GCC=C:\\build\\23.0\\x64\\sysroots\\x86_64-w64-mingw32\\usr\\bin\\x86_64-nilrt-linux\\x86_64-nilrt-linux-g++.exe]
         ignore line: [COLLECT_LTO_WRAPPER=c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/lto-wrapper.exe]
@@ -526,13 +526,13 @@ events:
         ignore line: [C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/]
         ignore line: [C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/lib/]
         ignore line: [C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/]
-        ignore line: [COLLECT_GCC_OPTIONS='--sysroot=C:/build/23.0/x64/sysroots/core2-64-nilrt-linux' '-Wall' '-fmessage-length=0' '-v' '-o' 'cmTC_3a391' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
-        link line: [ c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/collect2.exe -plugin c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/liblto_plugin-0.dll -plugin-opt=c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/lto-wrapper.exe -plugin-opt=-fresolution=C:\\Users\\aldric\\AppData\\Local\\Temp\\ccnB8hPA.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --sysroot=C:/build/23.0/x64/sysroots/core2-64-nilrt-linux --build-id --eh-frame-hdr --hash-style=gnu -m elf_x86_64 -dynamic-linker /lib/ld-linux-x86-64.so.2 -o cmTC_3a391 C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/crt1.o C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/crti.o C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/x86_64-nilrt-linux/10.3.0/crtbegin.o -Lc:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../lib/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0 -Lc:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../lib/x86_64-nilrt-linux/gcc -LC:/build/23.0/x64/sysroots/core2-64-nilrt-linux/lib/../lib -LC:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/x86_64-nilrt-linux/10.3.0 -LC:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/x86_64-nilrt-linux/10.3.0 -LC:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib -LC:/build/23.0/x64/sysroots/core2-64-nilrt-linux/lib -LC:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib -O1 --hash-style=gnu --as-needed CMakeFiles/cmTC_3a391.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/x86_64-nilrt-linux/10.3.0/crtend.o C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/crtn.o]
+        ignore line: [COLLECT_GCC_OPTIONS='--sysroot=C:/build/23.0/x64/sysroots/core2-64-nilrt-linux' '-Wall' '-fmessage-length=0' '-v' '-o' 'cmTC_c09d8' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
+        link line: [ c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/collect2.exe -plugin c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/liblto_plugin-0.dll -plugin-opt=c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/lto-wrapper.exe -plugin-opt=-fresolution=C:\\Users\\aldric\\AppData\\Local\\Temp\\cczIvcmb.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --sysroot=C:/build/23.0/x64/sysroots/core2-64-nilrt-linux --build-id --eh-frame-hdr --hash-style=gnu -m elf_x86_64 -dynamic-linker /lib/ld-linux-x86-64.so.2 -o cmTC_c09d8 C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/crt1.o C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/crti.o C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/x86_64-nilrt-linux/10.3.0/crtbegin.o -Lc:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../lib/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0 -Lc:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../lib/x86_64-nilrt-linux/gcc -LC:/build/23.0/x64/sysroots/core2-64-nilrt-linux/lib/../lib -LC:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/x86_64-nilrt-linux/10.3.0 -LC:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/x86_64-nilrt-linux/10.3.0 -LC:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib -LC:/build/23.0/x64/sysroots/core2-64-nilrt-linux/lib -LC:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib -O1 --hash-style=gnu --as-needed CMakeFiles/cmTC_c09d8.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/x86_64-nilrt-linux/10.3.0/crtend.o C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/crtn.o]
           arg [c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/collect2.exe] ==> ignore
           arg [-plugin] ==> ignore
           arg [c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/liblto_plugin-0.dll] ==> ignore
           arg [-plugin-opt=c:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/../../libexec/x86_64-nilrt-linux/gcc/x86_64-nilrt-linux/10.3.0/lto-wrapper.exe] ==> ignore
-          arg [-plugin-opt=-fresolution=C:\\Users\\aldric\\AppData\\Local\\Temp\\ccnB8hPA.res] ==> ignore
+          arg [-plugin-opt=-fresolution=C:\\Users\\aldric\\AppData\\Local\\Temp\\cczIvcmb.res] ==> ignore
           arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
           arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
           arg [-plugin-opt=-pass-through=-lc] ==> ignore
@@ -547,7 +547,7 @@ events:
           arg [-dynamic-linker] ==> ignore
           arg [/lib/ld-linux-x86-64.so.2] ==> ignore
           arg [-o] ==> ignore
-          arg [cmTC_3a391] ==> ignore
+          arg [cmTC_c09d8] ==> ignore
           arg [C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/crt1.o] ==> obj [C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/crt1.o]
           arg [C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/crti.o] ==> obj [C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/crti.o]
           arg [C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/x86_64-nilrt-linux/10.3.0/crtbegin.o] ==> obj [C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/../lib/x86_64-nilrt-linux/10.3.0/crtbegin.o]
@@ -562,7 +562,7 @@ events:
           arg [-O1] ==> ignore
           arg [--hash-style=gnu] ==> ignore
           arg [--as-needed] ==> ignore
-          arg [CMakeFiles/cmTC_3a391.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
+          arg [CMakeFiles/cmTC_c09d8.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
           arg [-lstdc++] ==> lib [stdc++]
           arg [-lm] ==> lib [m]
           arg [-lgcc_s] ==> lib [gcc_s]

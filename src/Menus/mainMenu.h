@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include "..\Ni wrappers\QNiSysConfigWrapper.h"
 #include "..\channelReaders\analogicReader.h"
+#include "..\stringUtils\stringUtils.h"
 #include <functional>
 
 //forward declarations
@@ -17,7 +18,7 @@ public:
     mainMenu(std::shared_ptr<QNiSysConfigWrapper> aConfigWrapper,
              std::shared_ptr<AnalogicReader>      anAnalogicReader);
 
-    void displayMenu();
+    void displayMainMenu();
     void clearConsole();
 
     //signals

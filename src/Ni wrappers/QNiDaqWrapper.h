@@ -4,6 +4,9 @@
 #include <vector>
 #include <string>
 #include <NIDAQmx.h>
+#include <iostream> 
+#include <chrono>
+#include <thread>
 
 class NIDeviceModule;
 
@@ -14,8 +17,8 @@ public:
 
     int32 GetNumberOfModules();
     std::vector<std::string> GetDevicesList();
-    double readCurrent(const char* deviceName, const char* channelName, float64 minRange, float64 maxRange);
-    double readCurrent(NIDeviceModule *deviceModule, unsigned int chanIndex);
+    double readCurrent(NIDeviceModule *deviceModule, unsigned int chanIndex, unsigned int maxRetries);
+    void handleErrorAndCleanTask();
 
     
 private:

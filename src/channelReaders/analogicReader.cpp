@@ -11,7 +11,16 @@ void AnalogicReader::onOneShotValueReaded(double aValue)
     options.push_back(" 3 . Main Menu"              );    actions.push_back( [this](){  if (this->showMainMenuSignal) {this->showMainMenuSignal();}});
     retryFunction =  [this,aValue](){this->onOneShotValueReaded(aValue);};
     clearConsole();
-    displayMenu(std::to_string(aValue), options, actions, retryFunction); 
+    std::string title;
+    if (aValue==std::numeric_limits<double>::min())
+    {
+        title = "Read error";
+    }
+    else
+    {
+        title = std::to_string(aValue);
+    }
+    displayMenu(title, options, actions, retryFunction); 
  
 }
     
@@ -302,8 +311,17 @@ void AnalogicReader::manualReadOneShot()
                 std::cin.ignore();
                 displayChooseModuleMenu();  
             }
+            double value;
+            try
+            {
+                value = m_daqMx->readCurrent(m_manuallySelectedModule,m_manuallySelectedChanIndex,10);
+            }
+            catch(...)
+            {
+                 onOneShotValueReaded(std::numeric_limits<double>::min());
+            }
             
-            double value = m_daqMx->readCurrent(m_manuallySelectedModule,m_manuallySelectedChanIndex);
+            
             onOneShotValueReaded(value);
             break;
         }

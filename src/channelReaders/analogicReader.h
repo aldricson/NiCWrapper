@@ -4,6 +4,7 @@
 #include <memory>
 #include <functional>
 #include <sstream>
+#include <limits>
 #include "..\Ni wrappers\QNiSysConfigWrapper.h"
 #include "..\Ni wrappers\QNiDaqWrapper.h"
 #include "..\Ni modules definitions\NIDeviceModule.h"

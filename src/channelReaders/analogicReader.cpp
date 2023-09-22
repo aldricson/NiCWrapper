@@ -1,5 +1,6 @@
 #include "AnalogicReader.h"
 
+
 void AnalogicReader::onOneShotValueReaded(double aValue)
 {
     std::vector<std::string>           options;
@@ -180,7 +181,7 @@ void AnalogicReader::displayChooseChannelMenu()
 
     else
     {
-         unsigned int selectedChannel;
+        unsigned int selectedChannel;
         std::stringstream ss(choice);
         if (ss >> selectedChannel && ss.eof()) 
         {
@@ -199,7 +200,7 @@ void AnalogicReader::displayChooseChannelMenu()
                 }
                 return;
             }
-            if (selectedChannel < m_sysConfig->getModuleList().size())   
+            if (selectedChannel < m_manuallySelectedModule->getChanNames().size())   
             {
                  std::strncpy(m_manuallySelectedChanName, 
                               m_manuallySelectedModule->getChanNames()[selectedChannel].c_str(),

@@ -74,3 +74,5 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${DAQMX_INCLUDE} ${NISYSCFG_IN
 FILE (APPEND ../buildLog.txt "daqmx headers direcory is now added to the project\n")
 target_link_libraries(${PROJECT_NAME} PUBLIC ${DAQMX_LINUXLIB_FILES})
 FILE (APPEND ../buildLog.txt "daqmx libraries are now linked to the project\n")
+target_link_libraries(${PROJECT_NAME} PRIVATE pthread)
+FILE (APPEND ../buildLog.txt "linux thrading libraries are now linked to the project\n")

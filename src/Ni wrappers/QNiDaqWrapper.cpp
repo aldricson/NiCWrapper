@@ -3,6 +3,16 @@
 #include <cstring>
 #include "..\Ni modules definitions\NIDeviceModule.h"
 
+//NiDaqMx callbacks
+static int32 CVICALLBACK DoneCallback(TaskHandle taskHandle, 
+                                      int32 status,
+                                      void *callbackData)
+{
+    QNiDaqWrapper *daqWrapper = static_cast<QNiDaqWrapper*>(callbackData);
+    daqWrapper->handleTaskCompletion(status);
+    return 0;
+}
+
 QNiDaqWrapper::QNiDaqWrapper() {
     taskHandle = 0;
 }
@@ -63,6 +73,7 @@ std::vector<std::string> QNiDaqWrapper::GetDevicesList() {
 }
 
 
+
 double QNiDaqWrapper::readCurrent(NIDeviceModule *deviceModule, unsigned int chanIndex, unsigned int maxRetries)
 {
     if (deviceModule == nullptr)
@@ -71,6 +82,7 @@ double QNiDaqWrapper::readCurrent(NIDeviceModule *deviceModule, unsigned int cha
     }
     int32   error;
     float64 readValue;
+
     // Extract necessary information from the NIDeviceModule object
     const char* deviceName = deviceModule->getAlias().c_str();
     moduleShuntLocation shuntLoc = deviceModule->getModuleShuntLocation();
@@ -81,7 +93,8 @@ double QNiDaqWrapper::readCurrent(NIDeviceModule *deviceModule, unsigned int cha
     float64 shuntVal = deviceModule->getModuleShuntValue();
     double minRange  = deviceModule->getChanMin();
     double maxRange  = deviceModule->getChanMax();
-    // extract channelName with its index
+
+    // Extract channelName with its index
     const char* channelName = deviceModule->getChanNames()[chanIndex].c_str();
     std::string fullChannelName = std::string(deviceName) + std::string(channelName);
 
@@ -92,22 +105,24 @@ double QNiDaqWrapper::readCurrent(NIDeviceModule *deviceModule, unsigned int cha
         error = DAQmxCreateTask("getCurrentValue", &taskHandle);
         if (error) 
         {
-            // Handle error
+            handleErrorAndCleanTask();  // Handle error and clean up
             throw std::runtime_error("Failed to create task for reading current.");
         }
 
-        // DAQmxCreateAICurrentChan parameters in order:
-        // TaskHandle taskHandle              : Handle to the task, used to identify the task in subsequent NI-DAQmx calls.
-        // const char physicalChannel[]       : The name of the physical channel to use (e.g., "Mod1/ai0").
-        // const char nameToAssignToChannel[] : Optional name to assign to the channel. We keep it empty.
-        // int32 terminalConfig               : Terminal configuration for the channel. DAQmx_Val_Cfg_Default uses the default configuration.
-        // float64 minVal                     : Minimum value you expect to measure (in Amperes).
-        // float64 maxVal                     : Maximum value you expect to measure (in Amperes).
-        // int32 units                        : Units to use, in this case, Amperes (DAQmx_Val_Amps).
-        // int32 shuntResistorLoc             : Location of the shunt resistor. DAQmx_Val_Internal means it's internal to the device.
-        // float64 extShuntResistorVal        : Value of the external shunt resistor (in Ohms). We use a default value of 249.0 Ohms.
-        // const char customScaleName[]       : Name of a custom scale to apply to the channel. We don't use this here.
+        // Register the Done callback before starting the task
+        error = DAQmxRegisterDoneEvent(taskHandle, 0, DoneCallback, this);
+        if (error)
+        {
+            handleErrorAndCleanTask();  // Handle error and clean up
+            throw std::runtime_error("Failed to register Done callback.");
+        }
 
+        // Create an analog input current channel
+        // DAQmxReadAnalogScalarF64 parameters:
+        // TaskHandle taskHandle : Handle to the task
+        // float64 timeout       : Time in seconds to wait for the function to read the value
+        // float64 *value        : Pointer to the variable where the read value will be stored
+        // bool32 *reserved      : Reserved for future use. Pass NULL (nullptr in C++).
         error = DAQmxCreateAICurrentChan(taskHandle, 
                                          fullChannelName.c_str(), 
                                          "", 
@@ -120,49 +135,50 @@ double QNiDaqWrapper::readCurrent(NIDeviceModule *deviceModule, unsigned int cha
                                          NULL);
 
         if (error) {
-            handleErrorAndCleanTask();
-            // Check if max retries reached
+            handleErrorAndCleanTask();  // Handle error and clean up
             if (++retryCount >= maxRetries) 
             {
                 throw std::runtime_error("Failed to create channel after max retries.");
             }
-            // Wait before retrying
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
             continue;
         }
         break;  // Successfully created the channel, break out of the loop
     }
 
-
-        // Start the task to begin sampling
+    // Start the task to begin sampling
     error = DAQmxStartTask(taskHandle);
     if (error)
     {
-        // Handle error and clean up
-        handleErrorAndCleanTask();
+        handleErrorAndCleanTask();  // Handle error and clean up
         throw std::runtime_error("Failed to start task for reading current.");
     }
 
     // Read the current value
-    // DAQmxReadAnalogScalarF64 parameters:
-    // TaskHandle taskHandle : Handle to the task
-    // float64 timeout       : Time in seconds to wait for the function to read the value
-    // float64 *value        : Pointer to the variable where the read value will be stored
-    // bool32 *reserved      : Reserved for future use. Pass NULL (nullptr in C++).
     error = DAQmxReadAnalogScalarF64(taskHandle, 10.0, &readValue, nullptr);
     if (error)
     {
-        // Handle error and clean up
-        handleErrorAndCleanTask();
-        throw std::runtime_error("Failed to start task for reading current.");
+        handleErrorAndCleanTask();  // Handle error and clean up
+        throw std::runtime_error("Failed to read current value.");
     }
-    // Stop the task and clear it
-    DAQmxStopTask(taskHandle);
-    DAQmxClearTask(taskHandle);
-    // Convert the read value to the appropriate unit (if necessary) and return it
-    return static_cast<double>(readValue);
 
+    // Stop the task
+    error = DAQmxStopTask(taskHandle);
+    if (error)
+    {
+        handleErrorAndCleanTask();  // Handle error and clean up
+        throw std::runtime_error("Failed to stop task.");
+    }
+
+    // Clear the task to free resources
+    DAQmxClearTask(taskHandle);
+
+    // Convert the read value to the appropriate unit (if necessary) and return it
+    double result = static_cast<double>(readValue);
+    setLastSingleChannelValue(result);
+    return result;
 }
+
 
 void QNiDaqWrapper::handleErrorAndCleanTask()
 {
@@ -170,4 +186,31 @@ void QNiDaqWrapper::handleErrorAndCleanTask()
     DAQmxGetExtendedErrorInfo(errBuff, 2048);
     std::cerr << "Extended Error Info: " << errBuff << std::endl;
     DAQmxClearTask(taskHandle);
+}
+
+void QNiDaqWrapper::handleTaskCompletion(int32 status)
+{
+     if (status != 0) 
+     {
+
+        // Handle the error. You can use DAQmxGetExtendedErrorInfo here.
+     }
+    // Additional code to execute when the task is done.
+        // Vérifiez si le signal est défini avant de l'émettre
+    if (channelDataReadySignal) {
+        channelDataReadySignal(m_lastSingleChannelValue,this);
+    }
+}
+
+
+// Getter pour m_lastSingleChannelValue
+double QNiDaqWrapper::getLastSingleChannelValue() const {
+    return m_lastSingleChannelValue;
+}
+
+// Setter pour m_lastSingleChannelValue
+void QNiDaqWrapper::setLastSingleChannelValue(double value) {
+    m_lastSingleChannelValue = value;
+
+
 }

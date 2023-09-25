@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include <chrono>
 #include <cstdio>
+#include <atomic>
 
 class KeyboardPoller {
 public:
@@ -14,7 +15,7 @@ public:
     std::function<void(char)> keyboardHitSignal = nullptr;
 
     // Status of the poller execution
-    bool running = false;
+    std::atomic<bool> running;
 
     // Default frequency in Hz
     int frequency = 100;

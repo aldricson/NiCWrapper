@@ -21,7 +21,6 @@ public:
     double readCurrent(NIDeviceModule *deviceModule, unsigned int chanIndex, unsigned int maxRetries);
     void handleErrorAndCleanTask();
 
-
     //signals
     std::function<void(double lastValue,QNiDaqWrapper *sender)>    channelDataChangedSignal = nullptr;  //emited as soon as the data for a channel has changed, 
                                                                                                         //without any garanty that the channel is ready for a new task  

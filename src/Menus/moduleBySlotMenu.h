@@ -13,7 +13,6 @@ class moduleBySlotMenu {
 public:
     moduleBySlotMenu(std::shared_ptr<QNiSysConfigWrapper> aConfigWrapper);
     void displaySlotMenu();
-    void clearConsole();
 
 private:
   std::shared_ptr<QNiSysConfigWrapper> m_cfgWrapper;

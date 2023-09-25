@@ -5,7 +5,9 @@
 #include <chrono>
 
 // Default constructor
-KeyboardPoller::KeyboardPoller() {}
+KeyboardPoller::KeyboardPoller() {
+    running.store(false);
+}
 
 // Destructor
 KeyboardPoller::~KeyboardPoller() {
@@ -14,21 +16,22 @@ KeyboardPoller::~KeyboardPoller() {
 
 // Start the poller
 void KeyboardPoller::start() {
-    running = true;
+    running.store(true);
     pollerThread = std::thread(&KeyboardPoller::pollKeyboard, this);
 }
 
 // Stop the poller
 void KeyboardPoller::stop() {
-    running = false;
+    running.store(false);
     if (pollerThread.joinable()) {
         pollerThread.join();
     }
 }
 
+
 // Internal function to monitor the keyboard
 void KeyboardPoller::pollKeyboard() {
-    while (running) {
+    while (running.load()) {
         if (kbhit()) {
             char c = getchar();
             if (keyboardHitSignal) {

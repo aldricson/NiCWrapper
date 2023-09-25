@@ -12,7 +12,6 @@ class moduleByAliasMenu {
 public:
     moduleByAliasMenu(std::shared_ptr<QNiSysConfigWrapper> aConfigWrapper);
     void displayAliasMenu();
-    void clearConsole();
 
 private:
   std::shared_ptr<QNiSysConfigWrapper> m_cfgWrapper;

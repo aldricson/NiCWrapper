@@ -50,9 +50,3 @@ void moduleByAliasMenu::displayAliasMenu()
 }
 
 
-
-void moduleByAliasMenu::clearConsole()
-{
-    // ANSI escape sequence to clear screen for Unix-like systems
-    std::cout << "\033[2J\033[1;1H";
-}

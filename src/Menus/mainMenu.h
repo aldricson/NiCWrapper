@@ -19,7 +19,7 @@ public:
              std::shared_ptr<AnalogicReader>      anAnalogicReader);
 
     void displayMainMenu();
-    void clearConsole();
+
 
     //signals
     std::function<void()>  exitProgramSignal; 

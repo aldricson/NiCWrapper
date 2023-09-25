@@ -6,33 +6,90 @@ void AnalogicReader::onOneShotValueReaded(double aValue)
     std::vector<std::string>           options;
     std::vector<std::function<void()>> actions;
     std::function<void()>              retryFunction;
-    options.push_back(" 0 . Read again"             );    actions.push_back( [this](){this->manualReadOneShot();} );
-    options.push_back(" 1 . Choose another channel" );    actions.push_back( [this](){this->displayChooseChannelMenu();});  
-    options.push_back(" 2 . Choose another module"  );    actions.push_back( [this](){this->displayChooseChannelMenu();});
-    options.push_back(" 3 . Main Menu"              );    actions.push_back( [this](){  if (this->showMainMenuSignal) {this->showMainMenuSignal();}});
-    retryFunction =  [this,aValue](){this->onOneShotValueReaded(aValue);};
-    clearConsole();
-    std::string title;
-    if (aValue==std::numeric_limits<double>::min())
+    if (m_fromPolling.load())
     {
-        title = "Read error";
+        /*options.push_back(" press esc to exit ");
+         clearConsole();
+        std::string title;
+        if (aValue==std::numeric_limits<double>::min())
+        {
+           title = "Read error";
+        }
+        else
+        {
+           title = "value: "+std::to_string(aValue)+" poll count:"+std::to_string(m_manualPollCount);
+        }
+        displayMenu(title, options);*/ 
+        clearConsole();
+        std::string title;
+        if (aValue==std::numeric_limits<double>::min())
+        {
+           title = "Read error";
+        }
+        else
+        {
+            title = "value: " + std::to_string(aValue) + " poll count:" + std::to_string(m_manualPollCount.load());
+        }
+       std::cout<<title.c_str()<<std::endl;
     }
     else
     {
-        title = std::to_string(aValue);
+        options.push_back(" 0 . Read again"             );    actions.push_back( [this](){m_fromPolling.store(false);
+                                                                                         this->manualReadOneShot();} );
+        options.push_back(" 1 . Choose another channel" );    actions.push_back( [this](){this->displayChooseChannelMenu();});  
+        options.push_back(" 2 . Choose another module"  );    actions.push_back( [this](){this->displayChooseChannelMenu();});
+        options.push_back(" 3 . Main Menu"              );    actions.push_back( [this](){  if (this->showMainMenuSignal) {this->showMainMenuSignal();}});
+        retryFunction =  [this,aValue](){this->onOneShotValueReaded(aValue);};
+        clearConsole();
+        std::string title;
+        if (aValue==std::numeric_limits<double>::min())
+        {
+           title = "Read error";
+        }
+        else
+        {
+           title = std::to_string(aValue);
+        }
+        displayMenu(title, options, actions, retryFunction); 
     }
-    displayMenu(title, options, actions, retryFunction); 
  
 }
-    
 
+void AnalogicReader::onPollingTimerTimeOut()
+{
+    // Call manualReadOneShot
+    unsigned int i = m_manualPollCount.load();
+    i++;
+    m_manualPollCount.store(i);
+    manualReadOneShot();
+}
 
+void AnalogicReader::onKeyboardHit(char key)
+{
+    if (key==27)
+    {
+        mustStopPolling.store(true);
+    }
+}
+
+void AnalogicReader::onChannelDataReady(double lastValue, QNiDaqWrapper *sender)
+{
+    onOneShotValueReaded(lastValue);
+}
 
 AnalogicReader::AnalogicReader(std::shared_ptr<QNiSysConfigWrapper> aSysConfigInstance,
                                std::shared_ptr<QNiDaqWrapper> aDaqMxInstance)
 {
+    m_manualPollCount.store(0);
+    m_fromPolling.store(false);
     m_sysConfig = aSysConfigInstance;
     m_daqMx     = aDaqMxInstance;
+    m_daqMx->channelDataReadySignal = std::bind(&AnalogicReader::onChannelDataReady,this,std::placeholders::_1,std::placeholders::_2);
+    m_pollingTimer = std::make_shared<SimpleTimer>();
+    m_pollingTimer -> setSlotFunction([this](){this-> onPollingTimerTimeOut();});
+    m_pollingTimer -> setInterval(std::chrono::milliseconds(500));
+    m_keyboardPoller = std::make_shared<KeyboardPoller>();
+    m_keyboardPoller->keyboardHitSignal = std::bind(&AnalogicReader::onKeyboardHit,this,std::placeholders::_1);
 }
 
 AnalogicReader::~AnalogicReader()
@@ -270,19 +327,20 @@ void AnalogicReader::displayShowValueMenu()
             {
                 case 0:
                 {
+                    m_fromPolling.store(false);
                     manualReadOneShot();
+                    break;
+                }
+                case 1:
+                {
+                    m_fromPolling.store(true);
+                    manualReadPolling();
                     break;
                 }
             }
         }
     }
     
-}
-
-void AnalogicReader::clearConsole()
-{
-    // ANSI escape sequence to clear screen for Unix-like systems
-    std::cout << "\033[2J\033[1;1H";
 }
 
 void AnalogicReader::manualReadOneShot()
@@ -377,6 +435,24 @@ void AnalogicReader::manualReadOneShot()
             break;
         }
     }
+}
+
+void AnalogicReader::manualReadPolling() 
+{
+    mustStopPolling.store(false);
+    m_fromPolling.store(true);
+    m_keyboardPoller->start();
+    std::cout<<"keyBoardPoller started"<<std::endl;
+    m_pollingTimer->start();
+    std::cout<<"timer started"<<std::endl;
+    while (mustStopPolling.load()!=true) 
+    {
+     // Maybe do some work or sleep
+     std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
+    m_pollingTimer->stop(); 
+    m_keyboardPoller->stop();
+    displayShowValueMenu();
 }
 
 // Getters

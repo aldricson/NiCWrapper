@@ -190,6 +190,7 @@ void QNiDaqWrapper::handleErrorAndCleanTask()
 
 void QNiDaqWrapper::handleTaskCompletion(int32 status)
 {
+     std::cout<<"task complete"<<std::endl;
      if (status != 0) 
      {
 
@@ -197,7 +198,7 @@ void QNiDaqWrapper::handleTaskCompletion(int32 status)
      }
     // Additional code to execute when the task is done.
         // Vérifiez si le signal est défini avant de l'émettre
-    if (channelDataReadySignal) {
+    if (channelDataReadySignal) { 
         channelDataReadySignal(m_lastSingleChannelValue,this);
     }
 }

@@ -38,6 +38,7 @@ C:/Users/aldric/Documents/daqMxTest/build/../src/circularBuffer/circular_buffer.
 C:/Users/aldric/Documents/daqMxTest/build/../src/circularBuffer/traits.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/globals/globalConsts.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/stringUtils/stringUtils.h
+C:/Users/aldric/Documents/daqMxTest/build/../src/timers/simpleTimer.h
 List of Source Files:
 C:/Users/aldric/Documents/daqMxTest/build/../src/Menus/mainMenu.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/Menus/moduleByAliasMenu.cpp

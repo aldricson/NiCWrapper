@@ -117,6 +117,11 @@ static inline void displayMenu(const std::string& title,
     handleUserInput(options,actions,retryFunction);
 }
 
+static inline void clearConsole()
+{
+    // ANSI escape sequence to clear screen for Unix-like systems
+    std::cout << "\033[2J\033[1;1H";
+}
 
 
 

@@ -23,7 +23,7 @@ FILE (APPEND ../buildLog.txt "*** TOOL CHAIN AND COMPILER CONFIGURED ***\n\n")
 
 FILE (APPEND ../buildLog.txt "*** Project specific ***\n")
 cmake_minimum_required(VERSION 3.19)
-set(PROJECT_NAME daqMxTest)
+set(PROJECT_NAME dataDrill)
 FILE (APPEND ../buildLog.txt "project name is set to: ${PROJECT_NAME}\n")
 project(${PROJECT_NAME})
 FILE (APPEND ../buildLog.txt "loading sources and headers")
@@ -68,7 +68,11 @@ foreach(str ${NISYSCFG_HEADER_FILES})
     FILE (APPEND ../buildLog.txt "${str}\n")
 endforeach()
 
+
 add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES} ${DAQMX_HEADER_FILES} ${NISYSCFG_HEADER_FILES})
+
+
+
 FILE (APPEND ../buildLog.txt "all files has been added to linux elf executable \n")
 target_include_directories(${PROJECT_NAME} PUBLIC ${DAQMX_INCLUDE} ${NISYSCFG_INCLUDE})
 FILE (APPEND ../buildLog.txt "daqmx headers direcory is now added to the project\n")

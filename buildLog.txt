@@ -7,7 +7,7 @@ Setting the search behavior for various types of files.
 *** TOOL CHAIN AND COMPILER CONFIGURED ***
 
 *** Project specific ***
-project name is set to: daqMxTest
+project name is set to: dataDrill
 loading sources and headers
 List of Header Files:
 C:/Users/aldric/Documents/daqMxTest/build/../src/Menus/mainMenu.h

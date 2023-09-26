@@ -139,7 +139,7 @@ CMAKE_PROJECT_DESCRIPTION:STATIC=
 CMAKE_PROJECT_HOMEPAGE_URL:STATIC=
 
 //Value Computed by CMake
-CMAKE_PROJECT_NAME:STATIC=daqMxTest
+CMAKE_PROJECT_NAME:STATIC=dataDrill
 
 //Path to a program.
 CMAKE_RANLIB:FILEPATH=C:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/x86_64-nilrt-linux-ranlib.exe
@@ -214,6 +214,15 @@ daqMxTest_IS_TOP_LEVEL:STATIC=ON
 
 //Value Computed by CMake
 daqMxTest_SOURCE_DIR:STATIC=C:/Users/aldric/Documents/daqMxTest/build
+
+//Value Computed by CMake
+dataDrill_BINARY_DIR:STATIC=C:/Users/aldric/Documents/daqMxTest/build
+
+//Value Computed by CMake
+dataDrill_IS_TOP_LEVEL:STATIC=ON
+
+//Value Computed by CMake
+dataDrill_SOURCE_DIR:STATIC=C:/Users/aldric/Documents/daqMxTest/build
 
 
 ########################

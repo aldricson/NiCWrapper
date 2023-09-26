@@ -95,7 +95,7 @@ CMAKE_EXPORT_COMPILE_COMMANDS:BOOL=
 CMAKE_FIND_PACKAGE_REDIRECTS_DIR:STATIC=C:/Users/aldric/Documents/daqMxTest/build/CMakeFiles/pkgRedirects
 
 //Install path prefix, prepended onto install directories.
-CMAKE_INSTALL_PREFIX:PATH=C:/Program Files (x86)/daqMxTest
+CMAKE_INSTALL_PREFIX:PATH=C:/Program Files (x86)/dataDrill
 
 //Path to a program.
 CMAKE_LINKER:FILEPATH=C:/build/23.0/x64/sysroots/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/x86_64-nilrt-linux-ld.exe
@@ -205,15 +205,6 @@ CMAKE_TAPI:FILEPATH=CMAKE_TAPI-NOTFOUND
 // during the make.  This is useful for debugging only. With Visual
 // Studio IDE projects all commands are done without /nologo.
 CMAKE_VERBOSE_MAKEFILE:BOOL=FALSE
-
-//Value Computed by CMake
-daqMxTest_BINARY_DIR:STATIC=C:/Users/aldric/Documents/daqMxTest/build
-
-//Value Computed by CMake
-daqMxTest_IS_TOP_LEVEL:STATIC=ON
-
-//Value Computed by CMake
-daqMxTest_SOURCE_DIR:STATIC=C:/Users/aldric/Documents/daqMxTest/build
 
 //Value Computed by CMake
 dataDrill_BINARY_DIR:STATIC=C:/Users/aldric/Documents/daqMxTest/build

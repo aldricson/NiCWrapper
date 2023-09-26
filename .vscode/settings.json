@@ -54,7 +54,11 @@
         "stop_token": "cpp",
         "thread": "cpp",
         "condition_variable": "cpp",
-        "mutex": "cpp"
+        "mutex": "cpp",
+        "csignal": "cpp",
+        "list": "cpp",
+        "map": "cpp",
+        "variant": "cpp"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }

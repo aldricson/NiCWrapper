@@ -6,10 +6,47 @@ Setting the system root directory for the toolchain.
 Setting the search behavior for various types of files.
 *** TOOL CHAIN AND COMPILER CONFIGURED ***
 
+*** FTXUI Integration Start ***
 *** Project specific ***
 project name is set to: dataDrill
 loading sources and headers
 List of Header Files:
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/component/animation.hpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/component/captured_mouse.hpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/component/component.hpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/component/component_base.hpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/component/component_options.hpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/component/event.hpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/component/loop.hpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/component/mouse.hpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/component/receiver.hpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/component/screen_interactive.hpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/component/task.hpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/component/terminal_input_parser.hpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/dom/box_helper.hpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/dom/canvas.hpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/dom/deprecated.hpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/dom/direction.hpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/dom/elements.hpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/dom/flexbox_config.hpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/dom/flexbox_helper.hpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/dom/linear_gradient.hpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/dom/node.hpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/dom/node_decorator.hpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/dom/requirement.hpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/dom/table.hpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/dom/take_any_args.hpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/screen/box.hpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/screen/color.hpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/screen/color_info.hpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/screen/deprecated.hpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/screen/screen.hpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/screen/string.hpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/screen/string_internal.hpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/screen/terminal.hpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/screen/util.hpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/util/autoreset.hpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/util/ref.hpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/Menus/mainMenu.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/Menus/moduleByAliasMenu.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/Menus/moduleBySlotMenu.h
@@ -19,6 +56,7 @@ C:/Users/aldric/Documents/daqMxTest/build/../src/Modbus/libmodbus/modbus-rtu.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/Modbus/libmodbus/modbus-tcp-private.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/Modbus/libmodbus/modbus-tcp.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/Modbus/libmodbus/modbus-version.h
+C:/Users/aldric/Documents/daqMxTest/build/../src/Modbus/libmodbus/modbus-version.h.in
 C:/Users/aldric/Documents/daqMxTest/build/../src/Modbus/libmodbus/modbus.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/Ni modules definitions/NI9208.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/Ni modules definitions/NI9239.h
@@ -36,10 +74,80 @@ C:/Users/aldric/Documents/daqMxTest/build/../src/circularBuffer/ThreadSafeCircul
 C:/Users/aldric/Documents/daqMxTest/build/../src/circularBuffer/algorithm.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/circularBuffer/circular_buffer.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/circularBuffer/traits.h
+C:/Users/aldric/Documents/daqMxTest/build/../src/forms/MainConsoleForm.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/globals/globalConsts.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/stringUtils/stringUtils.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/timers/simpleTimer.h
 List of Source Files:
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/component/animation.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/component/button.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/component/catch_event.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/component/checkbox.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/component/collapsible.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/component/component.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/component/component_options.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/component/container.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/component/dropdown.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/component/event.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/component/hoverable.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/component/input.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/component/loop.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/component/maybe.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/component/menu.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/component/modal.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/component/radiobox.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/component/renderer.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/component/resizable_split.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/component/screen_interactive.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/component/slider.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/component/terminal_input_parser.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/component/util.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/component/window.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/dom/automerge.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/dom/blink.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/dom/bold.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/dom/border.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/dom/box_helper.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/dom/canvas.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/dom/clear_under.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/dom/color.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/dom/composite_decorator.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/dom/dbox.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/dom/dim.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/dom/flex.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/dom/flexbox.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/dom/flexbox_config.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/dom/flexbox_helper.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/dom/focus.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/dom/frame.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/dom/gauge.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/dom/graph.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/dom/gridbox.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/dom/hbox.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/dom/hyperlink.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/dom/inverted.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/dom/linear_gradient.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/dom/node.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/dom/node_decorator.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/dom/paragraph.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/dom/reflect.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/dom/scroll_indicator.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/dom/separator.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/dom/size.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/dom/spinner.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/dom/strikethrough.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/dom/table.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/dom/text.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/dom/underlined.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/dom/underlined_double.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/dom/util.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/dom/vbox.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/screen/box.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/screen/color.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/screen/color_info.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/screen/screen.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/screen/string.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/screen/terminal.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/Menus/mainMenu.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/Menus/moduleByAliasMenu.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/Menus/moduleBySlotMenu.cpp
@@ -55,6 +163,7 @@ C:/Users/aldric/Documents/daqMxTest/build/../src/Ni wrappers/QNiSysConfigWrapper
 C:/Users/aldric/Documents/daqMxTest/build/../src/Signals/KeyboardPoller.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/channelReaders/analogicReader.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/circularBuffer/ThreadSafeCircularBuffer.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/forms/MainConsoleForm.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/main.cpp
 Excutable output file set to bin bin
 build type is: Debug

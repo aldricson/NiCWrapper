@@ -21,6 +21,14 @@ set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE BOTH)
 set(CMAKE_CXX_STANDARD 17)
 FILE (APPEND ../buildLog.txt "*** TOOL CHAIN AND COMPILER CONFIGURED ***\n\n")
 
+FILE (APPEND ../buildLog.txt "*** FTXUI Integration Start ***\n")
+# Add FTXUI as a subdirectory so we can use its targets
+# add_subdirectory(../third_party/FTXUI ${CMAKE_BINARY_DIR}/third_party/FTXUI)
+# Explicitly set the include directories (if needed)
+# target_include_directories(${PROJECT_NAME} PUBLIC ${FTXUI_INCLUDE_DIRS})
+
+
+
 FILE (APPEND ../buildLog.txt "*** Project specific ***\n")
 cmake_minimum_required(VERSION 3.19)
 set(PROJECT_NAME dataDrill)
@@ -28,7 +36,7 @@ FILE (APPEND ../buildLog.txt "project name is set to: ${PROJECT_NAME}\n")
 project(${PROJECT_NAME})
 FILE (APPEND ../buildLog.txt "loading sources and headers")
 file(GLOB_RECURSE SOURCE_FILES "../src/*.cpp")
-file(GLOB_RECURSE HEADER_FILES "../src/*.h")
+file(GLOB_RECURSE HEADER_FILES "../src/*.h*")
 FILE (APPEND ../buildLog.txt "\nList of Header Files:\n")
 foreach(str ${HEADER_FILES})
     FILE (APPEND ../buildLog.txt "${str}\n")
@@ -71,7 +79,10 @@ endforeach()
 
 add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES} ${DAQMX_HEADER_FILES} ${NISYSCFG_HEADER_FILES})
 
-
+# *** FTXUI Integration Start ***
+# Link your executable with FTXUI
+#target_link_libraries(${PROJECT_NAME} PRIVATE component screen)
+# *** FTXUI Integration End ***
 
 FILE (APPEND ../buildLog.txt "all files has been added to linux elf executable \n")
 target_include_directories(${PROJECT_NAME} PUBLIC ${DAQMX_INCLUDE} ${NISYSCFG_INCLUDE})

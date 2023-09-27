@@ -2,7 +2,7 @@
 #define QSIGNALTEST_H
 
 #include <iostream>
-#include "..\Ni modules definitions\NIDeviceModule.h"
+#include "../NiModulesDefinitions/NIDeviceModule.h"
 
 class QSignalTest {
 public:

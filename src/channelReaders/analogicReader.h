@@ -8,12 +8,12 @@
 #include <atomic>
 #include <termios.h>
 
-#include "..\Ni wrappers\QNiSysConfigWrapper.h"
-#include "..\Ni wrappers\QNiDaqWrapper.h"
-#include "..\Ni modules definitions\NIDeviceModule.h"
-#include "..\stringUtils\stringUtils.h"
-#include "..\Signals\KeyboardPoller.h"
-#include "..\timers\simpleTimer.h"
+#include "../NiWrappers/QNiSysConfigWrapper.h"
+#include "../NiWrappers/QNiDaqWrapper.h"
+#include "../NiModulesDefinitions/NIDeviceModule.h"
+#include "../stringUtils/stringUtils.h"
+#include "../Signals/KeyboardPoller.h"
+#include "../timers/simpleTimer.h"
 
 class AnalogicReader {
 private:

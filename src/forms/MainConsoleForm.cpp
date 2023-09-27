@@ -1,75 +1,79 @@
 #include "MainConsoleForm.h"
 
 
-/*using namespace ftxui;
-
-MainConsoleForm::MainConsoleForm() {
+MainConsoleForm::MainConsoleForm() 
+{
     // Initialize components
-    auto readValueOneShotButton = ftxui::Button("[Read Value One Shot]", [&] {
-        if (onReadValueOneShot) onReadValueOneShot();
-    });
+    initButtons();
 
-    auto readValuePollingButton = Button("[Read Value Polling]", [&] {
-        if (onReadValuePolling) onReadValuePolling();
-    });
-
-    auto writeOutputButton = Button("[Write Output]", [&] {
-        if (onWriteOutput) onWriteOutput();
-    });
-
-
-   
-
-
-    auto selectModule = ftxui::Menu({"Module1", "Module2"});
-    selectModule->on_change = [&] {
-        if (onSelectModuleChanged) onSelectModuleChanged(selectedModuleIndex_);
-    };
-
-    auto selectChannel = Menu({"Channel1", "Channel2"}, &selectedChannelIndex_);
-    selectChannel->on_change = [&] {
-        if (onSelectChannelChanged) onSelectChannelChanged(selectedChannelIndex_);
-    };
-
-    // Layout
-    auto layout = Container::Vertical({
-        Container::Horizontal({
-            selectModule,
-            readValueOneShotButton,
-        }),
-        Container::Horizontal({
-            selectChannel,
-            readValuePollingButton,
-        }),
-        Container::Horizontal({
-            writeOutputButton,
-        }),
-    });
-
-    auto renderer = Renderer(layout, [&] {
-        return vbox({
-            hbox({
-                selectModule->Render() | flex,
-                readValueOneShotButton->Render() | flex,
-            }),
-            hbox({
-                selectChannel->Render() | flex,
-                readValuePollingButton->Render() | flex,
-            }),
-            hbox({
-                writeOutputButton->Render() | flex,
-            }),
-        });
-    });
-
-    screen_ = ScreenInteractive::TerminalOutput();
-    screen_->AddComponent(renderer);
 }
 
-void MainConsoleForm::Show() {
-    screen_->Loop();
+void MainConsoleForm::Show() 
+{
+ //  m_screen->Loop();
+}
+
+void MainConsoleForm::initLayer()
+{
+    Components line1 = {m_ModuleMenu,  m_readValueOneShotButton};
+    Components line2 = {m_ChannelMenu, m_readValuePollingButton};
+    Components line3 = {m_writeOutputButton};
+
+    m_layer =  Container::Vertical({
+               Container::Horizontal(line1),
+               Container::Horizontal(line2),
+               Container::Horizontal(line3)
+               });
+}
+
+void MainConsoleForm::initButtons()
+{
+    m_readValueOneShotButton  =  Button("Read Value One Shot", [&] {OnReadValueOneShotClicked();});
+    m_readValuePollingButton  =  Button("Read Value Polling" , [&] {OnReadValuePollingClicked();});
+    m_writeOutputButton       =  Button("Write Output"       , [&] {onWriteOutputClicked     ();});
+    m_ExitButton              =  Button("Exit"               , [&] {onExitClicked            ();});
 }
 
 void MainConsoleForm::initmoduleMenuOptions(std::vector<std::string> moduleAlaises)
 {
-}*/
+    // Set the list of entries
+     std::vector<std::string> tempEntries = std::move(moduleAlaises);
+     m_moduleMenuOptions.entries = ConstStringListRef(&tempEntries);
+    // Set the initially selected index (0-based)
+    m_moduleMenuOptions.selected = 0;
+    // Style: Underline the selected option
+    m_moduleMenuOptions.underline.enabled = true;
+    m_ModuleMenu = ftxui::Menu(m_moduleMenuOptions);
+}
+
+void MainConsoleForm::initChannelMenuOptions(std::vector<std::string> channelNames)
+{
+        // Set the list of entries
+     std::vector<std::string> tempEntries = std::move(channelNames);
+     m_channelMenuOptions.entries = ConstStringListRef(&tempEntries);
+    // Set the initially selected index (0-based)
+    m_channelMenuOptions.selected = 0;
+    // Style: Underline the selected option
+    m_channelMenuOptions.underline.enabled = true;
+    m_ChannelMenu = ftxui::Menu(m_channelMenuOptions);
+}
+
+void MainConsoleForm::OnReadValueOneShotClicked()
+{
+    //TODO
+}
+
+void MainConsoleForm::OnReadValuePollingClicked()
+{
+    //TODO
+}
+
+void MainConsoleForm::onWriteOutputClicked()
+{
+    //TODO
+}
+
+void MainConsoleForm::onExitClicked()
+{
+    //TODO
+}

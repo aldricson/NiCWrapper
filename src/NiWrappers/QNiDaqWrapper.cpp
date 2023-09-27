@@ -1,7 +1,7 @@
 #include "QNiDaqWrapper.h"
 #include <iostream>
 #include <cstring>
-#include "..\Ni modules definitions\NIDeviceModule.h"
+#include "../NiModulesDefinitions/NIDeviceModule.h"
 
 //NiDaqMx callbacks
 static int32 CVICALLBACK DoneCallback(TaskHandle taskHandle, 

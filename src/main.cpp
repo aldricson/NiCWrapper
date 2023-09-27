@@ -5,11 +5,11 @@
 #include <cstring>
 #include <string.h>
 #include <memory> // for std::unique_ptr
-#include ".\Ni wrappers\QNiSysConfigWrapper.h"
-#include ".\Ni wrappers\QNiDaqWrapper.h"
-#include ".\channelReaders\analogicReader.h"
-#include ".\Signals\QSignalTest.h"
-#include ".\Menus\mainMenu.h"
+#include "./NiWrappers/QNiSysConfigWrapper.h"
+#include "./NiWrappers/QNiDaqWrapper.h"
+#include "./channelReaders/analogicReader.h"
+#include "./Signals/QSignalTest.h"
+#include "./Menus/mainMenu.h"
 
 // These wrappers utilize low-level APIs that have hardware access. 
 // Proper destruction is essential to restore certain hardware states when they go out of scope.

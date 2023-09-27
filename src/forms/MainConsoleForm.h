@@ -1,10 +1,10 @@
 #ifndef MAIN_CONSOLE_FORM_H
 #define MAIN_CONSOLE_FORM_H
 
-/*#include "ftxui/component/captured_mouse.hpp"      // for ftxui
-#include "ftxui/component/component.hpp"           // for Menu
-#include "ftxui/component/component_options.hpp"   // for MenuOption
-#include "ftxui/component/screen_interactive.hpp"  // for ScreenInteractive
+#include "../FTXUI/component/captured_mouse.hpp"      // for ftxui
+#include "../FTXUI/component/component.hpp"           // for Menu
+#include "../FTXUI/component/component_options.hpp"   // for MenuOption
+#include "../FTXUI/component/screen_interactive.hpp"  // for ScreenInteractive
 #include <iostream>
 #include <functional>
 #include <memory>
@@ -17,24 +17,41 @@ public:
     void Show();
 
     // Signals
-    std::function<void()> onReadValueOneShot;
-    std::function<void()> onReadValuePolling;
-    std::function<void()> onWriteOutput;
-    std::function<void(int)> onSelectModuleChanged;
-    std::function<void(int)> onSelectChannelChanged;
+    std::function<void()>    ReadValueOneShotSignal;
+    std::function<void()>    ReadValuePollingSignal;
+    std::function<void()>    WriteOutputSignal;
+    std::function<void(int)> SelectModuleChangedSignal;
+    std::function<void(int)> SelectChannelChangedSignal;
 
 private:
-    ftxui::Component screen_;
-    ftxui::Component container_;
+    ftxui::Component m_screen;
+    ftxui::Component m_layer;
+    //buttons
+    ftxui::Component m_readValueOneShotButton;
+    ftxui::Component m_readValuePollingButton;
+    ftxui::Component m_writeOutputButton;
+    ftxui::Component m_ExitButton;
+    ftxui::Component m_ModuleMenu;
+    ftxui::Component m_ChannelMenu;
 
-    ftxui::Menu test;
 
     int selectedModuleIndex_ = 0;  // Changed from std::wstring to int
     int selectedChannelIndex_ = 0; // Changed from std::wstring to int
-    void initmoduleMenuOptions(std::vector<std::string> moduleAlaises);
+    
+    void initButtons();
+    void initmoduleMenuOptions (std::vector<std::string> moduleAlaises);
+    void initChannelMenuOptions(std::vector<std::string> channelNames);
+    void initLayer();
+
+    //private slots
+    void OnReadValueOneShotClicked();
+    void OnReadValuePollingClicked();
+    void onWriteOutputClicked();
+    void onExitClicked();
 
 
-    ftxui::MenuOption m_moduleMenuOptions = ftxui::MenuOption::Vertical(); 
-};*/
+    ftxui::MenuOption m_moduleMenuOptions  = ftxui::MenuOption::Vertical();
+    ftxui::MenuOption m_channelMenuOptions = ftxui::MenuOption::Vertical();  
+};
 
 #endif // MAIN_CONSOLE_FORM_H

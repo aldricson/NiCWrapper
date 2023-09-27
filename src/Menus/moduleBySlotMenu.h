@@ -3,8 +3,8 @@
 
 #include <string>
 #include <cstdlib>
-#include "..\Ni wrappers\QNiSysConfigWrapper.h"
-#include "..\stringUtils\stringUtils.h"
+#include "../NiWrappers/QNiSysConfigWrapper.h"
+#include "../stringUtils/stringUtils.h"
 #include <functional>
 #include <limits>
 #include <vector>

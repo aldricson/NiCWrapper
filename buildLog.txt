@@ -6,7 +6,6 @@ Setting the system root directory for the toolchain.
 Setting the search behavior for various types of files.
 *** TOOL CHAIN AND COMPILER CONFIGURED ***
 
-*** FTXUI Integration Start ***
 *** Project specific ***
 project name is set to: dataDrill
 loading sources and headers
@@ -58,15 +57,15 @@ C:/Users/aldric/Documents/daqMxTest/build/../src/Modbus/libmodbus/modbus-tcp.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/Modbus/libmodbus/modbus-version.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/Modbus/libmodbus/modbus-version.h.in
 C:/Users/aldric/Documents/daqMxTest/build/../src/Modbus/libmodbus/modbus.h
-C:/Users/aldric/Documents/daqMxTest/build/../src/Ni modules definitions/NI9208.h
-C:/Users/aldric/Documents/daqMxTest/build/../src/Ni modules definitions/NI9239.h
-C:/Users/aldric/Documents/daqMxTest/build/../src/Ni modules definitions/NI9411.h
-C:/Users/aldric/Documents/daqMxTest/build/../src/Ni modules definitions/NI9423.h
-C:/Users/aldric/Documents/daqMxTest/build/../src/Ni modules definitions/NI9481.h
-C:/Users/aldric/Documents/daqMxTest/build/../src/Ni modules definitions/NIDeviceModule.h
-C:/Users/aldric/Documents/daqMxTest/build/../src/Ni modules definitions/NIDeviceModuleFactory.h
-C:/Users/aldric/Documents/daqMxTest/build/../src/Ni wrappers/QNiDaqWrapper.h
-C:/Users/aldric/Documents/daqMxTest/build/../src/Ni wrappers/QNiSysConfigWrapper.h
+C:/Users/aldric/Documents/daqMxTest/build/../src/NiModulesDefinitions/NI9208.h
+C:/Users/aldric/Documents/daqMxTest/build/../src/NiModulesDefinitions/NI9239.h
+C:/Users/aldric/Documents/daqMxTest/build/../src/NiModulesDefinitions/NI9411.h
+C:/Users/aldric/Documents/daqMxTest/build/../src/NiModulesDefinitions/NI9423.h
+C:/Users/aldric/Documents/daqMxTest/build/../src/NiModulesDefinitions/NI9481.h
+C:/Users/aldric/Documents/daqMxTest/build/../src/NiModulesDefinitions/NIDeviceModule.h
+C:/Users/aldric/Documents/daqMxTest/build/../src/NiModulesDefinitions/NIDeviceModuleFactory.h
+C:/Users/aldric/Documents/daqMxTest/build/../src/NiWrappers/QNiDaqWrapper.h
+C:/Users/aldric/Documents/daqMxTest/build/../src/NiWrappers/QNiSysConfigWrapper.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/Signals/KeyboardPoller.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/Signals/QSignalTest.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/channelReaders/analogicReader.h
@@ -74,6 +73,7 @@ C:/Users/aldric/Documents/daqMxTest/build/../src/circularBuffer/ThreadSafeCircul
 C:/Users/aldric/Documents/daqMxTest/build/../src/circularBuffer/algorithm.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/circularBuffer/circular_buffer.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/circularBuffer/traits.h
+C:/Users/aldric/Documents/daqMxTest/build/../src/config.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/forms/MainConsoleForm.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/globals/globalConsts.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/stringUtils/stringUtils.h
@@ -151,15 +151,15 @@ C:/Users/aldric/Documents/daqMxTest/build/../src/FTXUI/screen/terminal.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/Menus/mainMenu.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/Menus/moduleByAliasMenu.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/Menus/moduleBySlotMenu.cpp
-C:/Users/aldric/Documents/daqMxTest/build/../src/Ni modules definitions/NI9208.cpp
-C:/Users/aldric/Documents/daqMxTest/build/../src/Ni modules definitions/NI9239.cpp
-C:/Users/aldric/Documents/daqMxTest/build/../src/Ni modules definitions/NI9411.cpp
-C:/Users/aldric/Documents/daqMxTest/build/../src/Ni modules definitions/NI9423.cpp
-C:/Users/aldric/Documents/daqMxTest/build/../src/Ni modules definitions/NI9481.cpp
-C:/Users/aldric/Documents/daqMxTest/build/../src/Ni modules definitions/NIDeviceModule.cpp
-C:/Users/aldric/Documents/daqMxTest/build/../src/Ni modules definitions/NIDeviceModuleFactory.cpp
-C:/Users/aldric/Documents/daqMxTest/build/../src/Ni wrappers/QNiDaqWrapper.cpp
-C:/Users/aldric/Documents/daqMxTest/build/../src/Ni wrappers/QNiSysConfigWrapper.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/NiModulesDefinitions/NI9208.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/NiModulesDefinitions/NI9239.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/NiModulesDefinitions/NI9411.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/NiModulesDefinitions/NI9423.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/NiModulesDefinitions/NI9481.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/NiModulesDefinitions/NIDeviceModule.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/NiModulesDefinitions/NIDeviceModuleFactory.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/NiWrappers/QNiDaqWrapper.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/NiWrappers/QNiSysConfigWrapper.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/Signals/KeyboardPoller.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/channelReaders/analogicReader.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/circularBuffer/ThreadSafeCircularBuffer.cpp

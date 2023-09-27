@@ -21,14 +21,6 @@ set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE BOTH)
 set(CMAKE_CXX_STANDARD 17)
 FILE (APPEND ../buildLog.txt "*** TOOL CHAIN AND COMPILER CONFIGURED ***\n\n")
 
-FILE (APPEND ../buildLog.txt "*** FTXUI Integration Start ***\n")
-# Add FTXUI as a subdirectory so we can use its targets
-# add_subdirectory(../third_party/FTXUI ${CMAKE_BINARY_DIR}/third_party/FTXUI)
-# Explicitly set the include directories (if needed)
-# target_include_directories(${PROJECT_NAME} PUBLIC ${FTXUI_INCLUDE_DIRS})
-
-
-
 FILE (APPEND ../buildLog.txt "*** Project specific ***\n")
 cmake_minimum_required(VERSION 3.19)
 set(PROJECT_NAME dataDrill)

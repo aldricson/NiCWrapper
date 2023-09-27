@@ -3,9 +3,9 @@
 
 #include <string>
 #include <cstdlib>
-#include "..\Ni wrappers\QNiSysConfigWrapper.h"
-#include "..\channelReaders\analogicReader.h"
-#include "..\stringUtils\stringUtils.h"
+#include "../NiWrappers/QNiSysConfigWrapper.h"
+#include "../channelReaders/analogicReader.h"
+#include "../stringUtils/stringUtils.h"
 #include <functional>
 
 //forward declarations

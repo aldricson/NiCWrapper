@@ -3,11 +3,18 @@
 
 #include <vector>
 #include <string>
-#include <NIDAQmx.h>
+
 #include <iostream> 
 #include <chrono>
 #include <thread>
 #include <functional>
+
+#include "../config.h"
+#ifdef CrossCompiled
+  #include <NIDAQmx.h>
+#else
+  #include "../../DAQMX_INCLUDE/NIDAQmx.h"
+#endif
 
 class NIDeviceModule;
 

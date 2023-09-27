@@ -1,4 +1,4 @@
-#include "AnalogicReader.h"
+#include "analogicReader.h"
 
 
 void AnalogicReader::onOneShotValueReaded(double aValue)

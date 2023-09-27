@@ -3,14 +3,22 @@
 
 #include <vector>
 #include <string>
-#include <NISysCfg.h>  // Include the NiSysCfg header
-#include <nisyscfg.h>
+
+#include "../config.h"
+#ifdef CrossCompiled
+ #include <nisyscfg.h>
+#else
+  #include "../../NISYSCFG_INCLUDE/nisyscfg.h"
+#endif
+
+
+
 #include <stdio.h>
 #include <vector>
 #include "../globals/globalConsts.h"
 #include "../stringUtils/stringUtils.h"
-#include "../Ni modules definitions/NIDeviceModule.h"
-#include "../Ni modules definitions/NIDeviceModuleFactory.h"
+#include "../NiModulesDefinitions/NIDeviceModule.h"
+#include "../NiModulesDefinitions/NIDeviceModuleFactory.h"
 
 
 class QNiSysConfigWrapper {

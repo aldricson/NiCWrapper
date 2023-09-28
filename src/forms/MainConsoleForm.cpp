@@ -28,10 +28,10 @@ void MainConsoleForm::initLayer()
 
 void MainConsoleForm::initButtons()
 {
-    m_readValueOneShotButton  =  Button("Read Value One Shot", [&] {OnReadValueOneShotClicked();});
-    m_readValuePollingButton  =  Button("Read Value Polling" , [&] {OnReadValuePollingClicked();});
-    m_writeOutputButton       =  Button("Write Output"       , [&] {onWriteOutputClicked     ();});
-    m_ExitButton              =  Button("Exit"               , [&] {onExitClicked            ();});
+    m_readValueOneShotButton  =  Button("Read Value One Shot", [&](){OnReadValueOneShotClicked();});
+    m_readValuePollingButton  =  Button("Read Value Polling" , [&](){OnReadValuePollingClicked();});
+    m_writeOutputButton       =  Button("Write Output"       , [&](){onWriteOutputClicked     ();});
+    m_ExitButton              =  Button("Exit"               , [&](){onExitClicked            ();});
 }
 
 void MainConsoleForm::initmoduleMenuOptions(std::vector<std::string> moduleAlaises)
@@ -44,6 +44,7 @@ void MainConsoleForm::initmoduleMenuOptions(std::vector<std::string> moduleAlais
     // Style: Underline the selected option
     m_moduleMenuOptions.underline.enabled = true;
     m_ModuleMenu = ftxui::Menu(m_moduleMenuOptions);
+    
 }
 
 void MainConsoleForm::initChannelMenuOptions(std::vector<std::string> channelNames)
@@ -55,7 +56,9 @@ void MainConsoleForm::initChannelMenuOptions(std::vector<std::string> channelNam
     m_channelMenuOptions.selected = 0;
     // Style: Underline the selected option
     m_channelMenuOptions.underline.enabled = true;
+    m_channelMenuOptions.on_change = [&](){onChannelMenuChanged();};
     m_ChannelMenu = ftxui::Menu(m_channelMenuOptions);
+    
 }
 
 void MainConsoleForm::OnReadValueOneShotClicked()
@@ -76,4 +79,13 @@ void MainConsoleForm::onWriteOutputClicked()
 void MainConsoleForm::onExitClicked()
 {
     //TODO
+}
+
+void MainConsoleForm::onModuleMenuChanged()
+{
+}
+
+void MainConsoleForm::onChannelMenuChanged()
+{
+    unsigned int index = m_channelMenuOptions.selected();
 }

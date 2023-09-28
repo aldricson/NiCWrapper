@@ -9,7 +9,8 @@
 #include "./NiWrappers/QNiDaqWrapper.h"
 #include "./channelReaders/analogicReader.h"
 #include "./Signals/QSignalTest.h"
-#include "./Menus/mainMenu.h"
+//#include "./Menus/mainMenu.h"
+#include "./forms/MainConsoleForm.h"
 
 // These wrappers utilize low-level APIs that have hardware access. 
 // Proper destruction is essential to restore certain hardware states when they go out of scope.
@@ -17,6 +18,8 @@
 std::shared_ptr<QNiSysConfigWrapper> sysConfig;
 std::shared_ptr<QNiDaqWrapper>       daqMx;
 std::shared_ptr<AnalogicReader>      analogReader;
+std::shared_ptr<MainConsoleForm>     mainForm;
+
 
 double readCurrentFromMod1AI0() {
     TaskHandle taskHandle = 0;
@@ -71,15 +74,7 @@ double readCurrentFromMod1AI0() {
 int main(void)
 {
 
-
-             
-
-
-
-
-
-
-
+  //afficher la baniere
   
   std::cout <<"          `^^^^^^^`              ______ _       _"<< std::endl;
   std::cout <<"      `4$$$c.$$$..e$$P\"         |  ____| |     | |            "<< std::endl;
@@ -99,14 +94,13 @@ int main(void)
   std::cout <<"       .d$$$******$$$$c.       "<< std::endl;
   std::cout <<"            ______             "<< std::endl;
 
-  std::cout << "*********************************************" << std::endl;
-  std::cout << "*** WELCOME TO ELYTEQ COMPATIBILITY LAYER ***" << std::endl;
-  std::cout << "***   proudly coded by Aldric Gilbert     ***" << std::endl;
-  std::cout << "***         and  Sidali Klalesh           ***" << std::endl;
-  std::cout << "*********************************************" << std::endl;
-
-
-
+  std::cout << "░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░" << std::endl;
+  std::cout << "░                                           ░" << std::endl;
+  std::cout << "░   WELCOME TO ELYTEQ COMPATIBILITY LAYER   ░" << std::endl;
+  std::cout << "░     proudly coded by Aldric Gilbert       ░" << std::endl;
+  std::cout << "░           and  Sidali Klalesh             ░" << std::endl;
+  std::cout << "░                                           ░" << std::endl;
+  std::cout << "░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░" << std::endl;
 
   std::cout << std::endl;
   try {
@@ -122,7 +116,7 @@ int main(void)
   //-----------------------------------------------------------
   std::cout << "*** Init phase 1: initialize daqMx ***" << std::endl<< std::endl;
    // Using shared_ptr to manage the QNiDaqWrapper object
-  auto daqMx = std::make_shared<QNiDaqWrapper>();
+  daqMx = std::make_shared<QNiDaqWrapper>();
   daqMx->GetNumberOfModules();
   
   int32 numberOfModules = daqMx->GetNumberOfModules();
@@ -137,10 +131,10 @@ int main(void)
    std::cout <<  std::endl;
    
    std::cout << "*** Init phase 2: retrieve modules and load defaults ***" << std::endl<< std::endl;
-   auto daqsysConfigMx = std::make_shared<QNiSysConfigWrapper>();
+   sysConfig = std::make_shared<QNiSysConfigWrapper>();
    //the good place to create the analog reader
-   auto analogReader = std::make_shared<AnalogicReader>(daqsysConfigMx,daqMx);
-   std::vector<std::string> modules = daqsysConfigMx->EnumerateCRIOPluggedModules();
+   analogReader = std::make_shared<AnalogicReader>(sysConfig,daqMx);
+   std::vector<std::string> modules = sysConfig->EnumerateCRIOPluggedModules();
    std::cout << "found : "<< std::endl<<std::endl;
    //Show internal of each module
    for (const std::string& str : modules)
@@ -152,7 +146,7 @@ int main(void)
    
     // Test of the signal slot mechanism
      std::cout << std::endl << "*** TESTING SIGNAL SLOT MECHANISM ***" << std::endl<< std::endl;
-     auto testModule = daqsysConfigMx->getModuleByIndex(0);
+     auto testModule = sysConfig->getModuleByIndex(0);
      auto slotTestObject = new QSignalTest();
      //sender (object that send the signal)        ||                 resceiver (the object with the solt)         
      testModule->slotNumberChangedSignal = std::bind(&QSignalTest::onIntValueChanged,slotTestObject, std::placeholders::_1,std::placeholders::_2);
@@ -162,9 +156,11 @@ int main(void)
      testModule->slotNumberChangedSignal = nullptr;
      delete(slotTestObject);
      slotTestObject=nullptr;
-      std::cout << std::endl << "*** SIGNAL SLOT MECHANISM OK ***" << std::endl<< std::endl;
-     mainMenu m_mainMenu(daqsysConfigMx,analogReader);
-     m_mainMenu.exitProgramSignal = std::bind(closeLambda);
+     std::cout << std::endl << "*** SIGNAL SLOT MECHANISM OK ***" << std::endl<< std::endl;
+     
+     //mainMenu m_mainMenu(daqsysConfigMx,analogReader);
+     //m_mainMenu.exitProgramSignal = std::bind(closeLambda);
+     mainForm = std::make_shared<MainConsoleForm>();
 
   return EXIT_SUCCESS;
 }

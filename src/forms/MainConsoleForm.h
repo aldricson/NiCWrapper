@@ -33,6 +33,8 @@ private:
     ftxui::Component m_ExitButton;
     ftxui::Component m_ModuleMenu;
     ftxui::Component m_ChannelMenu;
+    int m_moduleMenuIndex  = 0;
+    int m_channelMenuIndex = 0;
 
 
     int selectedModuleIndex_ = 0;  // Changed from std::wstring to int
@@ -48,6 +50,9 @@ private:
     void OnReadValuePollingClicked();
     void onWriteOutputClicked();
     void onExitClicked();
+
+    void onModuleMenuChanged();
+    void onChannelMenuChanged();
 
 
     ftxui::MenuOption m_moduleMenuOptions  = ftxui::MenuOption::Vertical();

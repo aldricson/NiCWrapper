@@ -35,7 +35,7 @@ int32 QNiDaqWrapper::GetNumberOfModules() {
     int32 moduleCount = 0;
 
     while (token != NULL) {
-        std::cout << "Found device: " << token << std::endl;
+        //std::cout << "Found device: " << token << std::endl;
         moduleCount++;
         token = strtok(NULL, ", ");
     }

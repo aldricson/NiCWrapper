@@ -7,6 +7,7 @@
 #include <functional>
 #include <sstream>
 
+
 static inline std::string removeSpacesFromCharStar(const char* str) {
     int length = strlen(str);
     std::string result;
@@ -29,14 +30,20 @@ static inline std::string toLowerCase(const std::string& str) {
     return lowerStr;
 }
 
-//function to center align in text menus
+
+
+// Function to center align in text menus
 static inline std::string centerAlignString(const std::string& str, unsigned int nbChars) {
     unsigned int totalSpaces = nbChars - str.length();
     unsigned int spacesBefore = totalSpaces / 2;
     unsigned int spacesAfter = totalSpaces - spacesBefore;
     std::string spacesBeforeStr(spacesBefore, ' ');
     std::string spacesAfterStr(spacesAfter, ' ');
-    return "░" + spacesBeforeStr + str + spacesAfterStr + "░";
+
+    // Construct the result string
+    std::string result =  "░" + spacesBeforeStr + str + spacesAfterStr + "░" ;
+
+    return result;
 }
 
 
@@ -62,16 +69,19 @@ static inline void displayMenu(const std::string& title,
     //Create the top and bottom line
     std::string line;
     for (unsigned int i = 0; i < maxLength+2; ++i) line += "░";
-    //
+    //spacer
     std::string spacer = centerAlignString(" ", maxLength);
 
-    // Output the centered title
-    std::cout << line   << std::endl;
-    std::cout << spacer << std::endl;
-    std::cout << centerAlignString(title, maxLength) << std::endl;
-    std::cout << spacer << std::endl;
-    std::cout << line << std::endl;
-
+    //1) Top line
+    std::cout <<  line <<  std::endl;
+    //2) spacer
+    std::cout << spacer.c_str() << std::endl;
+    //3) title 
+    std::cout << centerAlignString(title, maxLength)<< std::endl;
+    //4) spacer
+    std::cout << spacer.c_str() << std::endl;
+    //5) line ... Title zone done
+    std::cout << line.c_str() << std::endl;
     // Output each centered option
     for (auto option : options) {
         // Append white spaces to make the option string length equal to maxLength
@@ -80,7 +90,7 @@ static inline void displayMenu(const std::string& title,
     }
 
     // Bottom of the "table"
-    std::cout << spacer << std::endl;
+    std::cout << spacer.c_str() << std::endl;
     std::cout << line << std::endl;
 
 }
@@ -121,6 +131,62 @@ static inline void clearConsole()
 {
     // ANSI escape sequence to clear screen for Unix-like systems
     std::cout << "\033[2J\033[1;1H";
+}
+
+// Function to draw a cell with a given size and caption
+static inline std::string drawCell(int size, std::string aCaption) {
+    
+    std::string result;
+    
+    std::string line;
+    // the top and bottom border of the cell
+    for (int i = 0; i < size+2; ++i) {
+        line += "░";
+    }
+    line += "\n";
+    std::string spacer  = centerAlignString(" ", size)+"\n";
+    std::string _caption = centerAlignString(aCaption,size)+"\n"; 
+    result = line+spacer+_caption+spacer+line;
+    return result;
+}
+
+static inline std::string concatenateRow(const std::vector<std::string>& row) {
+    std::vector<std::vector<std::string>> linesInCells;
+
+    // Split each cell into lines
+    for (const auto& cell : row) {
+        std::vector<std::string> lines;
+        std::istringstream stream(cell);
+        std::string line;
+        while (std::getline(stream, line)) {
+            lines.push_back(line);
+        }
+        linesInCells.push_back(lines);
+    }
+
+    std::string result;
+
+    // Find the maximum number of lines in any cell
+    size_t maxLines = 0;
+    for (const auto& lines : linesInCells) {
+        maxLines = std::max(maxLines, lines.size());
+    }
+
+    // Concatenate lines from each cell
+    for (size_t i = 0; i < maxLines; ++i) {
+        std::string concatenatedLine;
+        for (const auto& lines : linesInCells) {
+            if (i < lines.size()) {
+                concatenatedLine += lines[i];
+            } else {
+                // Fill with spaces if this cell has fewer lines
+                concatenatedLine += std::string(lines[0].size(), ' ');
+            }
+        }
+        result += concatenatedLine + "\n";
+    }
+
+    return result;
 }
 
 

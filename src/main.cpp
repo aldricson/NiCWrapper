@@ -9,8 +9,10 @@
 #include "./NiWrappers/QNiDaqWrapper.h"
 #include "./channelReaders/analogicReader.h"
 #include "./Signals/QSignalTest.h"
-//#include "./Menus/mainMenu.h"
-#include "./forms/MainConsoleForm.h"
+#include "./Menus/mainMenu.h"
+#include "./stringUtils/stringUtils.h"
+#include "./stringUtils/StringGrid.h"
+
 
 // These wrappers utilize low-level APIs that have hardware access. 
 // Proper destruction is essential to restore certain hardware states when they go out of scope.
@@ -18,8 +20,6 @@
 std::shared_ptr<QNiSysConfigWrapper> sysConfig;
 std::shared_ptr<QNiDaqWrapper>       daqMx;
 std::shared_ptr<AnalogicReader>      analogReader;
-std::shared_ptr<MainConsoleForm>     mainForm;
-
 
 double readCurrentFromMod1AI0() {
     TaskHandle taskHandle = 0;
@@ -94,13 +94,47 @@ int main(void)
   std::cout <<"       .d$$$******$$$$c.       "<< std::endl;
   std::cout <<"            ______             "<< std::endl;
 
-  std::cout << "░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░" << std::endl;
+  std::string txt=drawCell(45,"WELCOME TO ELYTEQ COMPATIBILITY LAYER");
+  std::cout << txt.c_str() << std::endl;
+
+
+
+ // Create a StringGrid object
+    StringGrid myGrid;
+
+    // Load a CSV file
+    myGrid.loadCsv("./test.csv");  // Make sure you have a test.csv file with some data
+
+    // Display the current CSV content
+  /*  std::cout << "Current CSV content:\n" << myGrid.getCurrentCsv() << std::endl;
+
+    // Set a cell content
+    myGrid.setCellContent(0, 0, "Modified");
+
+    // Update and render the grid
+    myGrid.updateGrid();
+
+    // Save the grid to a new CSV file
+    myGrid.saveCsv("new_test.csv");
+
+    // Change the row count to 5
+    myGrid.setRowCount(5);
+
+    // Change the column count to 4
+    myGrid.setColCount(4);
+
+    // Get content of a specific cell
+    std::string cellContent = myGrid.getCellContent(0, 0);
+    std::cout << "Content of cell (0,0): " << cellContent << std::endl;*/
+
+
+  /*std::cout << "░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░" << std::endl;
   std::cout << "░                                           ░" << std::endl;
   std::cout << "░   WELCOME TO ELYTEQ COMPATIBILITY LAYER   ░" << std::endl;
   std::cout << "░     proudly coded by Aldric Gilbert       ░" << std::endl;
   std::cout << "░           and  Sidali Klalesh             ░" << std::endl;
   std::cout << "░                                           ░" << std::endl;
-  std::cout << "░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░" << std::endl;
+  std::cout << "░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░" << std::endl;*/
 
   std::cout << std::endl;
   try {
@@ -158,9 +192,6 @@ int main(void)
      slotTestObject=nullptr;
      std::cout << std::endl << "*** SIGNAL SLOT MECHANISM OK ***" << std::endl<< std::endl;
      
-     //mainMenu m_mainMenu(daqsysConfigMx,analogReader);
-     //m_mainMenu.exitProgramSignal = std::bind(closeLambda);
-     mainForm = std::make_shared<MainConsoleForm>();
-
-  return EXIT_SUCCESS;
+     mainMenu m_mainMenu(sysConfig,analogReader);
+     m_mainMenu.exitProgramSignal = std::bind(closeLambda);
 }

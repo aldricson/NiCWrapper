@@ -25,10 +25,8 @@ rule CXX_COMPILER__dataDrill_unscanned_Debug
 # Rule for linking CXX executable.
 
 rule CXX_EXECUTABLE_LINKER__dataDrill_Debug
-  command = cmd.exe /C "$PRE_LINK && C:\build\23.0\x64\sysroots\x86_64-w64-mingw32\usr\bin\x86_64-nilrt-linux\x86_64-nilrt-linux-g++.exe --sysroot=C:/build/23.0/x64/sysroots/core2-64-nilrt-linux $FLAGS $LINK_FLAGS @$RSP_FILE -o $TARGET_FILE  && $POST_BUILD"
+  command = cmd.exe /C "$PRE_LINK && C:\build\23.0\x64\sysroots\x86_64-w64-mingw32\usr\bin\x86_64-nilrt-linux\x86_64-nilrt-linux-g++.exe --sysroot=C:/build/23.0/x64/sysroots/core2-64-nilrt-linux $FLAGS $LINK_FLAGS $in -o $TARGET_FILE $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
   description = Linking CXX executable $TARGET_FILE
-  rspfile = $RSP_FILE
-  rspfile_content = $in $LINK_PATH $LINK_LIBRARIES
   restat = $RESTAT
 
 

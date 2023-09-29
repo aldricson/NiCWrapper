@@ -10,6 +10,7 @@ Setting the search behavior for various types of files.
 project name is set to: dataDrill
 loading sources and headers
 List of Header Files:
+C:/Users/aldric/Documents/daqMxTest/build/../src/Menus/chooseModuleMenu.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/Menus/mainMenu.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/Menus/moduleByAliasMenu.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/Menus/moduleBySlotMenu.h
@@ -41,8 +42,10 @@ C:/Users/aldric/Documents/daqMxTest/build/../src/config.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/globals/globalConsts.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/stringUtils/StringGrid.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/stringUtils/stringUtils.h
+C:/Users/aldric/Documents/daqMxTest/build/../src/testFunctions.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/timers/simpleTimer.h
 List of Source Files:
+C:/Users/aldric/Documents/daqMxTest/build/../src/Menus/chooseModuleMenu.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/Menus/mainMenu.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/Menus/moduleByAliasMenu.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/Menus/moduleBySlotMenu.cpp

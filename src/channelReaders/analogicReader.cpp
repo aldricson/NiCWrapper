@@ -8,18 +8,7 @@ void AnalogicReader::onOneShotValueReaded(double aValue)
     std::function<void()>              retryFunction;
     if (m_fromPolling.load())
     {
-        /*options.push_back(" press esc to exit ");
-         clearConsole();
-        std::string title;
-        if (aValue==std::numeric_limits<double>::min())
-        {
-           title = "Read error";
-        }
-        else
-        {
-           title = "value: "+std::to_string(aValue)+" poll count:"+std::to_string(m_manualPollCount);
-        }
-        displayMenu(title, options);*/ 
+ 
         clearConsole();
         std::string title;
         if (aValue==std::numeric_limits<double>::min())

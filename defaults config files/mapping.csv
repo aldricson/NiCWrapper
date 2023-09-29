@@ -1,0 +1,3 @@
+Index;Module;Channel;MinValue;MaxValue;MappedMin;MappedMax;ModbusChannel
+0;Mod1;/ai0;4.0;20.0;0;65535;1
+1;Mod1;/ai1;4.0;20.0;0;65535;2

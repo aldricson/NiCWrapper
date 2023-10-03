@@ -26,29 +26,32 @@ public:
     int32 GetNumberOfModules();
     std::vector<std::string> GetDevicesList();
     double readCurrent(NIDeviceModule *deviceModule, unsigned int chanIndex, unsigned int maxRetries);
+    double readVoltage(NIDeviceModule *deviceModule, unsigned int chanIndex, unsigned int maxRetries);
     void handleErrorAndCleanTask();
 
     //signals
-    std::function<void(double lastValue,QNiDaqWrapper *sender)>    channelDataChangedSignal = nullptr;  //emited as soon as the data for a channel has changed, 
-                                                                                                        //without any garanty that the channel is ready for a new task  
-    std::function<void(double lastValue,QNiDaqWrapper *sender)>    channelDataReadySignal   = nullptr;  //emited when the task is fully done and the channel is ready for a new one
+    std::function<void(double lastValue,QNiDaqWrapper *sender)>    channelCurrentDataChangedSignal = nullptr;  //emited as soon as the data for a channel has changed, 
+                                                                                                               //without any garanty that the channel is ready for a new task  
+    std::function<void(double lastValue,QNiDaqWrapper *sender)>    channelCurrentDataReadySignal   = nullptr;  //emited when the task is fully done and the channel is ready for a new one
     
+    std::function<void(double lastValue,QNiDaqWrapper *sender)>    channelVoltageDataChangedSignal = nullptr;
+    std::function<void(double lastValue, QNiDaqWrapper *sender)>   channelVoltageDataReadySignal   = nullptr;
     
 
     //Getters and setters
-        // Getter pour m_lastSingleChannelValue
-    double getLastSingleChannelValue() const;
-    // Setter pour m_lastSingleChannelValue
-    void setLastSingleChannelValue(double value);
+    double getLastSingleCurrentChannelValue() const;
+    void   setLastSingleCurrentChannelValue(double value);
+    double getLastSingleVoltageChannelValue() const;
+    void   setLastSingleVoltageChannelValue(double value);
     //Call backs falling functions
-    void handleTaskCompletion(int32 status);
+    void handleReadCurrentCompletion(int32 status);
+    void handleReadVoltageCompletion(int32 status);
     
 private:
     TaskHandle taskHandle;
-    double m_lastSingleChannelValue = 0.0; 
+    double m_lastSingleCurrentChannelValue = 0.0;
+    double m_lastSingleVoltageChannelValue = 0.0; 
 };
-
-
 
 
 #endif // QNIDAQWRAPPER_H

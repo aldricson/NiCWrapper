@@ -73,7 +73,7 @@ AnalogicReader::AnalogicReader(std::shared_ptr<QNiSysConfigWrapper> aSysConfigIn
     m_fromPolling.store(false);
     m_sysConfig = aSysConfigInstance;
     m_daqMx     = aDaqMxInstance;
-    m_daqMx->channelDataReadySignal = std::bind(&AnalogicReader::onChannelDataReady,this,std::placeholders::_1,std::placeholders::_2);
+    m_daqMx->channelCurrentDataReadySignal = std::bind(&AnalogicReader::onChannelDataReady,this,std::placeholders::_1,std::placeholders::_2);
     m_pollingTimer = std::make_shared<SimpleTimer>();
     m_pollingTimer -> setSlotFunction([this](){this-> onPollingTimerTimeOut();});
     m_pollingTimer -> setInterval(std::chrono::milliseconds(500));

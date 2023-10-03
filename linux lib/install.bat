@@ -7,7 +7,7 @@ set "destinationFolder=C:\build\23.0\x64\sysroots\core2-64-nilrt-linux\usr\lib"
 
 :: Define filenames to be copied
 set "file1=libmodbus.so"
-set "file2=libmodbus.so.5.0"
+set "file2=libmodbus.so.5.0.5"
 
 :: Check if the source files exist
 if exist "%sourceFolder%%file1%" (

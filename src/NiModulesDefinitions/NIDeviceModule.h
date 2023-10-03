@@ -7,6 +7,7 @@
 #include <fstream>
 #include <functional>
 #include <iostream>
+#include "../filesUtils/iniParser.h"
 
 enum moduleType
 {

@@ -1,36 +1,90 @@
-/*#ifndef MODBUS_SERVER_H
+#ifndef MODBUS_SERVER_H
 #define MODBUS_SERVER_H
 
-#include "libmodbus/modbus.h"
+#include <iostream>
 #include <thread>
+#include <stdlib.h>
+#include <iostream>
+#include <mutex>
 #include <string>
+using namespace std;
+#include <modbus.h>
+#include <unistd.h>
+#include <error.h>
+#include <arpa/inet.h>
+#include <sys/socket.h>
+#include <sys/time.h>
+#include <sys/select.h>
+#include "modbusServerUtils.h"
 
-class ModbusServer {
+
+
+//#define  MAX_POINT  50000
+
+
+
+class ModbusServer
+{
 public:
-    ModbusServer();
+    ModbusServer(string host="0.0.0.0", uint16_t port=502);
     ~ModbusServer();
 
-    // Start the Modbus server
-    void Start();
+public:
+    void recieveMessages();
+    bool modbus_set_slave_id(int id);
+    bool initModbus(std::string Host_Ip, int port, bool debugging);
+    
+    uint8_t getTab_Input_Bits(int NumBit);
+    bool setTab_Input_Bits(int NumBit, uint8_t Value);
 
-    // Stop the Modbus server
-    void Stop();
+    uint16_t getHoldingRegisterValue(int registerNumber);
+    float getHoldingRegisterFloatValue(int registerStartaddress);
+    
+    bool setHoldingRegisterValue(int registerNumber, uint16_t Value);
+    bool setHoldingRegisterValue(int registerNumber, float Value);
+
+    bool setInputRegisterValue(int registerNumber, uint16_t Value);
+    bool setInputRegisterValue(int registerNumber, float Value);
+    
+
+    
 
 private:
-    // The main loop for handling Modbus queries
-    void ServerThread();
+    std::mutex slavemutex;
+    int m_errCount{ 0 };
+    int m_modbusSocket{ -1 };
+    bool m_initialized{ false };
+    modbus_t* ctx{ nullptr };
 
-    // Flag to indicate if the server is running
-    bool running_;
+/*********************************************************
+ * modbus_mapping_t explainations
+ * 
+typedef struct _modbus_mapping_t
+{
+    int nb_bits;                // Coils
+    int start_bits;
+    int nb_input_bits;          // Discrete Inputs
+    int start_input_bits;
+    int nb_input_registers;     // Input Registers
+    int start_input_registers;
+    int nb_registers;           // Holding Registers
+    int start_registers;
+    uint8_t *tab_bits;
+    uint8_t *tab_input_bits;
+    uint16_t *tab_input_registers;
+    uint16_t *tab_registers;
+} modbus_mapping_t;  */
 
-    // Modbus context
-    modbus_t* ctx_;
+    modbus_mapping_t* mapping{ nullptr };
+    /*Mapping*/
+    int m_numBits          { 60000 };
+    int m_numInputBits     { 60000 };
+    int m_numRegisters     { 60000 };
+    int m_numInputRegisters{ 60000 };
 
-    // Modbus mapping
-    modbus_mapping_t* mb_mapping_;
-
-    // Thread for running the Modbus server
-    std::thread serverThread_;
+public:
+    void loadFromConfigFile();
+    void run();
 };
 
-#endif // MODBUS_SERVER_H*/
+#endif 

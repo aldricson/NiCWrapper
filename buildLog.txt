@@ -23,6 +23,7 @@ C:/Users/aldric/Documents/daqMxTest/build/../src/Modbus/libmodbus/modbus-version
 C:/Users/aldric/Documents/daqMxTest/build/../src/Modbus/libmodbus/modbus-version.h.in
 C:/Users/aldric/Documents/daqMxTest/build/../src/Modbus/libmodbus/modbus.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/Modbus/modbusServer.h
+C:/Users/aldric/Documents/daqMxTest/build/../src/Modbus/modbusServerUtils.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/NiModulesDefinitions/NI9208.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/NiModulesDefinitions/NI9239.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/NiModulesDefinitions/NI9411.h
@@ -40,7 +41,9 @@ C:/Users/aldric/Documents/daqMxTest/build/../src/circularBuffer/algorithm.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/circularBuffer/circular_buffer.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/circularBuffer/traits.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/config.h
+C:/Users/aldric/Documents/daqMxTest/build/../src/filesUtils/iniParser.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/globals/globalConsts.h
+C:/Users/aldric/Documents/daqMxTest/build/../src/startUpManager.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/stringUtils/stringGrid.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/stringUtils/stringUtils.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/testFunctions.h
@@ -64,6 +67,7 @@ C:/Users/aldric/Documents/daqMxTest/build/../src/Signals/KeyboardPoller.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/channelReaders/analogicReader.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/circularBuffer/ThreadSafeCircularBuffer.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/main.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/startUpManager.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/stringUtils/stringGrid.cpp
 Excutable output file set to bin bin
 build type is: Debug

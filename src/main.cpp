@@ -11,6 +11,7 @@
 #include "./Signals/QSignalTest.h"
 #include "./Menus/mainMenu.h"
 #include "./stringUtils/stringUtils.h"
+#include "./Modbus/modbusServer.h"
 
 #include "testFunctions.h"
 

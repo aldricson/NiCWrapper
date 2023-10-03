@@ -2,7 +2,7 @@
 #define TESTFUNCTIONS_H
 
 #include "config.h"
-#include "./stringUtils/StringGrid.h"
+#include "./stringUtils/stringGrid.h"
 #include "./stringUtils/stringUtils.h"
 #ifdef CrossCompiled
   #include <NIDAQmx.h>

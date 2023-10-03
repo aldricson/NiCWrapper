@@ -22,6 +22,7 @@ C:/Users/aldric/Documents/daqMxTest/build/../src/Modbus/libmodbus/modbus-tcp.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/Modbus/libmodbus/modbus-version.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/Modbus/libmodbus/modbus-version.h.in
 C:/Users/aldric/Documents/daqMxTest/build/../src/Modbus/libmodbus/modbus.h
+C:/Users/aldric/Documents/daqMxTest/build/../src/Modbus/modbusServer.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/NiModulesDefinitions/NI9208.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/NiModulesDefinitions/NI9239.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/NiModulesDefinitions/NI9411.h
@@ -40,7 +41,7 @@ C:/Users/aldric/Documents/daqMxTest/build/../src/circularBuffer/circular_buffer.
 C:/Users/aldric/Documents/daqMxTest/build/../src/circularBuffer/traits.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/config.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/globals/globalConsts.h
-C:/Users/aldric/Documents/daqMxTest/build/../src/stringUtils/StringGrid.h
+C:/Users/aldric/Documents/daqMxTest/build/../src/stringUtils/stringGrid.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/stringUtils/stringUtils.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/testFunctions.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/timers/simpleTimer.h
@@ -49,6 +50,7 @@ C:/Users/aldric/Documents/daqMxTest/build/../src/Menus/chooseModuleMenu.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/Menus/mainMenu.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/Menus/moduleByAliasMenu.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/Menus/moduleBySlotMenu.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/Modbus/modbusServer.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/NiModulesDefinitions/NI9208.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/NiModulesDefinitions/NI9239.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/NiModulesDefinitions/NI9411.cpp
@@ -62,7 +64,7 @@ C:/Users/aldric/Documents/daqMxTest/build/../src/Signals/KeyboardPoller.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/channelReaders/analogicReader.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/circularBuffer/ThreadSafeCircularBuffer.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/main.cpp
-C:/Users/aldric/Documents/daqMxTest/build/../src/stringUtils/StringGrid.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/stringUtils/stringGrid.cpp
 Excutable output file set to bin bin
 build type is: Debug
 threading type is set to linux pthread library
@@ -72,6 +74,17 @@ daqMx include path is set to: C:/Program Files (x86)/National Instruments/NI-DAQ
 
 List of daqmx Headers:
 C:/Program Files (x86)/National Instruments/NI-DAQ/DAQmx ANSI C Dev/include/NIDAQmx.h
+*** libModbus ***
+
+List of libmodbus Header Files:
+C:/Users/aldric/Documents/daqMxTest/build/../src/Modbus/libmodbus/modbus-private.h
+C:/Users/aldric/Documents/daqMxTest/build/../src/Modbus/libmodbus/modbus-rtu-private.h
+C:/Users/aldric/Documents/daqMxTest/build/../src/Modbus/libmodbus/modbus-rtu.h
+C:/Users/aldric/Documents/daqMxTest/build/../src/Modbus/libmodbus/modbus-tcp-private.h
+C:/Users/aldric/Documents/daqMxTest/build/../src/Modbus/libmodbus/modbus-tcp.h
+C:/Users/aldric/Documents/daqMxTest/build/../src/Modbus/libmodbus/modbus-version.h
+C:/Users/aldric/Documents/daqMxTest/build/../src/Modbus/libmodbus/modbus.h
+List of libmodbus Source Files:
 linux librairies selected: C:/Program Files (x86)/National Instruments/Shared/ExternalCompilerSupport/C/lib64/gcc
 
 List of daqmx linux libraries:
@@ -83,6 +96,6 @@ C:/Program Files (x86)/National Instruments/Shared/ExternalCompilerSupport/C/inc
 C:/Program Files (x86)/National Instruments/Shared/ExternalCompilerSupport/C/include/nisyscfg_errors.h
 C:/Program Files (x86)/National Instruments/Shared/ExternalCompilerSupport/C/include/nisyscfg_wide.h
 all files has been added to linux elf executable 
-daqmx headers direcory is now added to the project
+Nidaqmx, NiSysConfig and libmodbus headers direcories are now added to the project
 daqmx libraries are now linked to the project
 linux thrading libraries are now linked to the project

@@ -1,5 +1,5 @@
-#include "StringGrid.h"
-#include "StringUtils.h" 
+#include "stringGrid.h"
+#include "stringUtils.h" 
 #include <sstream> // for std::stringstream
 #include <algorithm> // for std::max
 

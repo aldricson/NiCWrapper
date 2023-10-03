@@ -53,6 +53,26 @@ foreach(str ${DAQMX_HEADER_FILES})
     FILE (APPEND ../buildLog.txt "${str}\n")
 endforeach()
 
+# *** Add libmodbus Start ***
+
+# Locate libmodbus
+set(LIBMODBUS_PATH "C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/libmodbus.so.5.0.5")
+set(LIBMODBUS_INCLUDE_PATH "../src/Modbus/libmodbus/")
+
+
+FILE (APPEND ../buildLog.txt "*** libModbus ***\n")
+file(GLOB_RECURSE LIBMODBUS_SOURCE_FILES "../src/Modbus/libmodbus/*.c")
+file(GLOB_RECURSE LIBMODBUS_HEADER_FILES "../src/Modbus/libmodbus/*.h")
+FILE (APPEND ../buildLog.txt "\nList of libmodbus Header Files:\n")
+foreach(str ${LIBMODBUS_HEADER_FILES})
+    FILE (APPEND ../buildLog.txt "${str}\n")
+endforeach()
+FILE (APPEND ../buildLog.txt "List of libmodbus Source Files:\n")
+foreach(src ${LIBMODBUS_SOURCE_FILES})
+    FILE (APPEND ../buildLog.txt "${src}\n")
+endforeach()
+# *** Add libmodbus End ***
+
 set (DAQMX_LIB "C:/Program\ Files\ (x86)/National\ Instruments/Shared/ExternalCompilerSupport/C/lib64/gcc")
 FILE (APPEND ../buildLog.txt "linux librairies selected: ${DAQMX_LIB}\n")
 file(GLOB_RECURSE DAQMX_LINUXLIB_FILES "${DAQMX_LIB}/*.so")
@@ -69,17 +89,14 @@ foreach(str ${NISYSCFG_HEADER_FILES})
 endforeach()
 
 
-add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES} ${DAQMX_HEADER_FILES} ${NISYSCFG_HEADER_FILES})
+add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
-# *** FTXUI Integration Start ***
-# Link your executable with FTXUI
-#target_link_libraries(${PROJECT_NAME} PRIVATE component screen)
-# *** FTXUI Integration End ***
 
 FILE (APPEND ../buildLog.txt "all files has been added to linux elf executable \n")
-target_include_directories(${PROJECT_NAME} PUBLIC ${DAQMX_INCLUDE} ${NISYSCFG_INCLUDE})
-FILE (APPEND ../buildLog.txt "daqmx headers direcory is now added to the project\n")
+target_include_directories(${PROJECT_NAME} PUBLIC ${DAQMX_INCLUDE} ${NISYSCFG_INCLUDE} ${LIBMODBUS_INCLUDE_PATH})
+FILE (APPEND ../buildLog.txt "Nidaqmx, NiSysConfig and libmodbus headers direcories are now added to the project\n")
 target_link_libraries(${PROJECT_NAME} PUBLIC ${DAQMX_LINUXLIB_FILES})
 FILE (APPEND ../buildLog.txt "daqmx libraries are now linked to the project\n")
+target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBMODBUS_PATH})
 target_link_libraries(${PROJECT_NAME} PRIVATE pthread)
 FILE (APPEND ../buildLog.txt "linux thrading libraries are now linked to the project\n")

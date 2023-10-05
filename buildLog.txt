@@ -11,7 +11,9 @@ project name is set to: dataDrill
 loading sources and headers
 List of Header Files:
 C:/Users/aldric/Documents/daqMxTest/build/../src/Bridge/niToModbusBridge.h
+C:/Users/aldric/Documents/daqMxTest/build/../src/Menus/chooseChannelMenu.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/Menus/chooseModuleMenu.h
+C:/Users/aldric/Documents/daqMxTest/build/../src/Menus/chooseShowValueMenu.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/Menus/mainMenu.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/Menus/moduleByAliasMenu.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/Menus/moduleBySlotMenu.h
@@ -37,7 +39,7 @@ C:/Users/aldric/Documents/daqMxTest/build/../src/NiWrappers/QNiSysConfigWrapper.
 C:/Users/aldric/Documents/daqMxTest/build/../src/Signals/KeyboardPoller.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/Signals/QSignalTest.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/channelReaders/analogicReader.h
-C:/Users/aldric/Documents/daqMxTest/build/../src/channelReaders/digitalReader.h
+C:/Users/aldric/Documents/daqMxTest/build/../src/channelReaders/baseReader.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/channelWriters/digitalWriter.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/circularBuffer/ThreadSafeCircularBuffer.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/circularBuffer/algorithm.h
@@ -54,7 +56,9 @@ C:/Users/aldric/Documents/daqMxTest/build/../src/testFunctions.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/timers/simpleTimer.h
 List of Source Files:
 C:/Users/aldric/Documents/daqMxTest/build/../src/Bridge/niToModbusBridge.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/Menus/chooseChannelMenu.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/Menus/chooseModuleMenu.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/Menus/chooseShowValueMenu.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/Menus/mainMenu.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/Menus/moduleByAliasMenu.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/Menus/moduleBySlotMenu.cpp
@@ -70,7 +74,7 @@ C:/Users/aldric/Documents/daqMxTest/build/../src/NiWrappers/QNiDaqWrapper.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/NiWrappers/QNiSysConfigWrapper.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/Signals/KeyboardPoller.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/channelReaders/analogicReader.cpp
-C:/Users/aldric/Documents/daqMxTest/build/../src/channelReaders/digitalReader.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/channelReaders/baseReader.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/channelWriters/digitalWrtiter.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/circularBuffer/ThreadSafeCircularBuffer.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/main.cpp

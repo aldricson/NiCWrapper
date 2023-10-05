@@ -1,12 +1,20 @@
-#ifndef DIGITALREADER_H
-#define DIGITALREADER_H
+#ifndef DigitalReader_H
+#define DigitalReader_H
 
-class DigitalReader {
+#include "baseReader.h"
+
+class DigitalReader : public BaseReader {
 public:
-    // Constructor and member functions can be added here.
+    // Constructor
+    DigitalReader(std::shared_ptr<QNiSysConfigWrapper> aSysConfigInstance,
+                  std::shared_ptr<QNiDaqWrapper> aDaqMxInstance);
     
-private:
-    // Private members can be added here.
+    // Override the pure virtual functions
+    void manualReadOneShot() override;
+    void manualReadOneShot(double &returnedValue) override;
+    void manualReadPolling() override;
+    
+    // Add any additional member functions specific to DigitalReader here
 };
 
-#endif // DIGITALREADER_H
+#endif // DigitalReader_H

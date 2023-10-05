@@ -132,6 +132,7 @@ double QNiDaqWrapper::readCurrent(NIDeviceModule *deviceModule, unsigned int cha
         // float64 timeout       : Time in seconds to wait for the function to read the value
         // float64 *value        : Pointer to the variable where the read value will be stored
         // bool32 *reserved      : Reserved for future use. Pass NULL (nullptr in C++).
+
         error = DAQmxCreateAICurrentChan(taskHandle, 
                                          fullChannelName.c_str(), 
                                          "", 

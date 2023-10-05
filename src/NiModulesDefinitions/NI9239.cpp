@@ -12,6 +12,8 @@ void NI9239::initModule()
     m_moduleName="NI9239";
     m_nbChannel       = 4;  // Assuming NI9239 has 4 channels, change as needed
     m_nbCounters      = 0;
+    m_counterCountingEdgeMode   = NoEdge;
+    m_counterCountDirectionMode = NoCountMode;
     m_nbDigitalIoPort = 0 ;
 
     m_moduleType = isAnalogicInputVoltage;  // Set the default module type

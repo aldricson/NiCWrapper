@@ -15,6 +15,8 @@ void NI9208::initModule()
     m_moduleName="NI9208";
     m_nbChannel       = 16;
     m_nbCounters      = 0;
+    m_counterCountingEdgeMode   = NoEdge;
+    m_counterCountDirectionMode = NoCountMode;
     m_nbDigitalIoPort = 0;
     m_moduleType = isAnalogicInputCurrent;
     for (int i = 0; i < 16; ++i)

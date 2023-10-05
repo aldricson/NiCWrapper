@@ -12,6 +12,10 @@ void NI9411::initModule()
     m_moduleName="NI9411";
     m_nbChannel  = 0;  // Assuming NI9411 has 4 channels, change as needed
     m_nbCounters = 4;
+    
+    m_counterCountingEdgeMode   = Val_Rising;
+    m_counterCountDirectionMode = Val_CountUp;
+    
     m_nbDigitalIoPort = 1;
     m_moduleType = isDigitalIOAndCounter;  // Set the default module type
     m_counterNames.clear();  // Clear any existing channel names

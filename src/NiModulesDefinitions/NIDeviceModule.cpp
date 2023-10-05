@@ -27,6 +27,9 @@ void NIDeviceModule::loadFromFile(const std::string& filename) {
             } else if (key.find("analog chan unit") != std::string::npos) {
                 setChanUnit(value);
             }
+
+        //---------- counters --------
+
         } else if (section == "Counters") {
             if (key == "NumberOfCounters") {
                 unsigned int n = std::stoi(value);
@@ -36,7 +39,24 @@ void NIDeviceModule::loadFromFile(const std::string& filename) {
                 if (index < m_counterNames.size()) {
                     m_counterNames[index] = value;
                 }
+              else if (key.find("edgeCountingMode") != std::string::npos) {
+                moduleCounterEdgeConfig cm =static_cast<moduleCounterEdgeConfig>(std::stoi(value));
+                setcounterCountingEdgeMode(cm);
+              }
+              else if (key.find("countingDirection") != std::string::npos) {
+                moduleCounterMode  cd = static_cast<moduleCounterMode>(std::stoi(value));
+                setCounterCountDirectionMode(cd);
+              }
+              else if (key.find("countingMin") != std::string::npos) {
+                unsigned int cMin = std::stoi(value);
+                setCounterMin(cMin);
+              }
+                else if (key.find("countingMax") != std::string::npos) {
+                unsigned int cMax = std::stoi(value);
+                setCounterMax(cMax);
+              }
             }
+            //---------- modules --------
         } else if (section == "Module") {
             if (key == "Type") {
                 moduleType newType = static_cast<moduleType>(std::stoi(value));
@@ -83,15 +103,19 @@ void NIDeviceModule::saveToFile(const std::string &filename)
     fprintf(ini ,"analog chan unit = %s\n", m_analogUnit.c_str());
     for (unsigned int i = 0; i < m_nbChannel; ++i) 
     {
-        fprintf(ini, "Channel%d = %s\n", i, m_chanNames[i].c_str());  // Removed the extra semicolon
+        fprintf(ini, "Channel%d = %s\n", i, m_chanNames[i].c_str());  
     }
 
     fprintf(ini, "\n[Counters]\n\n");
     fprintf(ini, "NumberOfCounters = %u\n", m_nbCounters);
     for (unsigned int i = 0; i < m_nbCounters; ++i) 
     {
-        fprintf(ini, "Counter%d = %s\n", i, m_counterNames[i].c_str());  // Removed the extra semicolon
+        fprintf(ini, "Counter%d = %s\n", i, m_counterNames[i].c_str()); 
     }
+    fprintf(ini, "edgeCountingMode = %u\n" , static_cast<int>(m_counterCountingEdgeMode  ));
+    fprintf(ini, "countingDirection = %u\n", static_cast<int>(m_counterCountDirectionMode));
+    fprintf(ini, "countingMin = %u\n"      , m_counterMin               );
+    fprintf(ini, "countingMax = %u\n"      , m_counterMax               );
 
     fprintf(ini, "\n[Module]\n\n");
     fprintf(ini, "Type = %d ;\n", static_cast<int>(getModuleType()));
@@ -146,6 +170,24 @@ void NIDeviceModule::setChanMin(double newChanMin)
         {
             chanMinChangedSignal(m_analogChanMin,this);
         }
+    }
+}
+
+void NIDeviceModule::setcounterCountingEdgeMode(moduleCounterEdgeConfig newCounterCountingEdgeMode)
+{
+    m_counterCountingEdgeMode = newCounterCountingEdgeMode;
+    if (counterEdgeConfigChangedSignal)
+    {
+        counterEdgeConfigChangedSignal(newCounterCountingEdgeMode,this); 
+    }
+}
+
+void NIDeviceModule::setCounterCountDirectionMode(moduleCounterMode newCounterCountMode)
+{
+    m_counterCountDirectionMode = newCounterCountMode;
+    if (counterModeChangedSignal)
+    {
+        counterModeChangedSignal(newCounterCountMode,this);
     }
 }
 
@@ -254,9 +296,20 @@ moduleShuntLocation NIDeviceModule::getModuleShuntLocation() const
     return m_shuntLocation;
 }
 
+moduleCounterEdgeConfig NIDeviceModule::getcounterCountingEdgeMode() const
+{
+    return m_counterCountingEdgeMode;
+}
+
 double NIDeviceModule::getModuleShuntValue() const
 {
     return m_shuntValue;
+}
+
+moduleCounterMode NIDeviceModule::getCounterCountDirectionMode() const
+{
+    return m_counterCountDirectionMode
+    ;
 }
 
 moduleTerminalConfig NIDeviceModule::getModuleTerminalCfg() const

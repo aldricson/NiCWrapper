@@ -1,5 +1,5 @@
-#ifndef CHOOSEMODULEMENU_H
-#define CHOOSEMODULEMENU_H
+#ifndef ChooseShowValueMenu_H
+#define ChooseShowValueMenu_H
 
 #include <iostream>
 #include <vector>
@@ -8,31 +8,27 @@
 #include "../stringUtils/stringUtils.h"
 #include "../NiWrappers/QNiSysConfigWrapper.h"
 
-class ChooseModuleMenu {
+class ChooseShowValueMenu {
 public:
     // Constructor
-    ChooseModuleMenu(std::shared_ptr<QNiSysConfigWrapper> aConfigWrapper);
+    ChooseShowValueMenu(std::shared_ptr<QNiSysConfigWrapper> aConfigWrapper);
     // Destructor
-    ~ChooseModuleMenu();
+    ~ChooseShowValueMenu();
     // Function to display the menu
-    std::string displayChooseModuleMenu();
-    void handleChoice(const std::string& choice);
-
-    // Function to get the selected module
-    NIDeviceModule* getSelectedModule() const;
-    const char* getManuallySelectedModuleName() const;
-
+    std::string displayChooseShowValueMenu();
+   // void handleChoice(const std::string& choice);
+    unsigned int selectedChannel;  
     // Signals
     std::function<void()> backSignal            = nullptr;
     std::function<void()> succesSignal          = nullptr;
     std::function<void()> failedSignal          = nullptr;
 
-
 private:
     // Private member variables and functions can be added here
     std::shared_ptr<QNiSysConfigWrapper> m_cfgWrapper;
     char m_manuallySelectedModuleName[256] = "";
-    NIDeviceModule *m_manuallySelectedModule = nullptr;
-};
+    char m_manuallySelectedChanName[256] = "";
+    unsigned int m_manuallySelectedChanIndex       = 0;
+    NIDeviceModule *m_manuallySelectedModule = nullptr;};
 
-#endif // CHOOSEMODULEMENU_H
+#endif // ChooseShowValueMenu_H

@@ -44,6 +44,7 @@ void KeyboardPoller::pollKeyboard() {
 
 // Check if a key is pressed
 int KeyboardPoller::kbhit() {
+    //it works like that under linux! Why ? The fuck why... it works like that.
     struct termios oldt, newt;
     int ch;
     int oldf;

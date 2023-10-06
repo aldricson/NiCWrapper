@@ -71,7 +71,6 @@ static inline void displayMenu(const std::string& title,
     for (unsigned int i = 0; i < maxLength+2; ++i) line += "░";
     //spacer
     std::string spacer = centerAlignString(" ", maxLength);
-
     //1) Top line
     std::cout <<  line <<  std::endl;
     //2) spacer
@@ -88,11 +87,9 @@ static inline void displayMenu(const std::string& title,
         option.append(maxLength - option.length(), ' ');
         std::cout << centerAlignString(option, maxLength) << std::endl;
     }
-
     // Bottom of the "table"
     std::cout << spacer.c_str() << std::endl;
     std::cout << line << std::endl;
-
 }
 
 static inline void handleUserInput(
@@ -107,12 +104,17 @@ static inline void handleUserInput(
         std::cin.ignore();
 
         unsigned int selectedChoice;
+        //extract the user choice
         std::stringstream ss(choice);
         if (ss >> selectedChoice && ss.eof() && selectedChoice < actions.size()) {
-            actions[selectedChoice]();
+            //here we have the index of the option selected, as the vector of options and actions are synchronized (with the help of god)
+            //we just have to call the action with this index, it will automagically execute the function at this index. 
+            actions[selectedChoice]();//<- note the () at the end.... it means we execute the function at the pointer found at the index in the vector
         } 
         else 
         {
+            //if we are here or the user is stupid or he's a motha fucka, bacause he choose
+            //an invalid option
             std::cout << "Invalid selection. Try again." << std::endl;
             retryFunction();
         }

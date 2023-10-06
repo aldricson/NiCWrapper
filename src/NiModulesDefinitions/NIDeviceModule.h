@@ -108,7 +108,9 @@ enum moduleUnit
 
 class NIDeviceModule {
 protected:
+    //number of channels in the module
     unsigned int m_nbChannel       = 16;
+    //number of 
     unsigned int m_nbCounters      = 0;
     unsigned int m_nbDigitalIoPort = 0 ;
     unsigned int m_slotNumber      = 0 ;

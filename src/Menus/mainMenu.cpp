@@ -13,9 +13,12 @@ mainMenu::mainMenu(std::shared_ptr<QNiSysConfigWrapper> aConfigWrapper,
     //helper object to read analogic channels
     m_analogicReader = anAnalogicReader;
     //helper object to read digital channels
-    m_digitalReader  = aDigitalReader  ; 
+    m_digitalReader  = aDigitalReader  ;
+    //create sub menus 
     m_moduleBySlotMenu  = std::make_shared<moduleBySlotMenu> (m_cfgWrapper);
     m_moduleByAliasMenu = std::make_shared<moduleByAliasMenu>(m_cfgWrapper);
+    //TODO add missing sub menus
+
     //connect "signals" to "slots"
     m_moduleBySlotMenu ->showMainMenuSignal = std::bind(&mainMenu::onDisplayMainMenu,this);
     m_moduleByAliasMenu->showMainMenuSignal = std::bind(&mainMenu::onDisplayMainMenu,this);

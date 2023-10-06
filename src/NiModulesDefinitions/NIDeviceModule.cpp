@@ -106,9 +106,9 @@ void NIDeviceModule::saveToFile(const std::string &filename)
     {
         fprintf(ini, "Channel%d = %s\n", i, m_chanNames[i].c_str());  
     }
-
-    fprintf(ini, "\n[Counters]\n\n");
-    fprintf(ini, "NumberOfCounters = %u\n", m_nbCounters);
+    //-------------- Section counters ---------
+    fprintf(ini, "\n[Counters]\n\n");                      //<--- this is how to write a new section in the ini file Note the syntax
+    fprintf(ini, "NumberOfCounters = %u\n", m_nbCounters); //So all the others are keys of the sections UNTIL next section
     for (unsigned int i = 0; i < m_nbCounters; ++i) 
     {
         fprintf(ini, "Counter%d = %s\n", i, m_counterNames[i].c_str()); 
@@ -117,7 +117,7 @@ void NIDeviceModule::saveToFile(const std::string &filename)
     fprintf(ini, "countingDirection = %u\n", static_cast<int>(m_counterCountDirectionMode));
     fprintf(ini, "countingMin = %u\n"      , m_counterMin               );
     fprintf(ini, "countingMax = %u\n"      , m_counterMax               );
-
+    //------------ Section Module ------------
     fprintf(ini, "\n[Module]\n\n");
     fprintf(ini, "Type = %d ;\n", static_cast<int>(getModuleType()));
     fprintf(ini, "Module Name = %s\n",m_moduleName.c_str());
@@ -224,6 +224,7 @@ void NIDeviceModule::setCounterMax(unsigned int newCountersMax)
         if (newCountersMax>m_counterMin)
     {
         m_counterMax=newCountersMax;
+        //perfectly equivalent to the Q_EMIT
         if (countersMaxChangedSignal)
         {
             countersMaxChangedSignal(m_counterMax,this);

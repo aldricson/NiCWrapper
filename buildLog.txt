@@ -15,6 +15,7 @@ C:/Users/aldric/Documents/daqMxTest/build/../src/Menus/chooseChannelMenu.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/Menus/chooseModuleMenu.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/Menus/chooseShowValueMenu.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/Menus/mainMenu.h
+C:/Users/aldric/Documents/daqMxTest/build/../src/Menus/mappingTableMenu.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/Menus/moduleByAliasMenu.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/Menus/moduleBySlotMenu.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/Modbus/libmodbus/modbus-private.h
@@ -61,6 +62,7 @@ C:/Users/aldric/Documents/daqMxTest/build/../src/Menus/chooseChannelMenu.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/Menus/chooseModuleMenu.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/Menus/chooseShowValueMenu.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/Menus/mainMenu.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/Menus/mappingTableMenu.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/Menus/moduleByAliasMenu.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/Menus/moduleBySlotMenu.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/Modbus/modbusServer.cpp

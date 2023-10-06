@@ -13,22 +13,16 @@ class KeyboardPoller {
 public:
     // Signal called when a key is pressed
     std::function<void(char)> keyboardHitSignal = nullptr;
-
     // Status of the poller execution
     std::atomic<bool> running;
-
     // Default frequency in Hz
     int frequency = 100;
-
     // Default constructor
     KeyboardPoller();
-
     // Destructor
     ~KeyboardPoller();
-
     // Start the poller
     void start();
-
     // Stop the poller
     void stop();
 

@@ -38,6 +38,7 @@ public:
     virtual void onKeyboardHit(char key);
     virtual void onChannelDataReady (double lastValue,QNiDaqWrapper *sender);
     virtual void onOneShotValueReaded(double aValue);
+    virtual void onChannelMenuSuccess();
     // Getters
     virtual std::shared_ptr<QNiSysConfigWrapper> getSysConfig() const;
     virtual std::shared_ptr<QNiDaqWrapper>       getDaqMx()     const;

@@ -12,23 +12,25 @@ BaseReader::BaseReader(std::shared_ptr<QNiSysConfigWrapper> aSysConfigInstance, 
     m_daqMx->channelCurrentDataReadySignal = std::bind(&BaseReader::onChannelDataReady, //Signal to Slot c++ style
                                               this,
                                               std::placeholders::_1,
-                                              std::placeholders::_2);
+                                              std::placeholders::_2);  //<-in that case 2 parameteres
     m_pollingTimer = std::make_shared<SimpleTimer>(); //The timer that handle polling
     m_pollingTimer -> setSlotFunction([this](){this-> onPollingTimerTimeOut();}); //passing the slot function to the calling function
     m_pollingTimer -> setInterval(std::chrono::milliseconds(500)); //500 ms interval between ticks
     m_keyboardPoller = std::make_shared<KeyboardPoller>();         //this object handle keyboards events while polling (e.g. escape key to stop polling) 
+    
     m_keyboardPoller->keyboardHitSignal = std::bind(&BaseReader::onKeyboardHit,this,std::placeholders::_1); //signal to slot
     //menu to choose the modules + signals slots (mainly within lambdas)
     m_moduleMenu = std::make_shared<ChooseModuleMenu>(m_sysConfig);
+
     m_moduleMenu->succesSignal = [this](){
                                             this->m_manuallySelectedModule     = this->m_moduleMenu->getSelectedModule();
                                             std::strncpy(m_manuallySelectedModuleName, m_manuallySelectedModule->getAlias().c_str(), sizeof(m_manuallySelectedModuleName) - 1);
                                             m_manuallySelectedModuleName[sizeof(m_manuallySelectedModuleName) - 1] = '\0';  // Null-terminate just in case 
                                             this->displayChooseChannelMenu();
                                          };
-    m_moduleMenu->failedSignal = [this](){
-                                            this->displayChooseModuleMenu();
-                                         };
+
+    m_moduleMenu->failedSignal = [this](){this->displayChooseModuleMenu();};  //equivalent to std::bind(&BaseReader::displayChooseModuleMenu,this)
+
     m_moduleMenu->backSignal   = [this](){
                                               if (showMainMenuSignal)
                                               {
@@ -37,44 +39,10 @@ BaseReader::BaseReader(std::shared_ptr<QNiSysConfigWrapper> aSysConfigInstance, 
                                          };
     //menu to choose channels  + signals slots (mainly within lambdas)
     m_channelMenu = std::make_shared<ChooseChannelMenu>(m_sysConfig);
+    //connect signal to slot   
+    m_channelMenu->succesSignal = std::bind(&BaseReader::onChannelMenuSuccess,this);
+    m_channelMenu->backSignal   = std::bind(&BaseReader::displayChooseChannelMenu,this);
 
-    m_channelMenu->succesSignal = [this](){
-                                                std::cout<<"Channel selection success"<<std::endl;
-                                                //mostly over secured but who knows ?
-                                                m_manuallySelectedChanIndex = m_channelMenu->selectedChannel;
-                                                std::cout<<"Channel index selected"<<std::to_string(m_manuallySelectedChanIndex)<<std::endl;
-                                                if (!m_manuallySelectedModule)
-                                                {
-                                                    std::cout<<"slected module is nullptr!"<<std::endl;
-                                                   if (showMainMenuSignal)
-                                                   {
-                                                       showMainMenuSignal();
-                                                   }
-                                                   else
-                                                   {
-                                                     std::cout<<"the soft will probably crash now"<<std::endl;
-                                                     return;
-                                                   }
-                                                }
-                                                std::cout<<"Selected Module @"<<m_manuallySelectedModule<<std::endl; 
-                                                //the active part :
-                                                if (m_manuallySelectedChanIndex < m_manuallySelectedModule->getChanNames().size())   
-                                                {
-                                                   std::cout<<"Selected Channel in range"<<std::endl;
-                                                   //get the channnel name from selected index, copy it in the destination char[256]
-                                                    std::strncpy(m_manuallySelectedChanName, 
-                                                                 m_manuallySelectedModule->getChanNames()[m_manuallySelectedChanIndex].c_str(),
-                                                                sizeof(m_manuallySelectedChanName) - 1);
-                                                    //add terminal 0 (old school)
-                                                    m_manuallySelectedChanName[sizeof(m_manuallySelectedChanName) - 1] = '\0';  // Null-terminate just in case
-                                                    //assign the variables
-                                                    m_manuallySelectedChanIndex = m_channelMenu->selectedChannel;
-                                                    //Go to next menu/display
-                                                    displayShowValueMenu();
-                                                } 
-                                            };
-
-    m_channelMenu->backSignal = [this]() {displayChooseChannelMenu();};
     m_channelMenu->failedSignal = [this]() {
                                                 if (showMainMenuSignal)
                                                    {
@@ -227,6 +195,44 @@ void BaseReader::onOneShotValueReaded(double aValue)
         }
         displayMenu(title, options, actions, retryFunction); 
     }
+}
+
+void BaseReader::onChannelMenuSuccess()
+{
+    
+    std::cout<<"Channel selection success"<<std::endl;
+    //mostly over secured but who knows ?
+    m_manuallySelectedChanIndex = m_channelMenu->selectedChannel;
+    std::cout<<"Channel index selected"<<std::to_string(m_manuallySelectedChanIndex)<<std::endl;
+    if (!m_manuallySelectedModule)
+    {
+        std::cout<<"slected module is nullptr!"<<std::endl;
+       if (showMainMenuSignal)
+       {
+           showMainMenuSignal();
+       }
+       else
+       {
+         std::cout<<"the soft will probably crash now"<<std::endl;
+         return;
+       }
+    }
+    std::cout<<"Selected Module @"<<m_manuallySelectedModule<<std::endl; 
+    //the active part :
+    if (m_manuallySelectedChanIndex < m_manuallySelectedModule->getChanNames().size())   
+    {
+       std::cout<<"Selected Channel in range"<<std::endl;
+       //get the channnel name from selected index, copy it in the destination char[256]
+        std::strncpy(m_manuallySelectedChanName, 
+                     m_manuallySelectedModule->getChanNames()[m_manuallySelectedChanIndex].c_str(),
+                    sizeof(m_manuallySelectedChanName) - 1);
+        //add terminal 0 (old school)
+        m_manuallySelectedChanName[sizeof(m_manuallySelectedChanName) - 1] = '\0';  // Null-terminate just in case
+        //assign the variables
+        m_manuallySelectedChanIndex = m_channelMenu->selectedChannel;
+        //Go to next menu/display
+        displayShowValueMenu();
+    } 
 }
 
 //----------- getters ---------------

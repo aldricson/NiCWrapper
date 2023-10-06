@@ -23,6 +23,8 @@ void NI9208::initModule()
     {
         m_chanNames.push_back("/ai" + std::to_string(i));
     }
+
+    //TODO convert min and max to Amps 
     m_analogChanMax =  20.0;
     m_analogChanMin = -20.0;
     m_moduleUnit    = Val_Amps;
@@ -39,12 +41,8 @@ void NI9208::saveConfig()
 
 void NI9208::loadConfig()
 {
-        NIDeviceModule::loadFromFile("NI9208_"+std::to_string(NIDeviceModule::getSlotNb())+".ini");
-
+    NIDeviceModule::loadFromFile("NI9208_"+std::to_string(NIDeviceModule::getSlotNb())+".ini");
 }
-
-
-
 
 
 //************* getters ************

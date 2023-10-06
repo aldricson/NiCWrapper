@@ -88,7 +88,7 @@ std::vector<std::string> QNiSysConfigWrapper::EnumerateCRIOPluggedModules() {
                 nb_digitalIoPort = module->getNbDigitalIOPorts   ();
                 analogChanMax    = module->getChanMax            ();
                 analogChanMin    = module->getChanMin            ();
-                analogUnits      = module->getChanUnit           ();
+                analogUnits      = module->getModuleUnit           ();
                 counterMax       = module->getmaxCounters        ();
                 counterMin       = module->getminCounters        ();
                 shuntLoc         = module->getModuleShuntLocation();
@@ -112,7 +112,7 @@ std::vector<std::string> QNiSysConfigWrapper::EnumerateCRIOPluggedModules() {
                         break;
                     }
 
-                   case isDigitalInputVoltage :
+                   case isDigitalInput :
                    {
                        modTypeAsString = "\n║ type: Digital Input Voltage";
                        break;

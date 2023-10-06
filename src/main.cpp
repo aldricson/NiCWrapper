@@ -8,6 +8,7 @@
 #include "./NiWrappers/QNiSysConfigWrapper.h"
 #include "./NiWrappers/QNiDaqWrapper.h"
 #include "./channelReaders/analogicReader.h"
+#include "./channelReaders/digitalReader.h"
 #include "./Signals/QSignalTest.h"
 #include "./Menus/mainMenu.h"
 #include "./stringUtils/stringUtils.h"
@@ -22,12 +23,14 @@
 std::shared_ptr<QNiSysConfigWrapper> sysConfig;
 std::shared_ptr<QNiDaqWrapper>       daqMx;
 std::shared_ptr<AnalogicReader>      analogReader;
+std::shared_ptr<DigitalReader>       digitalReader;
 
 void createNecessaryInstances()
 {
-  daqMx        = std::make_shared<QNiDaqWrapper>();
-  sysConfig    = std::make_shared<QNiSysConfigWrapper>();
-  analogReader = std::make_shared<AnalogicReader>(sysConfig,daqMx);
+  daqMx         = std::make_shared<QNiDaqWrapper>();
+  sysConfig     = std::make_shared<QNiSysConfigWrapper>();
+  analogReader  = std::make_shared<AnalogicReader>     (sysConfig,daqMx);
+  digitalReader = std::make_shared<DigitalReader>      (sysConfig,daqMx);
 }
 
 int main(void)
@@ -69,6 +72,6 @@ int main(void)
      std::cout << "╚════════════════════════════╝"<< std::endl;
    }
      
-     mainMenu m_mainMenu(sysConfig,analogReader);
+     mainMenu m_mainMenu(sysConfig,analogReader,digitalReader);
      m_mainMenu.exitProgramSignal = std::bind(closeLambda);
 }

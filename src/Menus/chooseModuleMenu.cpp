@@ -22,17 +22,82 @@ const char *ChooseModuleMenu::getManuallySelectedModuleName() const
     return m_manuallySelectedModuleName;
 }
 
-std::string ChooseModuleMenu::displayChooseModuleMenu()
+std::string ChooseModuleMenu::displayChooseModuleMenu(filterMode aFilterMode)
 {
     std::string choice;
     clearConsole();
 
     // Prepare the list of modules
     std::vector<std::string> moduleNamesVector;
+    bool pushable;
     for (unsigned int i = 0; i < m_cfgWrapper->getModuleList().size(); ++i) 
     {
+        moduleType t = m_cfgWrapper->getModuleList()[i]->getModuleType();
+        switch (aFilterMode)
+        {
+            case showAll :
+            {
+                pushable = true;
+                break;
+            }
+
+            case showAllAnalogics :
+            {
+                //Add more here 
+                pushable = (t == moduleType::isAnalogicInputCurrent || t == moduleType::isAnalogicInputVoltage);
+                break;
+            }
+
+            case showOnlyReadAnalogics :
+            {
+                //For now it's the same as all Analogics , but if the soft is extended one day showAllAnalogics will have more than this one
+                pushable = (t == moduleType::isAnalogicInputCurrent || t == moduleType::isAnalogicInputVoltage);
+                break;
+            }
+
+            case showOnlyWriteAnalogics :
+            {
+                std::cout<<"filtering for analog output not implemented yet"<<std::endl;
+                pushable = false;
+                break;
+            }
+
+            case showAllDigitals :
+            {
+                //Add more here 
+                pushable = (t == moduleType::isCounter             || 
+                            t == moduleType::isDigitalIO           || 
+                            t == moduleType::isDigitalIOAndCounter || 
+                            t == moduleType::isDigitalInput        ||
+                            t == moduleType::isDigitalOutput);
+                break;
+            }
+
+            case showOnlyReadDigitals :
+            {
+                //Add more here 
+                pushable = (t == moduleType::isCounter             || 
+                            t == moduleType::isDigitalIO           || 
+                            t == moduleType::isDigitalIOAndCounter || 
+                            t == moduleType::isDigitalInput);
+                break;
+            }
+
+            case showOnlyWriteDigitals :
+            {
+                //Add more here 
+                pushable = (t == moduleType::isDigitalOutput);
+                break;
+            }
+        }
+        
+        
+        
+        
+        
+        
         std::string str = " " + std::to_string(i) + " . " + m_cfgWrapper->getModuleList()[i]->getAlias();
-        moduleNamesVector.push_back(str);
+        if (pushable) moduleNamesVector.push_back(str);
     }
     moduleNamesVector.push_back(" x . Main Menu");
     displayMenu("Choose the module", moduleNamesVector);

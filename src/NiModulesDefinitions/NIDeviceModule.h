@@ -20,10 +20,11 @@ enum moduleType
 {
     isAnalogicInputCurrent = 0,
     isAnalogicInputVoltage = 1,
-    isDigitalInputVoltage  = 2,
-    isDigitalIO            = 3,
-    isCounter              = 4,
-    isDigitalIOAndCounter  = 5   
+    isDigitalInput         = 2,
+    isDigitalOutput        = 3,
+    isDigitalIO            = 4,
+    isCounter              = 5,
+    isDigitalIOAndCounter  = 6   
 };
 
 enum moduleShuntLocation
@@ -61,6 +62,50 @@ enum moduleCounterMode
 };
 
 
+enum moduleUnit
+{
+    NoUnit                    =             0                                 ,
+    Val_Volts                 =             DAQmx_Val_Volts                   ,                                                
+    Val_Amps                  =             DAQmx_Val_Amps                    ,                               
+    Val_DegF                  =             DAQmx_Val_DegF                    ,                               
+    Val_DegC                  =             DAQmx_Val_DegC                    ,                               
+    Val_DegR                  =             DAQmx_Val_DegR                    ,                               
+    Val_Kelvins               =             DAQmx_Val_Kelvins                 ,                               
+    Val_Strain                =             DAQmx_Val_Strain                  ,                               
+    Val_Ohms                  =             DAQmx_Val_Ohms                    ,                               
+    Val_Hz                    =             DAQmx_Val_Hz                      ,                               
+    Val_Seconds               =             DAQmx_Val_Seconds                 ,                               
+    Val_Meters                =             DAQmx_Val_Meters                  ,                               
+    Val_Inches                =             DAQmx_Val_Inches                  ,                               
+    Val_Degrees               =             DAQmx_Val_Degrees                 ,                               
+    Val_Radians               =             DAQmx_Val_Radians                 ,                               
+    Val_Ticks                 =             DAQmx_Val_Ticks                   ,                               
+    Val_RPM                   =             DAQmx_Val_RPM                     ,                               
+    Val_RadiansPerSecond      =             DAQmx_Val_RadiansPerSecond        ,                               
+    Val_DegreesPerSecond      =             DAQmx_Val_DegreesPerSecond        ,                               
+    Val_g                     =             DAQmx_Val_g                       ,                               
+    Val_MetersPerSecondSquared=             DAQmx_Val_MetersPerSecondSquared  ,                               
+    Val_InchesPerSecondSquared=             DAQmx_Val_InchesPerSecondSquared  ,                               
+    Val_MetersPerSecond       =             DAQmx_Val_MetersPerSecond         ,                               
+    Val_InchesPerSecond       =             DAQmx_Val_InchesPerSecond         ,                               
+    Val_Pascals               =             DAQmx_Val_Pascals                 ,                               
+    Val_Newtons               =             DAQmx_Val_Newtons                 ,                               
+    Val_Pounds                =             DAQmx_Val_Pounds                  ,                               
+    Val_KilogramForce         =             DAQmx_Val_KilogramForce           ,                               
+    Val_PoundsPerSquareInch   =             DAQmx_Val_PoundsPerSquareInch     ,                               
+    Val_Bar                   =             DAQmx_Val_Bar                     ,                               
+    Val_NewtonMeters          =             DAQmx_Val_NewtonMeters            ,                               
+    Val_InchOunces            =             DAQmx_Val_InchOunces              ,                               
+    Val_InchPounds            =             DAQmx_Val_InchPounds              ,                               
+    Val_FootPounds            =             DAQmx_Val_FootPounds              ,                               
+    Val_VoltsPerVolt          =             DAQmx_Val_VoltsPerVolt            ,                               
+    Val_mVoltsPerVolt         =             DAQmx_Val_mVoltsPerVolt           ,                               
+    Val_Coulombs              =             DAQmx_Val_Coulombs                ,                               
+    Val_PicoCoulombs          =             DAQmx_Val_PicoCoulombs            ,                               
+    Val_FromTEDS              =             DAQmx_Val_FromTEDS                
+};
+
+
 class NIDeviceModule {
 protected:
     unsigned int m_nbChannel       = 16;
@@ -78,7 +123,7 @@ protected:
 
 
 
-    std::string  m_analogUnit      = "V";
+    moduleUnit  m_moduleUnit       = NoUnit;
 
     std::string  m_moduleName      = "";
     std::string  m_alias           = "";
@@ -116,11 +161,12 @@ public:
     virtual moduleShuntLocation      getModuleShuntLocation       () const;
     virtual double                   getModuleShuntValue          () const;
     virtual moduleTerminalConfig     getModuleTerminalCfg         () const;
+    virtual moduleUnit               getModuleUnit                () const; 
     virtual double                   getChanMin                   () const;
     virtual double                   getChanMax                   () const;
     virtual unsigned int             getminCounters               () const;
     virtual unsigned int             getmaxCounters               () const;
-    virtual std::string              getChanUnit                  () const;   
+      
 
 
     virtual void setModuleName                (const std::string& newModuleName);
@@ -143,10 +189,12 @@ public:
 
     
     virtual void setModuleType           (moduleType newType);
+    virtual void setModuleUnit           (moduleUnit newUnit); 
+
     virtual void setChanMin              (double     newChanMin);
     virtual void setChanMax              (double newChanMax);
 
-    virtual void setChanUnit             (const std::string& newUnit);
+   
 
     virtual void showModuleOnConsole() const;
      
@@ -168,7 +216,7 @@ public:
     std::function<void(unsigned int            , NIDeviceModule *sender)>  countersMaxChangedSignal          = nullptr;
     std::function<void(moduleCounterEdgeConfig , NIDeviceModule *sender)>  counterEdgeConfigChangedSignal    = nullptr;
     std::function<void(moduleCounterMode       , NIDeviceModule *sender)>  counterModeChangedSignal          = nullptr;
-    std::function<void(std::string             , NIDeviceModule *sender)>  chanUnitChangedSignal             = nullptr;
+    std::function<void(moduleUnit              , NIDeviceModule *sender)>  chanUnitChangedSignal             = nullptr;
     std::function<void(std::vector<std::string>, NIDeviceModule *sender)>  chanNamesChangedSignal            = nullptr;    
     std::function<void(std::vector<std::string>, NIDeviceModule *sender)>  counterNamesChangedSignal         = nullptr;
     std::function<void(moduleShuntLocation     , NIDeviceModule *sender)>  moduleShuntLocationChangedSgnal   = nullptr;

@@ -102,6 +102,8 @@ double QNiDaqWrapper::readCurrent(NIDeviceModule *deviceModule, unsigned int cha
     float64 shuntVal = deviceModule->getModuleShuntValue();
     double minRange  = deviceModule->getChanMin();
     double maxRange  = deviceModule->getChanMax();
+    int32  termCfg   = deviceModule->getModuleTerminalCfg();
+    int32  unit      = deviceModule->getModuleUnit();
 
     // Extract channelName with its index
     const char* channelName = deviceModule->getChanNames()[chanIndex].c_str();
@@ -136,10 +138,10 @@ double QNiDaqWrapper::readCurrent(NIDeviceModule *deviceModule, unsigned int cha
         error = DAQmxCreateAICurrentChan(taskHandle, 
                                          fullChannelName.c_str(), 
                                          "", 
-                                         DAQmx_Val_Cfg_Default, 
+                                         termCfg, 
                                          minRange / 1000.0, 
                                          maxRange / 1000.0, 
-                                         DAQmx_Val_Amps, 
+                                         unit, 
                                          shuntLoc, 
                                          shuntVal, 
                                          NULL);
@@ -202,6 +204,8 @@ double QNiDaqWrapper::readVoltage(NIDeviceModule *deviceModule, unsigned int cha
     const char* deviceName = deviceModule->getAlias().c_str();
     double minRange  = deviceModule->getChanMin();
     double maxRange  = deviceModule->getChanMax();
+    int32  termCfg   = deviceModule->getModuleTerminalCfg();
+    int32  unit      = deviceModule->getModuleUnit();
 
     // Extract channelName with its index
     const char* channelName = deviceModule->getChanNames()[chanIndex].c_str();
@@ -225,15 +229,24 @@ double QNiDaqWrapper::readVoltage(NIDeviceModule *deviceModule, unsigned int cha
             handleErrorAndCleanTask();  // Handle error and clean up
             throw std::runtime_error("Failed to register Done callback.");
         }
+        //parameters in calling order  
+        //taskHandle	        The task to which to add the channels that this function creates.
+        //physicalChannel	    The names of the physical channels to use to create virtual channels.
+        //nameToAssignToChannel	The name(s) to assign to the created virtual channel(s).
+        //terminalConfig	    The input terminal configuration for the channel.
+        //minVal	            The minimum value, in units, that you expect to measure.
+        //maxVal	            The maximum value, in units, that you expect to measure.
+        //units	             	The units to use to return the voltage measurements.
+
 
         // Create an analog input voltage channel
         error = DAQmxCreateAIVoltageChan(taskHandle, 
                                          fullChannelName.c_str(), 
                                          "", 
-                                         DAQmx_Val_Cfg_Default, 
+                                         termCfg, 
                                          minRange, 
                                          maxRange, 
-                                         DAQmx_Val_Volts, 
+                                         unit, 
                                          NULL);
 
         if (error) {

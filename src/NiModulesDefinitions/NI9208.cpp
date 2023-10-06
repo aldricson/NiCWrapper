@@ -25,7 +25,7 @@ void NI9208::initModule()
     }
     m_analogChanMax =  20.0;
     m_analogChanMin = -20.0;
-    m_analogUnit    = "mA";
+    m_moduleUnit    = Val_Amps;
     m_shuntLocation = defaultLocation;
     m_shuntValue    = 34.01;
     m_moduleTerminalConfig = referencedSingleEnded;

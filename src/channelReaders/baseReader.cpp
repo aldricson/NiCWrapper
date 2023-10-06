@@ -100,7 +100,7 @@ BaseReader::~BaseReader()
 void BaseReader::displayChooseModuleMenu()
 {
     // Display the module selection menu and handle the user's choice
-    std::string choice = m_moduleMenu->displayChooseModuleMenu();
+    std::string choice = m_moduleMenu->displayChooseModuleMenu(filterMode::showAll);
     m_moduleMenu->handleChoice(choice);
 }
 

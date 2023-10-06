@@ -40,6 +40,7 @@ C:/Users/aldric/Documents/daqMxTest/build/../src/Signals/KeyboardPoller.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/Signals/QSignalTest.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/channelReaders/analogicReader.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/channelReaders/baseReader.h
+C:/Users/aldric/Documents/daqMxTest/build/../src/channelReaders/digitalReader.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/channelWriters/digitalWriter.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/circularBuffer/ThreadSafeCircularBuffer.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/circularBuffer/algorithm.h
@@ -75,6 +76,7 @@ C:/Users/aldric/Documents/daqMxTest/build/../src/NiWrappers/QNiSysConfigWrapper.
 C:/Users/aldric/Documents/daqMxTest/build/../src/Signals/KeyboardPoller.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/channelReaders/analogicReader.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/channelReaders/baseReader.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/channelReaders/digitalReader.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/channelWriters/digitalWrtiter.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/circularBuffer/ThreadSafeCircularBuffer.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/main.cpp

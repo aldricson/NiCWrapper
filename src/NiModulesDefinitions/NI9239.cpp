@@ -26,7 +26,7 @@ void NI9239::initModule()
     }
     m_analogChanMax = 10.0;
     m_analogChanMin = -10.0;
-    m_analogUnit    = "V";
+    m_moduleUnit    = Val_Volts;
     m_shuntLocation = noShunt;
     m_shuntValue    = -999999.999;
     m_moduleTerminalConfig = differencial; 

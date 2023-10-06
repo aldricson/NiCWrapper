@@ -13,6 +13,8 @@ public:
     void manualReadOneShot() override;
     void manualReadOneShot(double &returnedValue) override;
     void manualReadPolling() override;
+
+    void displayChooseModuleMenu() override;
     
     // Add any additional member functions specific to DigitalReader here
 };

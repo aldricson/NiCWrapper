@@ -24,8 +24,6 @@ void NIDeviceModule::loadFromFile(const std::string& filename) {
                 } catch (const std::invalid_argument& e) {
                     std::cerr << "Invalid argument for min chan Value: " << value << std::endl;
                 }
-            } else if (key.find("analog chan unit") != std::string::npos) {
-                setChanUnit(value);
             }
 
         //---------- counters --------
@@ -82,6 +80,10 @@ void NIDeviceModule::loadFromFile(const std::string& filename) {
                 moduleTerminalConfig newTerminalConfig = static_cast<moduleTerminalConfig>(std::stoi(value));
                 setModuleTerminalCfg(newTerminalConfig);
             }
+            else if (key.find("Module unit") != std::string::npos) {
+                moduleUnit newModuleUnit = static_cast<moduleUnit>(std::stoi(value));
+                setModuleUnit(newModuleUnit);
+            }
         }
     });
 }
@@ -100,7 +102,6 @@ void NIDeviceModule::saveToFile(const std::string &filename)
     fprintf(ini, "NumberOfChannels = %u\n", m_nbChannel);
     fprintf(ini, "min chan Value = %.3f\n", m_analogChanMin);
     fprintf(ini, "max chan Value = %.3f\n", m_analogChanMax);
-    fprintf(ini ,"analog chan unit = %s\n", m_analogUnit.c_str());
     for (unsigned int i = 0; i < m_nbChannel; ++i) 
     {
         fprintf(ini, "Channel%d = %s\n", i, m_chanNames[i].c_str());  
@@ -124,6 +125,7 @@ void NIDeviceModule::saveToFile(const std::string &filename)
     fprintf(ini, "Shunt Location = %d\n",m_shuntLocation);
     fprintf(ini, "Shunt Value = %.3f\n", m_shuntValue);
     fprintf(ini, "Terminal Config = %d\n",static_cast<int>(m_moduleTerminalConfig));
+    fprintf(ini ,"Module unit = %d\n", static_cast<int>(m_moduleUnit));
     fclose(ini);
 }
 
@@ -229,12 +231,12 @@ void NIDeviceModule::setCounterMax(unsigned int newCountersMax)
     }
 }
 
-void NIDeviceModule::setChanUnit(const std::string &newUnit)
+void NIDeviceModule::setModuleUnit(moduleUnit newUnit)
 {
-    m_analogUnit = newUnit;
+    m_moduleUnit = newUnit;
     if (chanUnitChangedSignal)
     {
-        chanUnitChangedSignal(m_analogUnit,this);
+        chanUnitChangedSignal(m_moduleUnit,this);
     }
 }
 
@@ -337,9 +339,9 @@ unsigned int NIDeviceModule::getmaxCounters() const
     return m_counterMax;
 }
 
-std::string NIDeviceModule::getChanUnit() const
+moduleUnit NIDeviceModule::getModuleUnit() const
 {
-    return m_analogUnit;
+    return m_moduleUnit;
 }
 
 void NIDeviceModule::setModuleName(const std::string &newModuleName)

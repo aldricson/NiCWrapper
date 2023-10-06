@@ -25,3 +25,10 @@ void DigitalReader::manualReadPolling()
     // You can use the provided functions like onPollingTimerTimeOut, onKeyboardHit, etc.
     // to manage the polling process
 }
+
+void DigitalReader::displayChooseModuleMenu()
+{
+        // Display the module selection menu and handle the user's choice
+    std::string choice = m_moduleMenu->displayChooseModuleMenu(filterMode::showOnlyReadDigitals);
+    m_moduleMenu->handleChoice(choice);
+}

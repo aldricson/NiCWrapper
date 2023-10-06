@@ -8,6 +8,17 @@
 #include "../stringUtils/stringUtils.h"
 #include "../NiWrappers/QNiSysConfigWrapper.h"
 
+enum filterMode {
+    showAll                = 0,
+    showAllAnalogics       = 1,
+    showOnlyReadAnalogics  = 2,
+    showOnlyWriteAnalogics = 3,
+    showAllDigitals        = 4,   
+    showOnlyReadDigitals   = 5,
+    showOnlyWriteDigitals  = 6
+    
+};
+
 class ChooseModuleMenu {
 public:
     // Constructor
@@ -15,7 +26,7 @@ public:
     // Destructor
     ~ChooseModuleMenu();
     // Function to display the menu
-    std::string displayChooseModuleMenu();
+    std::string displayChooseModuleMenu(filterMode aFilterMode);
     void handleChoice(const std::string& choice);
 
     // Function to get the selected module

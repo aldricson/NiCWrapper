@@ -25,8 +25,9 @@ public:
 
     int32 GetNumberOfModules();
     std::vector<std::string> GetDevicesList();
-    double readCurrent(NIDeviceModule *deviceModule, unsigned int chanIndex, unsigned int maxRetries);
-    double readVoltage(NIDeviceModule *deviceModule, unsigned int chanIndex, unsigned int maxRetries);
+    double       readCurrent(NIDeviceModule *deviceModule, unsigned int chanIndex, unsigned int maxRetries);
+    double       readVoltage(NIDeviceModule *deviceModule, unsigned int chanIndex, unsigned int maxRetries);
+    unsigned int readCounter(NIDeviceModule *deviceModule, unsigned int chanIndex, unsigned int maxRetries);
     void handleErrorAndCleanTask();
 
     //signals
@@ -34,23 +35,29 @@ public:
                                                                                                                //without any garanty that the channel is ready for a new task  
     std::function<void(double lastValue,QNiDaqWrapper *sender)>    channelCurrentDataReadySignal   = nullptr;  //emited when the task is fully done and the channel is ready for a new one
     
-    std::function<void(double lastValue,QNiDaqWrapper *sender)>    channelVoltageDataChangedSignal = nullptr;
+    std::function<void(double lastValue, QNiDaqWrapper *sender)>    channelVoltageDataChangedSignal = nullptr;
     std::function<void(double lastValue, QNiDaqWrapper *sender)>   channelVoltageDataReadySignal   = nullptr;
     
+    std::function<void(unsigned int lastValue, QNiDaqWrapper *sender)>    channelCounterDataChangedSignal = nullptr;
+    std::function<void(unsigned int lastValue, QNiDaqWrapper *sender)>    channelCounterDataReadySignal   = nullptr; 
 
     //Getters and setters
-    double getLastSingleCurrentChannelValue() const;
-    void   setLastSingleCurrentChannelValue(double value);
-    double getLastSingleVoltageChannelValue() const;
-    void   setLastSingleVoltageChannelValue(double value);
+    double       getLastSingleCurrentChannelValue () const;
+    void         setLastSingleCurrentChannelValue (double value);
+    double       getLastSingleVoltageChannelValue () const;
+    void         setLastSingleVoltageChannelValue (double       value);
+    unsigned int getLastSingleCounterValue        () const;
+    void         setLastSingleCounterValue        (unsigned int value);
     //Call backs falling functions
     void handleReadCurrentCompletion(int32 status);
     void handleReadVoltageCompletion(int32 status);
+    void handleReadCounterCompletion(int32 status);
     
 private:
     TaskHandle taskHandle;
-    double m_lastSingleCurrentChannelValue = 0.0;
-    double m_lastSingleVoltageChannelValue = 0.0; 
+    double       m_lastSingleCurrentChannelValue = 0.0;
+    double       m_lastSingleVoltageChannelValue = 0.0;
+    unsigned int m_lastSingleCounter             = 0;  
 };
 
 

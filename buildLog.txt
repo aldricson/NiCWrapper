@@ -11,6 +11,7 @@ project name is set to: dataDrill
 loading sources and headers
 List of Header Files:
 C:/Users/aldric/Documents/daqMxTest/build/../src/Bridge/niToModbusBridge.h
+C:/Users/aldric/Documents/daqMxTest/build/../src/Conversions/convUtils.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/Menus/chooseChannelMenu.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/Menus/chooseModuleMenu.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/Menus/chooseShowValueMenu.h
@@ -52,6 +53,7 @@ C:/Users/aldric/Documents/daqMxTest/build/../src/filesUtils/iniParser.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/globals/globalConsts.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/globals/globalEnumStructs.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/startUpManager.h
+C:/Users/aldric/Documents/daqMxTest/build/../src/stringUtils/mappingGrid.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/stringUtils/stringGrid.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/stringUtils/stringUtils.h
 C:/Users/aldric/Documents/daqMxTest/build/../src/testFunctions.h
@@ -81,8 +83,10 @@ C:/Users/aldric/Documents/daqMxTest/build/../src/channelReaders/baseReader.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/channelReaders/digitalReader.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/channelWriters/digitalWrtiter.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/circularBuffer/ThreadSafeCircularBuffer.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/filesUtils/iniParser.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/main.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/startUpManager.cpp
+C:/Users/aldric/Documents/daqMxTest/build/../src/stringUtils/mappingGrid.cpp
 C:/Users/aldric/Documents/daqMxTest/build/../src/stringUtils/stringGrid.cpp
 Excutable output file set to bin bin
 build type is: Debug

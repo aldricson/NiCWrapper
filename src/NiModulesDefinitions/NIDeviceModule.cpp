@@ -1,132 +1,73 @@
 #include "NIDeviceModule.h"
 
 void NIDeviceModule::loadFromFile(const std::string& filename) {
-    IniParser(filename, [this](const std::string& section, const std::string& key, const std::string& value) {
-        if (section == "Channel") {
-            if (key == "NumberOfChannels") {
-                unsigned int n = std::stoi(value);
-                setNbChannel(n);
-                m_chanNames.resize(n);
-            } else if (key.find("Channel") != std::string::npos) {
-                unsigned int index = std::stoi(key.substr(7));
-                if (index < m_chanNames.size()) {
-                    m_chanNames[index] = value;
-                }
-            } else if (key.find("max chan Value") != std::string::npos) {
-                try {
-                    setChanMax(std::stod(value));
-                } catch (const std::invalid_argument& e) {
-                    std::cerr << "Invalid argument for max chan Value: " << value << std::endl;
-                }
-            } else if (key.find("min chan Value") != std::string::npos) {
-                try {
-                    setChanMin(std::stod(value));
-                } catch (const std::invalid_argument& e) {
-                    std::cerr << "Invalid argument for min chan Value: " << value << std::endl;
-                }
-            }
+  // Check if the file exists the old way (crio system is outdated)
+    std::ifstream fileCheck(filename);
+    if (!fileCheck.good()) {
+        // If the file doesn't exist, save the default configuration to the file
+        saveToFile(filename);
+    }
+    fileCheck.close(); // Close the file stream
+    IniParser parser(filename);
 
-        //---------- counters --------
+    // Channel section
+    m_nbChannel = parser.readUnsignedInteger("Channel", "NumberOfChannels");
+    m_analogChanMin = parser.readDouble("Channel", "min chan Value");
+    m_analogChanMax = parser.readDouble("Channel", "max chan Value");
+    m_chanNames = parser.readStringList("Channel", "Channel", m_nbChannel);
 
-        } else if (section == "Counters") {
-            if (key == "NumberOfCounters") {
-                unsigned int n = std::stoi(value);
-                setNbCounters(n);
-            } else if (key.find("Counter") != std::string::npos && getNbCounters() > 0) {
-                unsigned int index = std::stoi(key.substr(7));
-                if (index < m_counterNames.size()) {
-                    m_counterNames[index] = value;
-                }
-              else if (key.find("edgeCountingMode") != std::string::npos) {
-                moduleCounterEdgeConfig cm =static_cast<moduleCounterEdgeConfig>(std::stoi(value));
-                setcounterCountingEdgeMode(cm);
-              }
-              else if (key.find("countingDirection") != std::string::npos) {
-                moduleCounterMode  cd = static_cast<moduleCounterMode>(std::stoi(value));
-                setCounterCountDirectionMode(cd);
-              }
-              else if (key.find("countingMin") != std::string::npos) {
-                unsigned int cMin = std::stoi(value);
-                setCounterMin(cMin);
-              }
-                else if (key.find("countingMax") != std::string::npos) {
-                unsigned int cMax = std::stoi(value);
-                setCounterMax(cMax);
-              }
-            }
-            //---------- modules --------
-        } else if (section == "Module") {
-            if (key == "Type") {
-                moduleType newType = static_cast<moduleType>(std::stoi(value));
-                setModuleType(newType);
-            } else if (key == "Module Name") {
-                setModuleName(value);
-            } else if (key == "Shunt Location") {
-                try {
-                    moduleShuntLocation newLocation = static_cast<moduleShuntLocation>(std::stoi(value));
-                    setModuleShuntLocation(newLocation);
-                } catch (const std::invalid_argument& e) {
-                    std::cerr << "Invalid argument for Shunt Location: " << value << std::endl;
-                } catch (const std::out_of_range& e) {
-                    std::cerr << "Out of range for Shunt Location: " << value << std::endl;
-                }
-            } else if (key.find("Shunt Value") != std::string::npos) {
-                try {
-                    setModuleShuntValue(std::stod(value));
-                } catch (const std::invalid_argument& e) {
-                    std::cerr << "Invalid argument for Shunt Value: " << value << std::endl;
-                }
-            } else if (key.find("Terminal Config") != std::string::npos) {
-                moduleTerminalConfig newTerminalConfig = static_cast<moduleTerminalConfig>(std::stoi(value));
-                setModuleTerminalCfg(newTerminalConfig);
-            }
-            else if (key.find("Module unit") != std::string::npos) {
-                moduleUnit newModuleUnit = static_cast<moduleUnit>(std::stoi(value));
-                setModuleUnit(newModuleUnit);
-            }
-        }
-    });
+    // Counters section
+    m_nbCounters = parser.readUnsignedInteger("Counters", "NumberOfCounters");
+    m_counterNames = parser.readStringList("Counters", "Counter", m_nbCounters);
+    m_counterCountingEdgeMode = static_cast<moduleCounterEdgeConfig>(parser.readInteger("Counters", "edgeCountingMode"));
+    m_counterCountDirectionMode = static_cast<moduleCounterMode>(parser.readInteger("Counters", "countingDirection"));
+    m_counterMin = parser.readUnsignedInteger("Counters", "countingMin");
+    m_counterMax = parser.readUnsignedInteger("Counters", "countingMax");
+
+    // Module section
+    setModuleType(static_cast<moduleType>(parser.readInteger("Module", "Type")));
+    m_moduleName = parser.readString("Module", "Module Name");
+    m_alias = parser.readString("Module", "Alias");
+    m_shuntLocation = static_cast<moduleShuntLocation>(parser.readInteger("Module", "Shunt Location"));  // Corrected this line
+    m_shuntValue = parser.readDouble("Module", "Shunt Value");
+    m_moduleTerminalConfig = static_cast<moduleTerminalConfig>(parser.readInteger("Module", "Terminal Config"));
+    m_moduleUnit = static_cast<moduleUnit>(parser.readInteger("Module", "Module unit"));
 }
 
 
-void NIDeviceModule::saveToFile(const std::string &filename)
-{
-    FILE* ini;
-    if ((ini = fopen(filename.c_str(), "w")) == NULL) 
-    {
-        fprintf(stderr,"Cannot open %s\n", filename.c_str());
-        return;
-    }
 
-    fprintf(ini, "#\n# %s Configuration\n#\n\n[Channel]\n\n", filename.c_str());
-    fprintf(ini, "NumberOfChannels = %u\n", m_nbChannel);
-    fprintf(ini, "min chan Value = %.3f\n", m_analogChanMin);
-    fprintf(ini, "max chan Value = %.3f\n", m_analogChanMax);
-    for (unsigned int i = 0; i < m_nbChannel; ++i) 
-    {
-        fprintf(ini, "Channel%d = %s\n", i, m_chanNames[i].c_str());  
-    }
-    //-------------- Section counters ---------
-    fprintf(ini, "\n[Counters]\n\n");                      //<--- this is how to write a new section in the ini file Note the syntax
-    fprintf(ini, "NumberOfCounters = %u\n", m_nbCounters); //So all the others are keys of the sections UNTIL next section
-    for (unsigned int i = 0; i < m_nbCounters; ++i) 
-    {
-        fprintf(ini, "Counter%d = %s\n", i, m_counterNames[i].c_str()); 
-    }
-    fprintf(ini, "edgeCountingMode = %u\n" , static_cast<int>(m_counterCountingEdgeMode  ));
-    fprintf(ini, "countingDirection = %u\n", static_cast<int>(m_counterCountDirectionMode));
-    fprintf(ini, "countingMin = %u\n"      , m_counterMin               );
-    fprintf(ini, "countingMax = %u\n"      , m_counterMax               );
-    //------------ Section Module ------------
-    fprintf(ini, "\n[Module]\n\n");
-    fprintf(ini, "Type = %d ;\n", static_cast<int>(getModuleType()));
-    fprintf(ini, "Module Name = %s\n",m_moduleName.c_str());
-    fprintf(ini, "Alias = %s\n", m_alias.c_str());
-    fprintf(ini, "Shunt Location = %d\n",m_shuntLocation);
-    fprintf(ini, "Shunt Value = %.3f\n", m_shuntValue);
-    fprintf(ini, "Terminal Config = %d\n",static_cast<int>(m_moduleTerminalConfig));
-    fprintf(ini ,"Module unit = %d\n", static_cast<int>(m_moduleUnit));
-    fclose(ini);
+
+void NIDeviceModule::saveToFile(const std::string &filename) {
+    std::cout<<"enter save to file:"<<filename.c_str()<<std::endl;
+    IniParser parser(filename);
+   std::cout<<"We will never go here"<<std::endl;
+    // Channel section
+    parser.writeUnsignedInteger("Channel", "NumberOfChannels", m_nbChannel);
+    parser.writeDouble("Channel", "min chan Value", m_analogChanMin);
+    parser.writeDouble("Channel", "max chan Value", m_analogChanMax);
+    parser.writeStringList("Channel", "Channel", m_chanNames);
+
+    // Counters section
+    parser.writeUnsignedInteger("Counters", "NumberOfCounters", m_nbCounters);
+    parser.writeStringList("Counters", "Counter", m_counterNames);
+    parser.writeInteger("Counters", "edgeCountingMode", static_cast<int>(m_counterCountingEdgeMode));
+    parser.writeInteger("Counters", "countingDirection", static_cast<int>(m_counterCountDirectionMode));
+    parser.writeUnsignedInteger("Counters", "countingMin", m_counterMin);
+    parser.writeUnsignedInteger("Counters", "countingMax", m_counterMax);
+
+    // Module section
+    parser.writeInteger("Module", "Type", static_cast<int>(getModuleType()));
+    parser.writeString("Module", "Module Name", m_moduleName);
+    parser.writeString("Module", "Alias", m_alias);
+    parser.writeInteger("Module", "Shunt Location", m_shuntLocation);
+    parser.writeDouble("Module", "Shunt Value", m_shuntValue);
+    parser.writeInteger("Module", "Terminal Config", static_cast<int>(m_moduleTerminalConfig));
+    parser.writeInteger("Module", "Module unit", static_cast<int>(m_moduleUnit));
+     //
+     std::cout<<"parser ready to save"<<std::endl;
+    // Save to file
+    std::cout<<"ready to save:"<<filename.c_str()<<std::endl;
+    parser.save();
 }
 
 std::string NIDeviceModule::getAlias()
@@ -232,6 +173,15 @@ void NIDeviceModule::setCounterMax(unsigned int newCountersMax)
     }
 }
 
+void NIDeviceModule::setNbDigitalOutputs(unsigned int newNbDigitalOutputs)
+{
+    m_nbDigitalOutputs = newNbDigitalOutputs;
+    if (nbDigitalOutputsChangedSignal)
+    {
+        nbDigitalOutputsChangedSignal(newNbDigitalOutputs,this);
+    }
+}
+
 void NIDeviceModule::setModuleUnit(moduleUnit newUnit)
 {
     m_moduleUnit = newUnit;
@@ -311,8 +261,12 @@ double NIDeviceModule::getModuleShuntValue() const
 
 moduleCounterMode NIDeviceModule::getCounterCountDirectionMode() const
 {
-    return m_counterCountDirectionMode
-    ;
+    return m_counterCountDirectionMode;
+}
+
+unsigned int NIDeviceModule::getNbDigitalOutputs() const
+{
+    return m_nbDigitalOutputs;
 }
 
 moduleTerminalConfig NIDeviceModule::getModuleTerminalCfg() const
@@ -425,9 +379,9 @@ void NIDeviceModule::setSlotNb(unsigned int newSlot)
 {
     m_slotNumber = newSlot;
     //if the signal is connected then emit it
-    if (slotNumberChangedSignal) 
+    if (moduleSlotNumberChangedSignal) 
       {  // Check if the signal is connected to a slot
-            slotNumberChangedSignal(newSlot,this);
+            moduleSlotNumberChangedSignal(newSlot,this);
       }
 
 }

@@ -36,29 +36,24 @@ void AnalogicReader::manualReadOneShot(double &returnedValue)
     }
 
     moduleType modType = m_manuallySelectedModule->getModuleType();
-    switch (modType)
+    if (modType==isAnalogicInputCurrent)
     {
-        case isAnalogicInputCurrent:
+        double value;
+        try
         {
-            double value;
-            try
-            {
-                value = m_daqMx->readCurrent(m_manuallySelectedModule,m_manuallySelectedChanIndex,10);
-                returnedValue = value;
-            }
-            catch(...)
-            {
-                 onOneShotValueReaded(std::numeric_limits<double>::min());
-                 returnedValue = std::numeric_limits<double>::min();
-            }
-            
-            onOneShotValueReaded(value);
-            break;
+            value = m_daqMx->readCurrent(m_manuallySelectedModule,m_manuallySelectedChanIndex,10,true);
+            returnedValue = value;
         }
-
-        case isAnalogicInputVoltage:
+        catch(...)
         {
-            double value;
+             onOneShotValueReaded(std::numeric_limits<double>::min());
+             returnedValue = std::numeric_limits<double>::min();
+        }    
+        onOneShotValueReaded(value);
+    }
+    else if (modType==isAnalogicInputVoltage)
+    {
+        double value;
             try
             {
                 value = m_daqMx->readVoltage(m_manuallySelectedModule,m_manuallySelectedChanIndex,10);
@@ -70,55 +65,6 @@ void AnalogicReader::manualReadOneShot(double &returnedValue)
                 returnedValue = std::numeric_limits<double>::min();
             }
             onOneShotValueReaded(value);
-            break;
-        }
-
-        
-
-        case isDigitalInput:
-        {
-            std::cout << "isDigitalInputVoltage not implemented yet (may be to remove, even)" << std::endl;
-            std::cin.get();
-            std::cin.clear();
-            std::cin.ignore();
-            displayChooseModuleMenu(); 
-            break;
-        }
-
-        case isDigitalIOAndCounter:
-        {
-            std::cout << "isDigitalIOAndCounter not implemented yet" << std::endl;
-            std::cin.get();
-            std::cin.clear();
-            std::cin.ignore();
-            displayChooseModuleMenu(); 
-            break;
-        }
-
-        case isDigitalIO:
-        {
-            std::cout << "isDigitalIO not implemented yet" << std::endl;
-            std::cin.get();
-            std::cin.clear();
-            std::cin.ignore();
-            displayChooseModuleMenu(); 
-            break;
-        }
-
-       case isCounter:
-        {
-            std::cout << "isCounter not implemented yet" << std::endl;
-            std::cin.get();
-            std::cin.clear();
-            std::cin.ignore();
-            displayChooseModuleMenu(); 
-            break;
-        }
-
-        case isDigitalOutput:
-        {
-            break;
-        }
     }
 }
 
@@ -143,6 +89,6 @@ void AnalogicReader::manualReadPolling()
 void AnalogicReader::displayChooseModuleMenu()
 {
     // Display the module selection menu and handle the user's choice
-    std::string choice = m_moduleMenu->displayChooseModuleMenu(filterMode::showOnlyReadAnalogics);
+    std::string choice = m_moduleMenu->displayChooseModuleMenu(filterMode::showOnlyReadAnalogics,true);
     m_moduleMenu->handleChoice(choice);
 }

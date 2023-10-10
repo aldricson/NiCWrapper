@@ -22,9 +22,8 @@ enum moduleType
     isAnalogicInputVoltage = 1,
     isDigitalInput         = 2,
     isDigitalOutput        = 3,
-    isDigitalIO            = 4,
-    isCounter              = 5,
-    isDigitalIOAndCounter  = 6   
+    isCounter              = 4,
+    isCoder                = 5 
 };
 
 enum moduleShuntLocation
@@ -111,14 +110,15 @@ protected:
     //number of channels in the module
     unsigned int m_nbChannel       = 16;
     //number of 
-    unsigned int m_nbCounters      = 0;
-    unsigned int m_nbDigitalIoPort = 0 ;
-    unsigned int m_slotNumber      = 0 ;
+    unsigned int m_nbCounters      = 0  ;
+    unsigned int m_nbDigitalIoPort = 0  ;
+    unsigned int m_slotNumber      = 0  ;
     double       m_analogChanMin   = 0.0;
     double       m_analogChanMax   = 4.0;
     
-    unsigned int m_counterMin      = 0;
-    unsigned int m_counterMax      = 4294967295; //32 bits
+    unsigned int m_nbDigitalOutputs = 0; //number of outputs for a digital ouput channel (e.g. for relays)
+    unsigned int m_counterMin       = 0;
+    unsigned int m_counterMax       = 4294967295; //32 bits
     moduleCounterEdgeConfig m_counterCountingEdgeMode;
     moduleCounterMode       m_counterCountDirectionMode;
 
@@ -126,7 +126,6 @@ protected:
 
 
     moduleUnit  m_moduleUnit       = NoUnit;
-
     std::string  m_moduleName      = "";
     std::string  m_alias           = "";
     std::string  m_moduleInfo      = "";        
@@ -136,6 +135,8 @@ protected:
 
     std::vector<std::string> m_chanNames;
     std::vector<std::string> m_counterNames;
+    std::vector<std::string> m_digitalOutputNames;
+    std::vector<std::string> m_digitalIoNames;
     moduleType m_moduleType;
 
 public:
@@ -159,6 +160,7 @@ public:
     virtual std::vector<std::string> getCounterNames              () const;
     virtual moduleCounterEdgeConfig  getcounterCountingEdgeMode   () const; 
     virtual moduleCounterMode        getCounterCountDirectionMode () const;
+    virtual unsigned int             getNbDigitalOutputs          () const;
     virtual moduleType               getModuleType                () const;
     virtual moduleShuntLocation      getModuleShuntLocation       () const;
     virtual double                   getModuleShuntValue          () const;
@@ -173,7 +175,6 @@ public:
 
     virtual void setModuleName                (const std::string& newModuleName);
     virtual void setNbChannel                 (unsigned int newNbChannels);
-    virtual void setNbCounters                (unsigned int newNbCounters);
     virtual void setNbDigitalIOPorts          (unsigned int newNbPorts);
     virtual void setModuleInfo                (std::string newModuleInfo); 
     virtual void setModuleShuntLocation       (moduleShuntLocation newLocation);
@@ -183,11 +184,14 @@ public:
     virtual void setAlias                     (const std::string& newAlias);
     virtual void setChanNames                 (const std::vector<std::string>& names                     );
     //-----------Counters--------
+    virtual void setNbCounters                (unsigned int newNbCounters);
     virtual void setCounterNames              (const std::vector<std::string>& names                     );
     virtual void setcounterCountingEdgeMode   (moduleCounterEdgeConfig         newCounterCountingEdgeMode);
     virtual void setCounterCountDirectionMode (moduleCounterMode               newCounterCountMode       );
     virtual void setCounterMin                (unsigned int                    newCountersMin            );
     virtual void setCounterMax                (unsigned int                    newCountersMax            );
+    //----------Digital outputs------------
+    virtual void setNbDigitalOutputs          (unsigned int                    newNbDigitalOutpits       );
 
     
     virtual void setModuleType           (moduleType newType);
@@ -206,24 +210,35 @@ public:
 //**********************************
 //***     PURE C++ SIGNALS      ****
 //**********************************
+    //module signals
     std::function<void(std::string             , NIDeviceModule *sender)>  moduleNameChangedSignal           = nullptr;
-    std::function<void(unsigned int            , NIDeviceModule *sender)>  nbChannelsChangedSignal           = nullptr;
-    std::function<void(unsigned int            , NIDeviceModule *sender)>  nbCountersChangedSignal           = nullptr;
-    std::function<void(unsigned int            , NIDeviceModule *sender)>  nbDigitalIoPortsChangedSignal     = nullptr;
-    std::function<void(unsigned int            , NIDeviceModule *sender)>  slotNumberChangedSignal           = nullptr;
+    std::function<void(moduleShuntLocation     , NIDeviceModule *sender)>  moduleShuntLocationChangedSgnal   = nullptr;
+    std::function<void(double                  , NIDeviceModule *sender)>  moduleShuntValueChangedSignal     = nullptr;
+    std::function<void(moduleTerminalConfig    , NIDeviceModule *sender)>  moduleTerminalConfigChangedSignal = nullptr;
+    std::function<void(unsigned int            , NIDeviceModule *sender)>  moduleSlotNumberChangedSignal     = nullptr;
     std::function<void(std::string             , NIDeviceModule *sender)>  moduleInfoChangedSignal           = nullptr;
+    //channels signals
+    std::function<void(unsigned int            , NIDeviceModule *sender)>  nbChannelsChangedSignal           = nullptr;
+    std::function<void(std::vector<std::string>, NIDeviceModule *sender)>  chanNamesChangedSignal            = nullptr;
     std::function<void(double                  , NIDeviceModule *sender)>  chanMinChangedSignal              = nullptr; 
     std::function<void(double                  , NIDeviceModule *sender)>  chanMaxChangedSignal              = nullptr;
+    //Counter signals
+    std::function<void(unsigned int            , NIDeviceModule *sender)>  nbCountersChangedSignal           = nullptr;
     std::function<void(unsigned int            , NIDeviceModule *sender)>  countersMinChangedSignal          = nullptr; 
     std::function<void(unsigned int            , NIDeviceModule *sender)>  countersMaxChangedSignal          = nullptr;
     std::function<void(moduleCounterEdgeConfig , NIDeviceModule *sender)>  counterEdgeConfigChangedSignal    = nullptr;
     std::function<void(moduleCounterMode       , NIDeviceModule *sender)>  counterModeChangedSignal          = nullptr;
+    //digital outputs
+    std::function<void(unsigned int            , NIDeviceModule *Sender)> nbDigitalOutputsChangedSignal     = nullptr;
+
+    std::function<void(unsigned int            , NIDeviceModule *sender)>  nbDigitalIoPortsChangedSignal     = nullptr;
+
+
+
     std::function<void(moduleUnit              , NIDeviceModule *sender)>  chanUnitChangedSignal             = nullptr;
-    std::function<void(std::vector<std::string>, NIDeviceModule *sender)>  chanNamesChangedSignal            = nullptr;    
+        
     std::function<void(std::vector<std::string>, NIDeviceModule *sender)>  counterNamesChangedSignal         = nullptr;
-    std::function<void(moduleShuntLocation     , NIDeviceModule *sender)>  moduleShuntLocationChangedSgnal   = nullptr;
-    std::function<void(double                  , NIDeviceModule *sender)>  moduleShuntValueChangedSignal     = nullptr;
-    std::function<void(moduleTerminalConfig    , NIDeviceModule *sender)>  moduleTerminalConfigChangedSignal = nullptr;
+
 
 };
 

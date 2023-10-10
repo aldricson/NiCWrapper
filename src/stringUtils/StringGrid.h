@@ -7,7 +7,7 @@
 #include <fstream>
 
 class StringGrid {
-private:
+protected:
     std::vector<std::vector<std::string>> m_drawGrid;         //for the drawing
     std::vector<std::vector<std::string>> m_contentGrid;  //for raw content
     std::string currentCsv;

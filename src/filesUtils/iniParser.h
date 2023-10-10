@@ -4,45 +4,69 @@
 #include <fstream>
 #include <iostream>
 #include <string>
-#include <functional>
+#include <variant>
+#include <vector>
 
-static inline void IniParser(const std::string& filename, std::function<void(const std::string&, const std::string&, const std::string&)> callback) {
-    std::ifstream ini(filename);
-    if (!ini.is_open()) {
-        fprintf(stderr, "Cannot open %s\n", filename.c_str());
-        return;
-    }
+struct Comment {
+    std::string text;
+};
 
-    std::string line;
-    std::string section;
-    while (std::getline(ini, line)) {
-        line.erase(0, line.find_first_not_of(" \t"));
-        line.erase(line.find_last_not_of(" \t") + 1);
+struct Section {
+    std::string name;
+};
 
-        if (line.empty() || line[0] == '#' || line[0] == ';')
-            continue;
+struct KeyValuePair {
+    std::string key;
+    std::string value;
+};
 
-        if (line[0] == '[' && line[line.size() - 1] == ']') {
-            section = line.substr(1, line.size() - 2);
-            continue;
-        }
+using Line = std::variant<Comment, Section, KeyValuePair>;
 
-        size_t pos = line.find('=');
-        if (pos == std::string::npos)
-            continue;
+class IniParser {
+public:
+    // Constructor that takes the filename to parse.
+    IniParser(const std::string& filename);
 
-        std::string key = line.substr(0, pos);
-        std::string value = line.substr(pos + 1);
+    // Function to re-parse the INI file. Useful if the file has changed.
+    void reload();
 
-        key.erase(0, key.find_first_not_of(" \t"));
-        key.erase(key.find_last_not_of(" \t") + 1);
-        value.erase(0, value.find_first_not_of(" \t"));
-        value.erase(value.find_last_not_of(" \t") + 1);
+    // Utility functions for fetching and converting data.
+    unsigned int readUnsignedInteger(const std::string& section, const std::string& key);
+    int          readInteger        (const std::string& section, const std::string& key);
+    double       readDouble         (const std::string& section, const std::string& key);
+    std::string  readString         (const std::string& section, const std::string& key);
+    std::vector<std::string> readStringList(const std::string& section, const std::string& keyPrefix, unsigned int count);
 
-        callback(section, key, value);
-    }
+    // Utility functions for writing data.
+    void writeUnsignedInteger(const std::string& section, const std::string& key, unsigned int value);
+    void writeInteger        (const std::string& section, const std::string& key, int value);
+    void writeDouble         (const std::string& section, const std::string& key, double value);
+    void writeString         (const std::string& section, const std::string& key, const std::string& value);
+    void writeStringList     (const std::string& section, const std::string& keyPrefix, const std::vector<std::string>& values);
+    void insertComment       (const std::string& aComment, size_t index);
+    void appendComment       (const std::string& aComment);
+ 
 
-    ini.close();
-}
+    template <typename Func>
+    auto findValue(const std::string& section, const std::string& key, Func&& convertFunc) -> decltype(convertFunc(std::string{}));
+    void writeKeyValuePair(const std::string& section, const std::string& key, const std::string& value);
 
-#endif
+
+    // Function to save the current data back to the INI file.
+    void save();
+
+    // Templated utility function to read an enum.
+    template <typename EnumType>
+    EnumType readEnum(const std::string& section, const std::string& key);
+
+private:
+    // Member variable to hold the parsed data.
+    std::vector<Line> lines;
+    // Member variable to hold the filename.
+    std::string filename;
+    // Internal function to actually parse the INI file.
+    void parse();
+
+};
+
+#endif // INIPARSER_H

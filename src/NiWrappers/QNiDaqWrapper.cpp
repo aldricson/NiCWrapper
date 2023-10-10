@@ -93,7 +93,7 @@ std::vector<std::string> QNiDaqWrapper::GetDevicesList() {
 
 
 
-double QNiDaqWrapper::readCurrent(NIDeviceModule *deviceModule, unsigned int chanIndex, unsigned int maxRetries)
+double QNiDaqWrapper::readCurrent(NIDeviceModule *deviceModule, unsigned int chanIndex, unsigned int maxRetries, bool autoConvertTomAmps)
 {
     if (deviceModule == nullptr)
     {
@@ -149,8 +149,8 @@ double QNiDaqWrapper::readCurrent(NIDeviceModule *deviceModule, unsigned int cha
                                          fullChannelName.c_str(), 
                                          "", 
                                          termCfg, 
-                                         minRange / 1000.0, 
-                                         maxRange / 1000.0, 
+                                         minRange, 
+                                         maxRange, 
                                          unit, 
                                          shuntLoc, 
                                          shuntVal, 
@@ -197,6 +197,10 @@ double QNiDaqWrapper::readCurrent(NIDeviceModule *deviceModule, unsigned int cha
 
     // Convert the read value to the appropriate unit (if necessary) and return it
     double result = static_cast<double>(readValue);
+    if (autoConvertTomAmps)
+    {
+        result = ampsTomAmps(result);
+    }
     setLastSingleCurrentChannelValue(result);
     return result;
 }

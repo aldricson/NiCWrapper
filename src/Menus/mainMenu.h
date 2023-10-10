@@ -12,6 +12,7 @@
 //forward declarations
 class moduleBySlotMenu;
 class moduleByAliasMenu;
+class MappingTableMenu;
 
 
 class mainMenu {
@@ -29,7 +30,8 @@ public:
 private:
   std::shared_ptr<QNiSysConfigWrapper> m_cfgWrapper;
   std::shared_ptr<moduleBySlotMenu>    m_moduleBySlotMenu;
-  std::shared_ptr<moduleByAliasMenu>   m_moduleByAliasMenu; 
+  std::shared_ptr<moduleByAliasMenu>   m_moduleByAliasMenu;
+  std::shared_ptr<MappingTableMenu>    m_mappingTableMenu; 
   std::shared_ptr<AnalogicReader>      m_analogicReader;
   std::shared_ptr<DigitalReader>       m_digitalReader;
   //---------- slots ------------

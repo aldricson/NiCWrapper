@@ -67,13 +67,12 @@ int main(void)
    std::cout << "*** Init phase 2: retrieve modules and load defaults ***" << std::endl<< std::endl;
    //show a list of all modules REALLY PHYSICALLY present on the crio
    std::vector<std::string> modules = sysConfig->EnumerateCRIOPluggedModules();
-   std::cout << "found : "<< std::endl<<std::endl;
    //Show internal of each module
    for (const std::string& str : modules)
    {
-     std::cout << "╔════════════════════════════╗ "<< std::endl;
+     std::cout << "╔═══════════════════════════════════════╗ "<< std::endl;
      std::cout << "║ "<< str    << std::endl;
-     std::cout << "╚════════════════════════════╝"<< std::endl;
+     std::cout << "╚═══════════════════════════════════════╝"<< std::endl;
    }
     //boot strap sinished 
      mainMenu m_mainMenu(sysConfig,analogReader,digitalReader);

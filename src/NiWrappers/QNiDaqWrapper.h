@@ -8,6 +8,7 @@
 #include <chrono>
 #include <thread>
 #include <functional>
+#include "../Conversions/convUtils.h"
 
 #include "../config.h"
 #ifdef CrossCompiled
@@ -25,7 +26,7 @@ public:
 
     int32 GetNumberOfModules();
     std::vector<std::string> GetDevicesList();
-    double       readCurrent(NIDeviceModule *deviceModule, unsigned int chanIndex, unsigned int maxRetries);
+    double       readCurrent(NIDeviceModule *deviceModule, unsigned int chanIndex, unsigned int maxRetries, bool autoConvertTomAmps);
     double       readVoltage(NIDeviceModule *deviceModule, unsigned int chanIndex, unsigned int maxRetries);
     unsigned int readCounter(NIDeviceModule *deviceModule, unsigned int chanIndex, unsigned int maxRetries);
     void handleErrorAndCleanTask();

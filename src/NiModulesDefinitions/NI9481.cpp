@@ -11,15 +11,23 @@ void NI9481::initModule()
     // Set default values
     m_moduleName="NI9481";
     m_nbChannel  = 0;  // Assuming NI9481 has 4 channels, change as needed
-    m_nbCounters = 4;
-    m_nbDigitalIoPort = 1;
-    m_moduleType = isDigitalIOAndCounter;  // Set the default module type
-    m_counterNames.clear();  // Clear any existing channel names
+    m_nbCounters = 0;
 
-    // Initialize channel names with default values
-    for (unsigned int i = 0; i < m_nbCounters; ++i)  // Assuming NI9481 has 4 channels, change as needed
+    m_nbDigitalIoPort = 1;
+    m_nbDigitalOutputs = 4;
+    m_moduleType = isDigitalOutput;  // Set the default module type
+    m_counterNames.clear();  // Clear any existing channel names
+    m_digitalOutputNames.clear();
+    std::string portPrefix="/port";
+      
+    for (unsigned int j = 0; j < m_nbDigitalIoPort;++j)
     {
-        m_counterNames.push_back("/ctr" + std::to_string(i));
+        m_digitalIoNames.push_back(portPrefix+std::to_string(j));
+        // Initialize channel names with default values
+        for (unsigned int i = 0; i < m_nbDigitalOutputs; ++i)  // Assuming NI9481 has 4 channels, change as needed
+        {
+            m_digitalOutputNames.push_back(m_digitalIoNames[j] + "line/" + std::to_string(i));
+        }
     }
     m_counterMin = 0;
     m_counterMax = 4294967295;

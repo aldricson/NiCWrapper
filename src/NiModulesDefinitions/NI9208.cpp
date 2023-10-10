@@ -19,14 +19,13 @@ void NI9208::initModule()
     m_counterCountDirectionMode = NoCountMode;
     m_nbDigitalIoPort = 0;
     m_moduleType = isAnalogicInputCurrent;
-    for (int i = 0; i < 16; ++i)
+    for (int i = 0; i < m_nbChannel; ++i)
     {
         m_chanNames.push_back("/ai" + std::to_string(i));
     }
 
-    //TODO convert min and max to Amps 
-    m_analogChanMax =  20.0;
-    m_analogChanMin = -20.0;
+    m_analogChanMax = mAmpsToAmps(20.0);
+    m_analogChanMin = mAmpsToAmps(-20.0);
     m_moduleUnit    = Val_Amps;
     m_shuntLocation = defaultLocation;
     m_shuntValue    = 34.01;

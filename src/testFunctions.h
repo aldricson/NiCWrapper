@@ -170,7 +170,7 @@ static inline void testSignalSlotMechanism(bool &ok)
     testModule.setAlias("TEST");
     QSignalTest slotTestObject;
     // sender (object that sends the signal) || receiver (the object with the slot)
-    testModule.slotNumberChangedSignal = std::bind(&QSignalTest::onIntValueChanged,
+    testModule.moduleSlotNumberChangedSignal = std::bind(&QSignalTest::onIntValueChanged,
         &slotTestObject, // Pass a pointer to slotTestObject
         std::placeholders::_1,
         std::placeholders::_2);

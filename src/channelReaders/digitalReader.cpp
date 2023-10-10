@@ -29,6 +29,6 @@ void DigitalReader::manualReadPolling()
 void DigitalReader::displayChooseModuleMenu()
 {
         // Display the module selection menu and handle the user's choice
-    std::string choice = m_moduleMenu->displayChooseModuleMenu(filterMode::showOnlyReadDigitals);
+    std::string choice = m_moduleMenu->displayChooseModuleMenu(filterMode::showOnlyReadDigitals,true);
     m_moduleMenu->handleChoice(choice);
 }

@@ -22,10 +22,10 @@ const char *ChooseModuleMenu::getManuallySelectedModuleName() const
     return m_manuallySelectedModuleName;
 }
 
-std::string ChooseModuleMenu::displayChooseModuleMenu(filterMode aFilterMode)
+std::string ChooseModuleMenu::displayChooseModuleMenu(filterMode aFilterMode,bool mustClearConsole)
 {
     std::string choice;
-    clearConsole();
+    if (mustClearConsole) clearConsole();
 
     // Prepare the list of modules
     std::vector<std::string> moduleNamesVector;
@@ -66,8 +66,7 @@ std::string ChooseModuleMenu::displayChooseModuleMenu(filterMode aFilterMode)
             {
                 //Add more here 
                 pushable = (t == moduleType::isCounter             || 
-                            t == moduleType::isDigitalIO           || 
-                            t == moduleType::isDigitalIOAndCounter || 
+                            t == moduleType::isCoder               || 
                             t == moduleType::isDigitalInput        ||
                             t == moduleType::isDigitalOutput);
                 break;
@@ -77,8 +76,7 @@ std::string ChooseModuleMenu::displayChooseModuleMenu(filterMode aFilterMode)
             {
                 //Add more here 
                 pushable = (t == moduleType::isCounter             || 
-                            t == moduleType::isDigitalIO           || 
-                            t == moduleType::isDigitalIOAndCounter || 
+                            t == moduleType::isCoder               ||  
                             t == moduleType::isDigitalInput);
                 break;
             }

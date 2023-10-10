@@ -58,7 +58,9 @@
         "csignal": "cpp",
         "list": "cpp",
         "map": "cpp",
-        "variant": "cpp"
+        "variant": "cpp",
+        "codecvt": "cpp",
+        "iomanip": "cpp"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }

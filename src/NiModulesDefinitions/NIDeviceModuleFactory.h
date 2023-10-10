@@ -8,6 +8,10 @@
 class NIDeviceModuleFactory {
 public:
     static NIDeviceModule* createModule(const std::string& productName);
+
+private:
+        template <typename T>
+    static T* createAndConfigureModule();
 };
 
 #endif // NIDEVICEMODULEFACTORY_H

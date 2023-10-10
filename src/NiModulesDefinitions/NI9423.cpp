@@ -16,9 +16,9 @@ void NI9423::initModule()
     m_counterCountingEdgeMode   = Val_Rising;
     m_counterCountDirectionMode = Val_CountUp;
 
-    m_nbDigitalIoPort = 1;
-    m_moduleType = isDigitalIOAndCounter;  // Set the default module type
-    m_counterNames.clear();  // Clear any existing channel names
+    m_nbDigitalIoPort = 1  ;
+    m_moduleType = isCounter ;  // Set the default module type
+    m_counterNames.clear() ;  // Clear any existing channel names
 
     // Initialize channel names with default values
     for (unsigned int i = 0; i < m_nbCounters; ++i)  // Assuming NI9423 has 4 channels, change as needed

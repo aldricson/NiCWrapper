@@ -6,25 +6,7 @@
 StringGrid::StringGrid() : maxCellSize(0), rows(0), cols(0) {}
 StringGrid::~StringGrid() {}
 
-// Function to find the length of the longest field in the CSV file
-/*int StringGrid::findLongestField(const std::string& fileName) {
-    std::ifstream file(fileName);
-    if (!file.is_open()) {
-        std::cerr << "Error: Could not open file " << fileName << std::endl;
-        return -1;
-    }
-    int longestField = 0;
-    std::string line;
-    while (getline(file, line)) {
-        std::stringstream ss(line);
-        std::string cell;
-        while (getline(ss, cell, ';')) {
-            longestField = std::max(longestField, static_cast<int>(cell.size()));
-        }
-    }
-    file.close();
-    return longestField;
-}*/
+
 
 // Function to find the length of the longest field in the CSV file
 int StringGrid::findLongestField(const std::string& fileName, bool &ok) {
@@ -88,60 +70,6 @@ int StringGrid::findLongestField(const std::string& fileName, bool &ok) {
     }
 }
 
-
-/*void StringGrid::loadCsv(const std::string& fileName) {
-    // Clear the console for a fresh display
-    maxCellSize = findLongestField(fileName);
-    clearConsole();
-
-    // Open the CSV file for reading
-    std::ifstream file(fileName);
-    if (!file.is_open()) {
-        std::cerr << "Error: Could not open file " << fileName << std::endl;
-        return;
-    }
-    // Clear previous data
-    currentCsv.clear();
-    m_drawGrid.clear();
-    m_contentGrid.clear();
-    // Read each line from the file
-    std::string line;
-
-    while (getline(file, line)) {
-        currentCsv += line + "\n";
-
-        std::stringstream ss(line);
-        std::string cell;
-        std::vector<std::string> drawingRow;
-        std::vector<std::string> contentRow;
-        while (getline(ss, cell, ';')) 
-        {
-            // Add the raw content to 'contentRow'
-            contentRow.push_back(cell);
-            //and for the drawing
-            std::string str = drawCell(maxCellSize, cell);
-            drawingRow.push_back(str);
-        }
-       
-              // Add the row to the grid for rendering
-        m_drawGrid.push_back(drawingRow);
-        // Add the row to contentGrid for raw content
-        m_contentGrid.push_back(contentRow); 
-        
-
-    }
-
-
-    // Close the file
-    file.close();
-
-    // Initialize the number of rows and columns
-    rows = m_drawGrid.size();
-    cols = m_drawGrid.empty() ? 0 : m_drawGrid[0].size() + 1; // +1 for the index column
-
-    // Render the grid to the console
-     renderGrid();
-}*/
 
 // Function to load a CSV file into the grid
 void StringGrid::loadCsv(const std::string& fileName) {
@@ -224,35 +152,6 @@ std::string StringGrid::getCurrentCsv() const {
     return currentCsv;
 }
 
-/*void StringGrid::saveCsv(const std::string& fileName) {
-    std::ofstream outFile(fileName);
-    if (!outFile.is_open()) 
-    {
-        std::cerr << "Failed to open the file for writing." << std::endl;
-        return;
-    }
-
-    // Get the number of rows and columns
-    size_t numRows = m_contentGrid.size();
-    size_t numCols = m_contentGrid[0].size();
-    
-    for (size_t _row = 0; _row < numRows; ++_row) 
-    {
-        std::string s; // Declare a new string for each row
-        for (size_t _col = 0; _col < numCols; ++_col) 
-        {
-            s += m_contentGrid[_row][_col];
-            s += ";";
-        }
-        // Remove the extra ";"
-        if (!s.empty()) {
-            s.pop_back();
-        }
-        // Output to the file
-        outFile << s << "\n";
-    }
-    outFile.close();
-}*/
 
 
 void StringGrid::saveCsv(const std::string& fileName) {

@@ -2,6 +2,7 @@
 #define NI9208_H
 
 #include "NIDeviceModule.h"
+#include "../Conversions/convUtils.h"
 #include <vector>
 #include <string>
 #include <fstream>

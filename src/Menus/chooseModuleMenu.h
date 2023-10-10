@@ -26,7 +26,7 @@ public:
     // Destructor
     ~ChooseModuleMenu();
     // Function to display the menu
-    std::string displayChooseModuleMenu(filterMode aFilterMode);
+    std::string displayChooseModuleMenu(filterMode aFilterMode,bool mustClearConsole);
     void handleChoice(const std::string& choice);
 
     // Function to get the selected module

@@ -17,7 +17,7 @@ void NI9411::initModule()
     m_counterCountDirectionMode = Val_CountUp;
     
     m_nbDigitalIoPort = 1;
-    m_moduleType = isDigitalIOAndCounter;  // Set the default module type
+    m_moduleType = isCoder;  // Set the default module type
     m_counterNames.clear();  // Clear any existing channel names
 
     // Initialize channel names with default values

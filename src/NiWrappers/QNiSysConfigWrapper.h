@@ -15,6 +15,7 @@
 
 #include <stdio.h>
 #include <vector>
+#include <map>
 #include "../globals/globalConsts.h"
 #include "../stringUtils/stringUtils.h"
 #include "../NiModulesDefinitions/NIDeviceModule.h"
@@ -36,16 +37,21 @@ public:
      // Getter and Setter for moduleList
     std::vector<NIDeviceModule*> getModuleList() const;
     void setModuleList(const std::vector<NIDeviceModule*>& newModuleList);
-
+    
     // Signal for moduleList changes
     std::function<void(const std::vector<NIDeviceModule*>&, QNiSysConfigWrapper*)> moduleListChangedSignal;
 
+protected:
+ //simple std::vector for this lookup table is ordered, it's an exception
+  std::vector<std::string>   lookupModType;
+  std::map<int, std::string> lookupShuntLocation;
+  std::map<int, std::string> lookupUnits; 
 
 private:
-   
+
    NISysCfgSessionHandle sessionHandle;       // Session handle
    std::vector<NIDeviceModule*> moduleList;
-   
+   void generateReadbleInfo();    
 };
 
 

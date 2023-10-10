@@ -19,42 +19,32 @@ StartUpManager::StartUpManager() {
 }
 
 void StartUpManager::loadFromFile(const std::string& filename) {
-    IniParser(filename, [this](const std::string& section, const std::string& key, const std::string& value) {
-        if (section == "Init Order") {
-            if (key == "NiPolling") {
-                m_niPollingOrder = std::stoi(value);
-            } else if (key == "Modbus") {
-                m_modbusOrder = std::stoi(value);
-            }
-        } else if (section == "startUp") {
-            if (key == "testSequenceOn") {
-                m_testSequenceOn = (value == "true");
-            } else if (key == "NiPollingOn") {
-                m_niPollingOn = (value == "true");
-            } else if (key == "ModBusOn") {
-                m_modBusOn = (value == "true");
-            }
-        }
-    });
+    IniParser parser(filename);
+
+    // Init Order section
+    m_niPollingOrder = parser.readInteger("Init Order", "NiPolling");
+    m_modbusOrder = parser.readInteger("Init Order", "Modbus");
+
+    // startUp section
+    m_testSequenceOn = (parser.readString("startUp", "testSequenceOn") == "true");
+    m_niPollingOn = (parser.readString("startUp", "NiPollingOn") == "true");
+    m_modBusOn = (parser.readString("startUp", "ModBusOn") == "true");
 }
 
 void StartUpManager::saveToFile(const std::string& filename) {
-    FILE* ini;
-    if ((ini = fopen(filename.c_str(), "w")) == NULL) {
-        fprintf(stderr, "Cannot open %s\n", filename.c_str());
-        return;
-    }
+    IniParser parser(filename);
 
-    fprintf(ini, "#\n# StartUp Configuration\n#\n\n[Init Order]\n\n");
-    fprintf(ini, "NiPolling = %d\n", m_niPollingOrder);
-    fprintf(ini, "Modbus = %d\n", m_modbusOrder);
+    // Init Order section
+    parser.writeInteger("Init Order", "NiPolling", m_niPollingOrder);
+    parser.writeInteger("Init Order", "Modbus", m_modbusOrder);
 
-    fprintf(ini, "\n[startUp]\n\n");
-    fprintf(ini, "testSequenceOn = %s\n", m_testSequenceOn ? "true" : "false");
-    fprintf(ini, "NiPollingOn = %s\n", m_niPollingOn ? "true" : "false");
-    fprintf(ini, "ModBusOn = %s\n", m_modBusOn ? "true" : "false");
+    // startUp section
+    parser.writeString("startUp", "testSequenceOn", m_testSequenceOn ? "true" : "false");
+    parser.writeString("startUp", "NiPollingOn", m_niPollingOn ? "true" : "false");
+    parser.writeString("startUp", "ModBusOn", m_modBusOn ? "true" : "false");
 
-    fclose(ini);
+    // Save to file
+    parser.save();
 }
 
 // Getters

@@ -8,7 +8,7 @@
 #include <type_traits>
 #include <memory>
 #include <algorithm>
-#include <optional>
+
 
 template <typename T>
 class ThreadSafeCircularBuffer {

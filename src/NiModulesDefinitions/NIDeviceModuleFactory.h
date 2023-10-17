@@ -4,6 +4,7 @@
 #include "NIDeviceModule.h"
 #include <string>
 #include <memory>
+#include "../filesUtils/cPosixFileHelper.h"
 
 class NIDeviceModuleFactory {
 public:

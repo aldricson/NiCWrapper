@@ -4,6 +4,7 @@
 #include "config.h"
 #include "./stringUtils/stringGrid.h"
 #include "./stringUtils/stringUtils.h"
+#include "./filesUtils/ini.h"
 #ifdef CrossCompiled
   #include <NIDAQmx.h>
 #else
@@ -193,6 +194,41 @@ static inline void testSignalSlotMechanism(bool &ok)
        std::cout<<testInfo<<std::endl;
     }
 }
+
+static inline void testIniFileSystem(bool &ok)
+{
+    ok = false;
+    std::string testInfo = drawCell(40, "Test 4: config system");
+    std::cout << testInfo << std::endl;
+    //create file object
+    mINI::INIFile file("testIni.ini");
+    std::cout << "ini file set to testIni.ini: OK" << std::endl;
+    //create a structure for handling datas
+    mINI::INIStructure ini;
+    std::cout << "data structure created: OK" << std::endl;
+    ini["TestSection"]["TestKey"] = "testValue";
+    std::cout << "field set to testValue" << std::endl;
+    file.generate(ini);
+    std::cout << "file generated" << std::endl;
+
+    file.read(ini);
+    std::string value = ini.get("TestSection").get("TestKey");
+    if(value=="testValue")
+     {
+       ok = true;
+       std::cout<<testInfo<<std::endl; 
+       testInfo = drawCell(22,"Test succes!");
+       std::cout<<testInfo<<std::endl;
+    }
+    else
+    {
+       ok = false; 
+       std::cout<<testInfo<<std::endl; 
+       testInfo = drawCell(22,"Test Failed!");
+       std::cout<<testInfo<<std::endl;
+    }
+}
+
 
 
 

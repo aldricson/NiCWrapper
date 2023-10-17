@@ -1,72 +1,42 @@
-#ifndef INIPARSER_H
-#define INIPARSER_H
+#ifndef INI_PARSER_H
+#define INI_PARSER_H
 
-#include <fstream>
-#include <iostream>
 #include <string>
-#include <variant>
+#include <map>
 #include <vector>
+#include <cstdlib> // for std::strtol
+#include <cerrno>  // for errno
+#include <cstring> 
+#include <string.h> 
+#include <iostream>
 
-struct Comment {
-    std::string text;
-};
+#include "ini.h"
+#include "cPosixFileHelper.h"
 
-struct Section {
-    std::string name;
-};
-
-struct KeyValuePair {
-    std::string key;
-    std::string value;
-};
-
-using Line = std::variant<Comment, Section, KeyValuePair>;
 
 class IniParser {
 public:
-    // Constructor that takes the filename to parse.
-    IniParser(const std::string& filename);
+    IniParser();
+    ~IniParser();
 
-    // Function to re-parse the INI file. Useful if the file has changed.
-    void reload();
+    std::string currentFilename; 
 
-    // Utility functions for fetching and converting data.
-    unsigned int readUnsignedInteger(const std::string& section, const std::string& key);
-    int          readInteger        (const std::string& section, const std::string& key);
-    double       readDouble         (const std::string& section, const std::string& key);
-    std::string  readString         (const std::string& section, const std::string& key);
-    std::vector<std::string> readStringList(const std::string& section, const std::string& keyPrefix, unsigned int count);
+    
+   
+    int  readInteger  (std::string section, std::string key, int defaultValue,const std::string& currentFilename);
+    bool writeInteger (std::string section, std::string key, int value, const std::string& currentFilename);
+    double readDouble(std::string section, std::string key, double defaultValue, const std::string& currentFilename);
+    bool writeDouble(std::string section, std::string key, double value, const std::string& currentFilename);
+    std::string readString(std::string section, std::string key, const std::string& defaultValue, const std::string& currentFilename);
+    bool writeString(std::string section, std::string key, const std::string& value, std::string currentFilename);
+    unsigned int readUnsignedInteger(std::string section, std::string key, unsigned int defaultValue, const std::string& currentFilename);
+    bool writeUnsignedInteger(std::string section, std::string key, unsigned int value, const std::string& currentFilename);
+    bool readBoolean(std::string section, std::string key, bool defaultValue, const std::string& currentFilename);
+    bool writeBoolean(std::string section, std::string key, bool value, const std::string& currentFilename);
 
-    // Utility functions for writing data.
-    void writeUnsignedInteger(const std::string& section, const std::string& key, unsigned int value);
-    void writeInteger        (const std::string& section, const std::string& key, int value);
-    void writeDouble         (const std::string& section, const std::string& key, double value);
-    void writeString         (const std::string& section, const std::string& key, const std::string& value);
-    void writeStringList     (const std::string& section, const std::string& keyPrefix, const std::vector<std::string>& values);
-    void insertComment       (const std::string& aComment, size_t index);
-    void appendComment       (const std::string& aComment);
- 
-
-    template <typename Func>
-    auto findValue(const std::string& section, const std::string& key, Func&& convertFunc) -> decltype(convertFunc(std::string{}));
-    void writeKeyValuePair(const std::string& section, const std::string& key, const std::string& value);
-
-
-    // Function to save the current data back to the INI file.
-    void save();
-
-    // Templated utility function to read an enum.
-    template <typename EnumType>
-    EnumType readEnum(const std::string& section, const std::string& key);
 
 private:
-    // Member variable to hold the parsed data.
-    std::vector<Line> lines;
-    // Member variable to hold the filename.
-    std::string filename;
-    // Internal function to actually parse the INI file.
-    void parse();
 
 };
 
-#endif // INIPARSER_H
+#endif

@@ -46,7 +46,10 @@ int main(void)
   if (!ok) return EXIT_FAILURE;
   std::cout << "Read current: " << value << " Amps" << std::endl;
   testSignalSlotMechanism(ok);
-   if (!ok) return EXIT_FAILURE;
+  if (!ok) return EXIT_FAILURE;
+  testIniFileSystem(ok);
+  if (!ok) return EXIT_FAILURE;
+
   createNecessaryInstances();
   showBanner();
   auto closeLambda = []() { std::exit(EXIT_SUCCESS); };

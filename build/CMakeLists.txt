@@ -3,16 +3,17 @@ FILE (APPEND ../buildLog.txt "specifying that the target system is Linux and the
 set(CMAKE_SYSTEM_NAME Linux)
 set(CMAKE_SYSTEM_PROCESSOR x86_64)
 FILE (APPEND ../buildLog.txt "Setting the path for the toolchain.\n")
-set(toolchainpath C:/build/23.0/x64/sysroots)
+set(toolchainpath C:/build/20.x/x64/sysroots)
 FILE (APPEND ../buildLog.txt "Setting the C and C++ compilers for N.i. Rt linux\n")
-set(CMAKE_C_COMPILER ${toolchainpath}/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/x86_64-nilrt-linux-gcc.exe)
-set(CMAKE_CXX_COMPILER ${toolchainpath}/x86_64-w64-mingw32/usr/bin/x86_64-nilrt-linux/x86_64-nilrt-linux-g++.exe)
+set(CMAKE_C_COMPILER ${toolchainpath}/i686-nilrtsdk-mingw32/usr/bin/x86_64-nilrt-linux/x86_64-nilrt-linux-gcc.exe)
+set(CMAKE_CXX_COMPILER ${toolchainpath}/i686-nilrtsdk-mingw32/usr/bin/x86_64-nilrt-linux/x86_64-nilrt-linux-g++.exe)
 FILE (APPEND ../buildLog.txt "Setting the system root directory for the toolchain.\n")
 set(CMAKE_SYSROOT ${toolchainpath}/core2-64-nilrt-linux)
-set(CMAKE_CXX_STANDARD_INCLUDE_DIRECTORIES ${toolchainpath}/core2-64-nilrtlinux/usr/include/c++/10.3.0 ${toolchainpath}/core2-64-nilrt-linux/usr/include/c++/10.3.0/x86_64-nilrtlinux)
+set(CMAKE_CXX_STANDARD_INCLUDE_DIRECTORIES ${toolchainpath}/core2-64-nilrtlinux/usr/include/c++/6.30 ${toolchainpath}/core2-64-nilrt-linux/usr/include/c++/6.3.0/x86_64-nilrtlinux)
 set(CMAKE_CXX_FLAGS "-Wall -fmessage-length=0")
 set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g3")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
+
 FILE (APPEND ../buildLog.txt "Setting the search behavior for various types of files.\n")
 set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY BOTH)
@@ -59,7 +60,6 @@ endforeach()
 set(LIBMODBUS_PATH "C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/libmodbus.so.5.0.5")
 set(LIBMODBUS_INCLUDE_PATH "../src/Modbus/libmodbus/")
 
-
 FILE (APPEND ../buildLog.txt "*** libModbus ***\n")
 file(GLOB_RECURSE LIBMODBUS_SOURCE_FILES "../src/Modbus/libmodbus/*.c")
 file(GLOB_RECURSE LIBMODBUS_HEADER_FILES "../src/Modbus/libmodbus/*.h")
@@ -72,6 +72,7 @@ foreach(src ${LIBMODBUS_SOURCE_FILES})
     FILE (APPEND ../buildLog.txt "${src}\n")
 endforeach()
 # *** Add libmodbus End ***
+
 
 set (DAQMX_LIB "C:/Program\ Files\ (x86)/National\ Instruments/Shared/ExternalCompilerSupport/C/lib64/gcc")
 FILE (APPEND ../buildLog.txt "linux librairies selected: ${DAQMX_LIB}\n")
@@ -93,10 +94,13 @@ add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
 
 FILE (APPEND ../buildLog.txt "all files has been added to linux elf executable \n")
+
+# Update include directories and linked libraries
 target_include_directories(${PROJECT_NAME} PUBLIC ${DAQMX_INCLUDE} ${NISYSCFG_INCLUDE} ${LIBMODBUS_INCLUDE_PATH})
-FILE (APPEND ../buildLog.txt "Nidaqmx, NiSysConfig and libmodbus headers direcories are now added to the project\n")
-target_link_libraries(${PROJECT_NAME} PUBLIC ${DAQMX_LINUXLIB_FILES})
-FILE (APPEND ../buildLog.txt "daqmx libraries are now linked to the project\n")
-target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBMODBUS_PATH})
-target_link_libraries(${PROJECT_NAME} PRIVATE pthread)
+FILE (APPEND ../buildLog.txt "Nidaqmx, NiSysConfig, libmodbus headers directories are now added to the project\n")
+
+target_link_libraries(${PROJECT_NAME} PUBLIC ${DAQMX_LINUXLIB_FILES} ${LIBMODBUS_PATH}  pthread)
+FILE (APPEND ../buildLog.txt "daqmx, libmodbus and linux threading libraries are now linked to the project\n")
+
+
 FILE (APPEND ../buildLog.txt "linux thrading libraries are now linked to the project\n")

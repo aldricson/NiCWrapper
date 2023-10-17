@@ -7,7 +7,11 @@
 #include <fstream>
 #include <functional>
 #include <iostream>
-#include "../filesUtils/iniParser.h"
+#include <memory>
+//#include "../filesUtils/iniParser.h"
+#include "../filesUtils/iniObject.h"
+#include "../filesUtils/cPosixFileHelper.h"
+
 
 #include "../config.h"
 #ifdef CrossCompiled
@@ -18,6 +22,7 @@
 
 enum moduleType
 {
+    errorOrMissingModule   =-1,          
     isAnalogicInputCurrent = 0,
     isAnalogicInputVoltage = 1,
     isDigitalInput         = 2,
@@ -106,26 +111,37 @@ enum moduleUnit
 
 
 class NIDeviceModule {
+private:
+bool loadChannels(std::string filename);
+bool loadCounters(std::string filename);
+bool loadModules (std::string filename);
+//
+void saveChannels(std::string filename);
+void saveCounters(std::string filename);
+void saveModules (std::string filename);
+
 protected:
     //number of channels in the module
     unsigned int m_nbChannel       = 16;
     //number of 
-    unsigned int m_nbCounters      = 0  ;
+   
     unsigned int m_nbDigitalIoPort = 0  ;
     unsigned int m_slotNumber      = 0  ;
     double       m_analogChanMin   = 0.0;
     double       m_analogChanMax   = 4.0;
+    //-------- counters -----------------
+    unsigned int m_nbCounters       = 0;
     
-    unsigned int m_nbDigitalOutputs = 0; //number of outputs for a digital ouput channel (e.g. for relays)
     unsigned int m_counterMin       = 0;
     unsigned int m_counterMax       = 4294967295; //32 bits
     moduleCounterEdgeConfig m_counterCountingEdgeMode;
     moduleCounterMode       m_counterCountDirectionMode;
+    
+    unsigned int m_nbDigitalOutputs = 0; //number of outputs for a digital ouput channel (e.g. for relays)
 
 
 
-
-    moduleUnit  m_moduleUnit       = NoUnit;
+    moduleUnit   m_moduleUnit       = NoUnit;
     std::string  m_moduleName      = "";
     std::string  m_alias           = "";
     std::string  m_moduleInfo      = "";        
@@ -139,8 +155,11 @@ protected:
     std::vector<std::string> m_digitalIoNames;
     moduleType m_moduleType;
 
+    //std::shared_ptr<IniParser> m_ini;
+     std::shared_ptr<IniObject> m_ini;  
 public:
-    //virtuals
+    NIDeviceModule();
+    
     virtual ~NIDeviceModule() {}
     virtual void loadFromFile(const std::string& filename);
     virtual void saveToFile  (const std::string& filename);

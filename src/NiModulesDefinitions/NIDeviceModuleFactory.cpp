@@ -17,22 +17,27 @@ T* NIDeviceModuleFactory::createAndConfigureModule() {
 
 NIDeviceModule* NIDeviceModuleFactory::createModule(const std::string& productName) {
     if (productName == "NI9208") {
-         return createAndConfigureModule<NI9208>();
+        std::cout<<"Factory create NI9208"<<std::endl;
+        return createAndConfigureModule<NI9208>();
     }
     else
         if (productName == "NI9239") {
+        std::cout<<"Factory create NI9239"<<std::endl;
          return createAndConfigureModule<NI9239>();
     }
     else
         if (productName == "NI9423") {
+        std::cout<<"Factory create NI9423"<<std::endl;            
         return createAndConfigureModule<NI9423>();
     }
     else
         if (productName == "NI9411") {
+         std::cout<<"Factory create NI9411"<<std::endl;
         return createAndConfigureModule<NI9411>();
     }
         else
         if (productName == "NI9481") {
+         std::cout<<"Factory create NI9481"<<std::endl;
         return createAndConfigureModule<NI9481>();
     }
     // Add other product names and their corresponding classes here

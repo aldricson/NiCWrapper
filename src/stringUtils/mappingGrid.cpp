@@ -31,8 +31,8 @@ void MappingGrid::sortChannels() {
         m_contentGrid = newContentGrid;
 
         // Update the drawing grid to reflect the changes
-        for (int i = 0; i < m_contentGrid.size(); ++i) {
-            for (int j = 0; j < m_contentGrid[i].size(); ++j) {
+        for (size_t i = 0; i < m_contentGrid.size(); ++i) {
+            for (size_t j = 0; j < m_contentGrid[i].size(); ++j) {
                 std::string newCell = drawCell(maxCellSize, m_contentGrid[i][j]);
                 m_drawGrid[i][j] = newCell;
             }

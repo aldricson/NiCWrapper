@@ -1,74 +1,169 @@
 #include "NIDeviceModule.h"
 
-void NIDeviceModule::loadFromFile(const std::string& filename) {
-  // Check if the file exists the old way (crio system is outdated)
-    std::ifstream fileCheck(filename);
-    if (!fileCheck.good()) {
-        // If the file doesn't exist, save the default configuration to the file
-        saveToFile(filename);
+NIDeviceModule::NIDeviceModule()
+{
+   // m_ini = std::make_shared<IniParser>();
+   m_ini = std::make_shared<IniObject>();
+
+}
+
+bool NIDeviceModule::loadChannels(std::string filename) 
+{
+   setNbChannel(m_ini->readUnsignedInteger("Channels","NumberOfChannels",m_nbChannel,filename));
+   setChanMax  (m_ini->readDouble("Channels","max",m_analogChanMax,filename));
+   setChanMax  (m_ini->readDouble("Channels","min",m_analogChanMin,filename));
+   bool ok = m_ini->readStringVector("channels","channel",m_nbChannel,m_chanNames,filename);
+   if (ok)
+    {
+        std::cout<<"Channels loaded: ok"<<std::endl;
+        return true;
     }
-    fileCheck.close(); // Close the file stream
-    IniParser parser(filename);
+    else
+    {
+        std::cout<<"Channels not loaded, defautl values initialized"<<std::endl;
+        return false;
+    }
+}
 
-    // Channel section
-    m_nbChannel = parser.readUnsignedInteger("Channel", "NumberOfChannels");
-    m_analogChanMin = parser.readDouble("Channel", "min chan Value");
-    m_analogChanMax = parser.readDouble("Channel", "max chan Value");
-    m_chanNames = parser.readStringList("Channel", "Channel", m_nbChannel);
+bool NIDeviceModule::loadCounters(std::string filename) 
+{
+    setNbCounters(m_ini->readUnsignedInteger("Counters","NumberOfCounters",m_nbCounters,filename));
+    bool ok = m_ini->readStringVector("Counters","Counter",m_nbCounters,m_counterNames,filename);
+   if (ok)
+    {
+        std::cout<<"Counters loaded: ok"<<std::endl;
+    }
+    else
+    {
+        std::cout<<"Counters not loaded, defautl values initialized"<<std::endl;
+    }
 
-    // Counters section
-    m_nbCounters = parser.readUnsignedInteger("Counters", "NumberOfCounters");
-    m_counterNames = parser.readStringList("Counters", "Counter", m_nbCounters);
-    m_counterCountingEdgeMode = static_cast<moduleCounterEdgeConfig>(parser.readInteger("Counters", "edgeCountingMode"));
-    m_counterCountDirectionMode = static_cast<moduleCounterMode>(parser.readInteger("Counters", "countingDirection"));
-    m_counterMin = parser.readUnsignedInteger("Counters", "countingMin");
-    m_counterMax = parser.readUnsignedInteger("Counters", "countingMax");
 
-    // Module section
-    setModuleType(static_cast<moduleType>(parser.readInteger("Module", "Type")));
-    m_moduleName = parser.readString("Module", "Module Name");
-    m_alias = parser.readString("Module", "Alias");
-    m_shuntLocation = static_cast<moduleShuntLocation>(parser.readInteger("Module", "Shunt Location"));  // Corrected this line
-    m_shuntValue = parser.readDouble("Module", "Shunt Value");
-    m_moduleTerminalConfig = static_cast<moduleTerminalConfig>(parser.readInteger("Module", "Terminal Config"));
-    m_moduleUnit = static_cast<moduleUnit>(parser.readInteger("Module", "Module unit"));
+
+
+ //   //first we may need a copy of the buffer id the field is not found 
+ //   std::vector<std::string> copy;
+ //   // Clear the destination vector just to play paranoid
+ //   copy.clear();
+ //   // Reserve space in the destination vector to avoid reallocation
+ //   copy.reserve(m_counterNames.size());
+ //   // Loop through the source vector and copy each string
+ //   for (const std::string& str : m_counterNames) {
+ //       // Use the C-string (char*) of each string in the vector
+ //       const char* cstr = str.c_str();
+ //       // Create a new string in the destination vector with the same content
+ //       copy.emplace_back(cstr);
+ //   }
+//
+//
+ //   if (isFileOk(filename))
+ //   {
+ //       m_counterNames.clear();
+ //       //and populate it
+ //       for (unsigned int i = 0; i < m_nbCounters; ++i) 
+ //       {
+ //           std::string key   = "Counter" + std::to_string(i);
+ //           std::string value = m_ini->readString("Counters",key.c_str(),copy[i],filename);
+ //           m_counterNames.push_back(value);
+ //       }
+ //   }
+    setcounterCountingEdgeMode   (static_cast<moduleCounterEdgeConfig>(m_ini->readInteger("Counters","edgeCountingMode" ,m_counterCountingEdgeMode,filename)));
+    setCounterCountDirectionMode (static_cast<moduleCounterMode>      (m_ini->readInteger("Counters","countingDirection",m_counterCountDirectionMode,filename)));
+    setCounterMax                (m_ini->readUnsignedInteger("Counters","countingMax",4294967295,filename));
+    setCounterMin                (m_ini->readUnsignedInteger("Counters","countingMin",0,filename));
+    // Successfully loaded all counters info
+    return true;
+}
+
+bool NIDeviceModule::loadModules(std::string filename)
+{
+     // Add checks for required keys     
+    setModuleType           (static_cast<moduleType>(m_ini->readInteger("Modules","type",m_moduleType,filename)));
+    setModuleName           (m_ini->readString("Modules","moduleName",m_moduleName,filename));
+    setAlias                (m_ini->readString("Modules","Alias",m_alias,filename));
+    setModuleShuntLocation  (static_cast<moduleShuntLocation>(m_ini->readInteger("Modules","shuntLocation",m_shuntLocation,filename)));
+    setModuleShuntValue     (m_ini->readDouble("Modules","shuntValue",m_shuntValue,filename));
+    setModuleTerminalCfg    (static_cast<moduleTerminalConfig>(m_ini->readInteger("Modules","terminalConfig",m_moduleTerminalConfig,filename)));
+    setModuleUnit           (static_cast<moduleUnit>          (m_ini->readInteger("Modules","moduleUnit",m_moduleUnit,filename)));
+    return true;
+}
+
+
+void NIDeviceModule::saveChannels(std::string filename)
+{
+    std::cout<<"entering save channels "<<m_moduleName<<std::endl;
+    m_ini->writeUnsignedInteger("Channels", "NumberOfChannels", m_nbChannel,filename);
+    m_ini->writeDouble("Channels", "max", m_analogChanMax,filename);
+    m_ini->writeDouble("Channels", "min", m_analogChanMin,filename);
+
+    // Save the channel names
+    for (unsigned int i = 0; i < m_nbChannel; ++i)
+    {
+        std::string key = "Channel" + std::to_string(i);
+        m_ini->writeString("Channels", key.c_str(), m_chanNames[i],filename);
+    }
+     std::cout<<"channels saved"<<m_moduleName<<std::endl;
+}
+
+void NIDeviceModule::saveCounters(std::string filename)
+{
+   std::cout<<"entering save counters "<<m_moduleName<<std::endl;
+   m_ini->writeUnsignedInteger("Counters", "NumberOfCounters", m_nbCounters,filename);
+   
+   // Save the counter names
+   for (unsigned int i = 0; i < m_nbCounters; ++i)
+   {
+       std::string key = "Counter" + std::to_string(i);
+       m_ini->writeString("Counters", key.c_str(), m_counterNames[i],filename);
+   }
+
+   m_ini->writeInteger("Counters", "edgeCountingMode", static_cast<int>(m_counterCountingEdgeMode),filename);
+   m_ini->writeInteger("Counters", "countingDirection", static_cast<int>(m_counterCountDirectionMode),filename);
+   m_ini->writeUnsignedInteger("Counters", "countingMax", m_counterMax,filename);
+   m_ini->writeUnsignedInteger("Counters", "countingMin", m_counterMin,filename);
+   std::cout<<"counters saved"<<m_moduleName<<std::endl;
+}
+
+void NIDeviceModule::saveModules(std::string filename)
+{
+   std::cout<<"entering save modules "<<m_moduleName<<std::endl;
+   m_ini->writeInteger("Modules", "type", static_cast<int>(m_moduleType),filename);
+   m_ini->writeString("Modules", "moduleName", m_moduleName,filename);
+   m_ini->writeString("Modules", "Alias", m_alias,filename);
+   m_ini->writeInteger("Modules", "shuntLocation", static_cast<int>(m_shuntLocation),filename);
+   m_ini->writeDouble("Modules", "shuntValue", m_shuntValue,filename);
+   m_ini->writeInteger("Modules", "terminalConfig", static_cast<int>(m_moduleTerminalConfig),filename);
+   m_ini->writeInteger("Modules", "moduleUnit", static_cast<int>(m_moduleUnit),filename);
+    std::cout<<"modules saved "<<m_moduleName<<std::endl;   
 }
 
 
 
 
-void NIDeviceModule::saveToFile(const std::string &filename) {
-    std::cout<<"enter save to file:"<<filename.c_str()<<std::endl;
-    IniParser parser(filename);
-   std::cout<<"We will never go here"<<std::endl;
-    // Channel section
-    parser.writeUnsignedInteger("Channel", "NumberOfChannels", m_nbChannel);
-    parser.writeDouble("Channel", "min chan Value", m_analogChanMin);
-    parser.writeDouble("Channel", "max chan Value", m_analogChanMax);
-    parser.writeStringList("Channel", "Channel", m_chanNames);
-
-    // Counters section
-    parser.writeUnsignedInteger("Counters", "NumberOfCounters", m_nbCounters);
-    parser.writeStringList("Counters", "Counter", m_counterNames);
-    parser.writeInteger("Counters", "edgeCountingMode", static_cast<int>(m_counterCountingEdgeMode));
-    parser.writeInteger("Counters", "countingDirection", static_cast<int>(m_counterCountDirectionMode));
-    parser.writeUnsignedInteger("Counters", "countingMin", m_counterMin);
-    parser.writeUnsignedInteger("Counters", "countingMax", m_counterMax);
-
-    // Module section
-    parser.writeInteger("Module", "Type", static_cast<int>(getModuleType()));
-    parser.writeString("Module", "Module Name", m_moduleName);
-    parser.writeString("Module", "Alias", m_alias);
-    parser.writeInteger("Module", "Shunt Location", m_shuntLocation);
-    parser.writeDouble("Module", "Shunt Value", m_shuntValue);
-    parser.writeInteger("Module", "Terminal Config", static_cast<int>(m_moduleTerminalConfig));
-    parser.writeInteger("Module", "Module unit", static_cast<int>(m_moduleUnit));
-     //
-     std::cout<<"parser ready to save"<<std::endl;
-    // Save to file
-    std::cout<<"ready to save:"<<filename.c_str()<<std::endl;
-    parser.save();
+void NIDeviceModule::loadFromFile(const std::string &filename)
+{ 
+    if (!loadChannels(filename))
+    {
+        std::cerr << "Failed to load channel information from the ini file." << std::endl;   
+    }
+    if (!loadCounters(filename)) 
+    {
+            std::cerr << "Failed to load counter information from the ini file." << std::endl;
+    }  
+    if (!loadModules(filename)) 
+    {
+        std::cerr << "Failed to load modules information from the ini file." << std::endl;
+    } 
 }
+
+
+
+void NIDeviceModule::saveToFile(const std::string& filename) {   
+    saveChannels(filename);
+    saveCounters(filename);
+    saveModules (filename);
+}
+
 
 std::string NIDeviceModule::getAlias()
 {

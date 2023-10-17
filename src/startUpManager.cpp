@@ -4,10 +4,14 @@
 #include <cstdio>
 
 StartUpManager::StartUpManager() {
+    m_ini = std::make_shared<IniParser>();
+
     std::ifstream ini("startup.ini");
     if (ini.is_open()) {
         loadFromFile("startup.ini");
-    } else {
+    } 
+    else 
+    {
         // Initialize with default values
         m_niPollingOrder = 0;
         m_modbusOrder = 1;
@@ -18,33 +22,45 @@ StartUpManager::StartUpManager() {
     }
 }
 
-void StartUpManager::loadFromFile(const std::string& filename) {
-    IniParser parser(filename);
+void StartUpManager::loadFromFile(const std::string& filename) 
+{
+   //check the INI file
+   FILE* fp = std::fopen(filename.c_str(), "r");
+   if (fp == nullptr) {
+       // File doesn't exist; consider creating a default one
+       // ... (populate ini with default values)
+       std::fclose(fp);
+       saveToFile(filename);
+   }
+   std::fclose(fp);
 
-    // Init Order section
-    m_niPollingOrder = parser.readInteger("Init Order", "NiPolling");
-    m_modbusOrder = parser.readInteger("Init Order", "Modbus");
-
-    // startUp section
-    m_testSequenceOn = (parser.readString("startUp", "testSequenceOn") == "true");
-    m_niPollingOn = (parser.readString("startUp", "NiPollingOn") == "true");
-    m_modBusOn = (parser.readString("startUp", "ModBusOn") == "true");
+   //---------- Section init order ------------
+   m_niPollingOrder =  m_ini->readInteger("InitOrder","NiPolling",0, filename);
+   m_modbusOrder    =  m_ini->readInteger("InitOrder","Modbus",1, filename);
+   //------------  section startup -----------------
+   m_testSequenceOn = m_ini->readBoolean("startUp","testSequenceOn",true, filename);
+   m_niPollingOn    = m_ini->readBoolean("startUp","NiPollingOn"   ,true, filename);
+   m_modBusOn       = m_ini->readBoolean("startUp","ModBusOn"      ,true, filename);
 }
 
-void StartUpManager::saveToFile(const std::string& filename) {
-    IniParser parser(filename);
+void StartUpManager::saveToFile(const std::string& filename) 
+{
+    // Open and read the existing INI file, if it exists
+    FILE* fp = std::fopen(filename.c_str(), "r");
+    if (fp != nullptr) {
+        std::fclose(fp);
+        loadFromFile(filename);
+    }
+    std::fclose(fp);
+    //---------- Section init order ------------
+    m_ini->writeInteger("InitOrder","NiPolling",m_niPollingOrder, filename);
+    m_ini->writeInteger("InitOrder","Modbus",   m_modbusOrder, filename   );
+    //------------  section startup -----------------
+    m_ini->writeBoolean("startUp","testSequenceOn",m_testSequenceOn, filename);
+    m_ini->writeBoolean("startUp","NiPollingOn"   ,m_niPollingOn, filename);
+    m_ini->writeBoolean("startUp","ModBusOn"      ,m_modBusOn, filename);
 
-    // Init Order section
-    parser.writeInteger("Init Order", "NiPolling", m_niPollingOrder);
-    parser.writeInteger("Init Order", "Modbus", m_modbusOrder);
 
-    // startUp section
-    parser.writeString("startUp", "testSequenceOn", m_testSequenceOn ? "true" : "false");
-    parser.writeString("startUp", "NiPollingOn", m_niPollingOn ? "true" : "false");
-    parser.writeString("startUp", "ModBusOn", m_modBusOn ? "true" : "false");
-
-    // Save to file
-    parser.save();
 }
 
 // Getters

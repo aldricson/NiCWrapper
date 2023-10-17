@@ -16,16 +16,18 @@ void NI9481::initModule()
     m_nbDigitalIoPort = 1;
     m_nbDigitalOutputs = 4;
     m_moduleType = isDigitalOutput;  // Set the default module type
-    m_counterNames.clear();  // Clear any existing channel names
-    m_digitalOutputNames.clear();
+    m_counterNames       .clear();  // Clear any existing channel names
+    m_digitalOutputNames .clear();
     std::string portPrefix="/port";
       
     for (unsigned int j = 0; j < m_nbDigitalIoPort;++j)
     {
+        std::cout<<"enter outer loop"<<std::endl;
         m_digitalIoNames.push_back(portPrefix+std::to_string(j));
         // Initialize channel names with default values
         for (unsigned int i = 0; i < m_nbDigitalOutputs; ++i)  // Assuming NI9481 has 4 channels, change as needed
         {
+            std::cout<<"enter inner loop"<<std::endl;
             m_digitalOutputNames.push_back(m_digitalIoNames[j] + "line/" + std::to_string(i));
         }
     }

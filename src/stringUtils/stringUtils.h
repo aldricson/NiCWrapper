@@ -6,6 +6,7 @@
 #include <algorithm> // for std::transform
 #include <functional>
 #include <sstream>
+#include <vector>
 
 
 static inline std::string removeSpacesFromCharStar(const char* str) {

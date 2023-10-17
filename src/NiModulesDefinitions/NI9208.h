@@ -6,6 +6,7 @@
 #include <vector>
 #include <string>
 #include <fstream>
+#include "../filesUtils/cPosixFileHelper.h"
 
 
 

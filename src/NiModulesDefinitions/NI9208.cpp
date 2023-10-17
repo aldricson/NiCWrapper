@@ -1,5 +1,4 @@
 #include "NI9208.h"
-//#include <filesystem>
 
 
 NI9208::NI9208() 
@@ -19,7 +18,7 @@ void NI9208::initModule()
     m_counterCountDirectionMode = NoCountMode;
     m_nbDigitalIoPort = 0;
     m_moduleType = isAnalogicInputCurrent;
-    for (int i = 0; i < m_nbChannel; ++i)
+    for (unsigned int i = 0; i < m_nbChannel; ++i)
     {
         m_chanNames.push_back("/ai" + std::to_string(i));
     }

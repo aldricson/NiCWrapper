@@ -7,6 +7,7 @@
 #include "../channelReaders/analogicReader.h"
 #include "../channelReaders/digitalReader.h"
 #include "../channelWriters/digitalWriter.h"
+#include "../Modbus/modbusServer.h"
 #include "../globals/globalEnumStructs.h"
 #include <algorithm> 
 
@@ -16,8 +17,9 @@ class NItoModbusBridge {
 public:
     // Constructor
     NItoModbusBridge(std::shared_ptr<AnalogicReader> analogicReader,
-                     std::shared_ptr<DigitalReader> digitalReader,
-                     std::shared_ptr<DigitalWriter> digitalWriter);
+                     std::shared_ptr<DigitalReader>  digitalReader,
+                     std::shared_ptr<DigitalWriter>  digitalWriter,
+                     std::shared_ptr<ModbusServer>   modbusServer);
 
     // Getters and setters for AnalogicReader
     std::shared_ptr<AnalogicReader> getAnalogicReader() const;
@@ -38,9 +40,10 @@ public:
 
 private:
     std::shared_ptr<AnalogicReader> m_analogicReader;
-    std::shared_ptr<DigitalReader> m_digitalReader;
-    std::shared_ptr<DigitalWriter> m_digitalWriter;
-    std::vector<MappingData> m_mappingData;
+    std::shared_ptr<DigitalReader>  m_digitalReader;
+    std::shared_ptr<DigitalWriter>  m_digitalWriter;
+    std::shared_ptr<ModbusServer>   m_modbusServer;
+    std::vector<MappingData>        m_mappingData;
 
     u_int16_t linearInterpolation16Bits(double value, double minSource, double maxSource, u_int16_t minDestination, u_int16_t maxDestination);
 

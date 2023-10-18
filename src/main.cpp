@@ -9,10 +9,13 @@
 #include "./NiWrappers/QNiDaqWrapper.h"
 #include "./channelReaders/analogicReader.h"
 #include "./channelReaders/digitalReader.h"
+#include "./channelWriters/digitalWriter.h"
+#include "./Modbus/modbusServer.h"
+#include "./Bridge/niToModbusBridge.h"
 #include "./Signals/QSignalTest.h"
 #include "./Menus/mainMenu.h"
 #include "./stringUtils/stringUtils.h"
-#include "./Modbus/modbusServer.h"
+
 
 #include "testFunctions.h"
 
@@ -24,17 +27,39 @@ std::shared_ptr<QNiSysConfigWrapper> sysConfig;
 std::shared_ptr<QNiDaqWrapper>       daqMx;
 std::shared_ptr<AnalogicReader>      analogReader;
 std::shared_ptr<DigitalReader>       digitalReader;
+std::shared_ptr<DigitalWriter>       digitalWriter;
+std::shared_ptr<ModbusServer>        modbusServer;
+std::shared_ptr<NItoModbusBridge>    m_crioToModbusBridge;
 
 void createNecessaryInstances()
 {
+  std::string str; 
   //c++ wrapper around NiDaqMx low level C API (used mainly to read or write on devices channels) 
   daqMx         = std::make_shared<QNiDaqWrapper>();
+  str = drawCell(30,"daqMx Wrapper created");
+  std::cout<<str<<std::endl;
   //c++ wrapper around NISysConfig low level C API (used to get or set parameters of devices)
   sysConfig     = std::make_shared<QNiSysConfigWrapper>();
+  str = drawCell(30,"sysconfig Wrapper created");
+  std::cout<<str<<std::endl;
   //object to read anlogic channels (both current and voltage)
   analogReader  = std::make_shared<AnalogicReader>     (sysConfig,daqMx);
+  str = drawCell(30,"analogic reader created");
+  std::cout<<str<<std::endl;
   //object to read mainly coders and 32 bit counters
   digitalReader = std::make_shared<DigitalReader>      (sysConfig,daqMx);
+  str = drawCell(30,"digital reader created");
+  std::cout<<str<<std::endl;
+  //Object to handle digital writers( eg relay channels)
+  digitalWriter = std::make_shared<DigitalWriter> (sysConfig,daqMx);
+    str = drawCell(30,"digital writer created");
+  std::cout<<str<<std::endl;
+  //Object that handle the modbus server
+  modbusServer  = std::make_shared<ModbusServer>();
+  str = drawCell(30,"modbus server created");
+  std::cout<<str<<std::endl;
+  //Object in charge of routing crio datas to modbus
+  m_crioToModbusBridge = std::make_shared<NItoModbusBridge>(analogReader,digitalReader,digitalWriter,modbusServer);
 }
 
 int main(void)

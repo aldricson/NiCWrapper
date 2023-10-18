@@ -4,7 +4,7 @@
 #include <cstdio>
 
 StartUpManager::StartUpManager() {
-    m_ini = std::make_shared<IniParser>();
+    m_ini = std::make_shared<IniObject>();
 
     std::ifstream ini("startup.ini");
     if (ini.is_open()) {

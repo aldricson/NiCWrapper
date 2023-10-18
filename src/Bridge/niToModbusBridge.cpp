@@ -3,10 +3,12 @@
 // Constructor
 NItoModbusBridge::NItoModbusBridge(std::shared_ptr<AnalogicReader> analogicReader,
                                    std::shared_ptr<DigitalReader> digitalReader,
-                                   std::shared_ptr<DigitalWriter> digitalWriter)
+                                   std::shared_ptr<DigitalWriter> digitalWriter,
+                                   std::shared_ptr<ModbusServer>   modbusServer)
     : m_analogicReader(analogicReader),
       m_digitalReader(digitalReader),
-      m_digitalWriter(digitalWriter)
+      m_digitalWriter(digitalWriter),
+      m_modbusServer(modbusServer)
 {
     // Initialization can be done here if needed
 }

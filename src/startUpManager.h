@@ -4,7 +4,7 @@
 #include <string>
 #include <functional>
 #include <memory>
-#include "./filesUtils/iniParser.h"
+#include "./filesUtils/iniObject.h"
 
 class StartUpManager {
 public:
@@ -34,7 +34,7 @@ public:
     std::function<void(bool, StartUpManager*)> niPollingOnChangedSignal;
     std::function<void(bool, StartUpManager*)> modBusOnChangedSignal;
 
-    std::shared_ptr<IniParser> m_ini;
+    std::shared_ptr<IniObject> m_ini;
 private:
     int m_niPollingOrder;
     int m_modbusOrder;

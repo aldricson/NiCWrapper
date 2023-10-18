@@ -53,7 +53,6 @@ C:/Users/aldric/Desktop/dataDril20.0/build/../src/filesUtils/cPosixFileHelper.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/filesUtils/ini.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/filesUtils/iniCpp.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/filesUtils/iniObject.h
-C:/Users/aldric/Desktop/dataDril20.0/build/../src/filesUtils/iniParser.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/globals/globalConsts.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/globals/globalEnumStructs.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/startUpManager.h
@@ -88,7 +87,6 @@ C:/Users/aldric/Desktop/dataDril20.0/build/../src/channelReaders/digitalReader.c
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/channelWriters/digitalWrtiter.cpp
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/circularBuffer/ThreadSafeCircularBuffer.cpp
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/filesUtils/iniObject.cpp
-C:/Users/aldric/Desktop/dataDril20.0/build/../src/filesUtils/iniParser.cpp
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/main.cpp
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/startUpManager.cpp
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/stringUtils/mappingGrid.cpp

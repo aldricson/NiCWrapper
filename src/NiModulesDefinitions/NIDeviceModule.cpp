@@ -2,9 +2,7 @@
 
 NIDeviceModule::NIDeviceModule()
 {
-   // m_ini = std::make_shared<IniParser>();
    m_ini = std::make_shared<IniObject>();
-
 }
 
 bool NIDeviceModule::loadChannels(std::string filename) 
@@ -37,36 +35,6 @@ bool NIDeviceModule::loadCounters(std::string filename)
     {
         std::cout<<"Counters not loaded, defautl values initialized"<<std::endl;
     }
-
-
-
-
- //   //first we may need a copy of the buffer id the field is not found 
- //   std::vector<std::string> copy;
- //   // Clear the destination vector just to play paranoid
- //   copy.clear();
- //   // Reserve space in the destination vector to avoid reallocation
- //   copy.reserve(m_counterNames.size());
- //   // Loop through the source vector and copy each string
- //   for (const std::string& str : m_counterNames) {
- //       // Use the C-string (char*) of each string in the vector
- //       const char* cstr = str.c_str();
- //       // Create a new string in the destination vector with the same content
- //       copy.emplace_back(cstr);
- //   }
-//
-//
- //   if (isFileOk(filename))
- //   {
- //       m_counterNames.clear();
- //       //and populate it
- //       for (unsigned int i = 0; i < m_nbCounters; ++i) 
- //       {
- //           std::string key   = "Counter" + std::to_string(i);
- //           std::string value = m_ini->readString("Counters",key.c_str(),copy[i],filename);
- //           m_counterNames.push_back(value);
- //       }
- //   }
     setcounterCountingEdgeMode   (static_cast<moduleCounterEdgeConfig>(m_ini->readInteger("Counters","edgeCountingMode" ,m_counterCountingEdgeMode,filename)));
     setCounterCountDirectionMode (static_cast<moduleCounterMode>      (m_ini->readInteger("Counters","countingDirection",m_counterCountDirectionMode,filename)));
     setCounterMax                (m_ini->readUnsignedInteger("Counters","countingMax",4294967295,filename));

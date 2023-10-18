@@ -136,37 +136,39 @@ u_int16_t NItoModbusBridge::linearInterpolation16Bits(double value, double minSo
 
 void NItoModbusBridge::onSimulationTimerTimeOut()
 {
-    if (m_simulationCounter >= 18446744073709551614ULL)
-    {
-        m_simulationCounter = 0;
-    }
-
+    // Constants for simulating sine wave data
+    constexpr double amplitude = 50.0;  // Amplitude of the sine wave
+    constexpr double offset = 50.0;     // DC offset to shift the sine wave
+    constexpr double omega = 2.0 * M_PI / 1000.0;  // Frequency component for sine wave
+    constexpr int numChannels = 64;     // Number of channels to simulate
+    constexpr uint64_t maxCounterValue = 18446744073709551615ULL;  // Max counter value for wrap-around
+    // Vector to hold simulated data for each channel
     std::vector<u_int16_t> analogChannelsResult;
-
-    // Generate a sine wave oscillating between 0.0 and 100.0
-    double amplitude = 50.0;
-    double offset = 50.0;
-    double omega = 2.0 * M_PI / 1000.0; // Frequency component, adjust as needed
+    // Calculate the sine value for the current simulation counter
     double sineValue = amplitude * std::sin(omega * m_simulationCounter) + offset;
-    // Loop to fill values in 64AnalogChannelsResult
-    for (int i = 0; i < 64; ++i)
+    // Loop through each channel to generate simulated data
+    for (int i = 0; i < numChannels; ++i)
     {
-        // Add or subtract random noise (up to 10%)
-        double noise = ((std::rand() % 21) - 10) / 100.0; // Random value between -0.1 and 0.1
+        // Generate random noise in the range of -0.1 to 0.1
+        double noise = ((std::rand() % 21) - 10) / 100.0;
+        // Add noise to the sine value
         double noisySineValue = sineValue * (1.0 + noise);
-        // Map the double value to a 16-bit unsigned integer
+        // Map the noisy sine value to a 16-bit unsigned integer
         u_int16_t mappedValue = linearInterpolation16Bits(noisySineValue, 0.0, 100.0, 0, 65535);
-        // Push the value into the vector
+        // Add the mapped value to the result vector
         analogChannelsResult.push_back(mappedValue);
     }
+    // Push the simulated data into the buffer
     m_simulationBuffer.push_back(analogChannelsResult);
-    m_simulationCounter++;
-    //signal that a new buffer is ready
+    // Trigger a signal indicating that new simulated data is available, if the signal is set
     if (newSimulationBufferReadySignal)
     {
-           newSimulationBufferReadySignal(); 
+        newSimulationBufferReadySignal(); 
     }
+    // Update the simulation counter and wrap around if necessary
+    m_simulationCounter = (m_simulationCounter + 1) % maxCounterValue;
 }
+
 
 
 void NItoModbusBridge::showAnalogGridOnScreen(bool isSimulated)

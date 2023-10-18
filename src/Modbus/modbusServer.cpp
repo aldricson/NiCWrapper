@@ -14,19 +14,21 @@
  **************************************************************/
 bool ModbusServer::initModbus(std::string Host_Ip = "127.0.0.1", int port = 502, bool debugging = true)
 {
+    std::cout<<"create modbus context: listening on "<<Host_Ip<<" port:"<<std::to_string(port)<<std::endl;
     // Create a new Modbus context for TCP/IPv4
     ctx = modbus_new_tcp(Host_Ip.c_str(), port);
-    
+    std::cout<<"set modbus debug flag to "<<std::to_string(debugging)<<std::endl;
     // Enable or disable debugging based on the parameter
     modbus_set_debug(ctx, debugging);
-    
     // Check if the Modbus context was successfully created
     if (ctx == NULL)
     {
         fprintf(stderr, "There was an error allocating the Modbus context\n");
         throw -1;
     }
+    std::cout<<"modbus context set with SUCCES"<<std::endl;
     // Listen for incoming Modbus requests on the created context
+    std::cout<<"initialize modbus tcp socket in listen mode"<<std::endl;
     m_modbusSocket = modbus_tcp_listen(ctx, 1);
     // Create a new Modbus mapping with the specified number of bits and registers
     // The parameters are for coils, discrete inputs, input registers, and holding registers respectively

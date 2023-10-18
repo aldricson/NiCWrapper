@@ -1,5 +1,6 @@
 #include "ThreadSafeCircularBuffer.h"
 
+// Implementation of the locked_iterator class
 template <typename T>
 class ThreadSafeCircularBuffer<T>::locked_iterator {
 public:
@@ -29,10 +30,12 @@ private:
     std::unique_ptr<std::lock_guard<std::mutex>> m_lock;
 };
 
+// Constructor
 template <typename T>
-ThreadSafeCircularBuffer<T>::ThreadSafeCircularBuffer(size_t size)
-    : buffer_(size) {}
+ThreadSafeCircularBuffer<T>::ThreadSafeCircularBuffer()
+    : buffer_() {}
 
+// Push an item to the back of the buffer
 template <typename T>
 bool ThreadSafeCircularBuffer<T>::push_back(const T& item) {
     std::lock_guard<std::mutex> lock(mutex_);
@@ -42,6 +45,7 @@ bool ThreadSafeCircularBuffer<T>::push_back(const T& item) {
     return true;
 }
 
+// Pop an item from the front of the buffer
 template <typename T>
 bool ThreadSafeCircularBuffer<T>::pop_front(T& item) {
     std::lock_guard<std::mutex> lock(mutex_);
@@ -54,60 +58,69 @@ bool ThreadSafeCircularBuffer<T>::pop_front(T& item) {
     return true;
 }
 
-template <typename T>
-size_t ThreadSafeCircularBuffer<T>::size() const {
-    std::lock_guard<std::mutex> lock(mutex_);
-    return buffer_.size();
-}
 
-template <typename T>
-void ThreadSafeCircularBuffer<T>::setSize(size_t newSize) {
-    std::lock_guard<std::mutex> lock(mutex_);
-    buffer_.set_capacity(newSize);
-}
 
+// Get the beginning iterator
 template <typename T>
 typename ThreadSafeCircularBuffer<T>::locked_iterator ThreadSafeCircularBuffer<T>::begin() {
     auto lock = std::make_unique<std::lock_guard<std::mutex>>(mutex_);
     return locked_iterator(&buffer_.front(), std::move(lock));
 }
 
+// Get the ending iterator
 template <typename T>
 typename ThreadSafeCircularBuffer<T>::locked_iterator ThreadSafeCircularBuffer<T>::end() {
     auto lock = std::make_unique<std::lock_guard<std::mutex>>(mutex_);
     return locked_iterator(&buffer_.back() + 1, std::move(lock));
 }
 
+// Copy the contents of the buffer to a vector
 template <typename T>
 std::vector<T> ThreadSafeCircularBuffer<T>::copy() const {
+    // Lock the mutex to ensure thread safety
     std::lock_guard<std::mutex> lock(mutex_);
-    return std::vector<T>(buffer_.begin(), buffer_.end());
+    // Initialize an empty vector to store the result
+    std::vector<T> result;
+    // Loop through the circular buffer and copy each element to the vector
+    for (size_t i = 0; i < buffer_.size(); ++i) {
+        result.push_back(buffer_[i]);
+    }
+    // Return the copied vector
+    return result;
 }
 
+
+
+// Restore the buffer from a vector
 template <typename T>
 void ThreadSafeCircularBuffer<T>::restore(const std::vector<T>& source) {
     std::lock_guard<std::mutex> lock(mutex_);
     buffer_.clear();
-    buffer_.set_capacity(source.size());
     for (const T& item : source) {
         buffer_.push_back(item);
     }
 }
 
+// Get the current position
 template <typename T>
 int ThreadSafeCircularBuffer<T>::getCurrentPosition() const {
     std::lock_guard<std::mutex> lock(mutex_);
     return m_currentPosition;
 }
 
+// Clear the buffer
 template <typename T>
 void ThreadSafeCircularBuffer<T>::clear() {
     std::lock_guard<std::mutex> lock(mutex_);
     buffer_.clear();
 }
 
+// Overload the [] operator
 template <typename T>
 T ThreadSafeCircularBuffer<T>::operator[](size_t i) const {
     std::lock_guard<std::mutex> lock(mutex_);
     return buffer_[i];
 }
+
+// Explicit instantiation for the types you'll use
+template class ThreadSafeCircularBuffer<std::vector<unsigned short>>;

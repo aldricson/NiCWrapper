@@ -9,6 +9,10 @@
 #include "../channelWriters/digitalWriter.h"
 #include "../Modbus/modbusServer.h"
 #include "../globals/globalEnumStructs.h"
+#include "../timers/simpleTimer.h"
+#include "../circularBuffer/ThreadSafeCircularBuffer.h"
+#include "../stringUtils/stringGrid.h"
+#include "../stringUtils/stringUtils.h"
 #include <algorithm> 
 
 
@@ -38,20 +42,30 @@ public:
      // Data synchronization method
     void dataSynchronization();
 
+    void simulateModBusDatas();
+    std::vector<u_int16_t> getLatestSimulatedData(); 
+
 private:
-    std::shared_ptr<AnalogicReader> m_analogicReader;
-    std::shared_ptr<DigitalReader>  m_digitalReader;
-    std::shared_ptr<DigitalWriter>  m_digitalWriter;
-    std::shared_ptr<ModbusServer>   m_modbusServer;
-    std::vector<MappingData>        m_mappingData;
+    unsigned long long m_simulationCounter=0;
+    ThreadSafeCircularBuffer<std::vector<u_int16_t>>     m_simulationBuffer;
+    ThreadSafeCircularBuffer<std::vector<u_int16_t>>     m_realDataBuffer;         
+    std::shared_ptr<SimpleTimer>                         m_simulateTimer;
+    std::shared_ptr<AnalogicReader>                      m_analogicReader;
+    std::shared_ptr<DigitalReader>                       m_digitalReader;
+    std::shared_ptr<DigitalWriter>                       m_digitalWriter;
+    std::shared_ptr<ModbusServer>                        m_modbusServer;
+    std::vector<MappingData>                             m_mappingData;
 
     u_int16_t linearInterpolation16Bits(double value, double minSource, double maxSource, u_int16_t minDestination, u_int16_t maxDestination);
 
+    void onSimulationTimerTimeOut();
+    void showAnalogGridOnScreen(bool isSimulated);
 
     // Signal functions to notify changes
     std::function<void()> onAnalogicReaderChanged;
     std::function<void()> onDigitalReaderChanged;
     std::function<void()> onDigitalWriterChanged;
+    std::function<void()> newSimulationBufferReadySignal;
 };
 
 #endif // NITOMODBUSBRIDGE_H

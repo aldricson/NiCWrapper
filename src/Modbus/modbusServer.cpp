@@ -1,5 +1,6 @@
 #include "ModbusServer.h"
 #include <string.h>
+#include "../Bridge/niToModbusBridge.h"
 
 /***************************************************************
  * @file       ModbusServer.cpp
@@ -227,6 +228,19 @@ bool ModbusServer::setInputRegisterValue(int registerStartaddress, float Value)
     slavemutex.unlock();
     
     return true;
+}
+
+void ModbusServer::updateSimulatedModbusAnalogRegisters(NItoModbusBridge *bridge)
+{
+     std::vector<u_int16_t> latestData = bridge->getLatestSimulatedData();
+    if (latestData.size() != 64) 
+    { // Safety check
+        return;
+    }
+    for (int i = 0; i < 64; ++i) 
+    {
+        setHoldingRegisterValue(i, latestData[i]);
+    }
 }
 
 // Get a floating-point value from the Modbus server's holding register

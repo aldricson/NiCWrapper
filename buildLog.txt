@@ -43,6 +43,7 @@ C:/Users/aldric/Desktop/dataDril20.0/build/../src/Signals/QSignalTest.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/channelReaders/analogicReader.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/channelReaders/baseReader.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/channelReaders/digitalReader.h
+C:/Users/aldric/Desktop/dataDril20.0/build/../src/channelWriters/baseWriter.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/channelWriters/digitalWriter.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/circularBuffer/ThreadSafeCircularBuffer.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/circularBuffer/algorithm.h
@@ -84,6 +85,8 @@ C:/Users/aldric/Desktop/dataDril20.0/build/../src/Signals/KeyboardPoller.cpp
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/channelReaders/analogicReader.cpp
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/channelReaders/baseReader.cpp
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/channelReaders/digitalReader.cpp
+C:/Users/aldric/Desktop/dataDril20.0/build/../src/channelWriters/baseWriter.cpp
+C:/Users/aldric/Desktop/dataDril20.0/build/../src/channelWriters/digitalWriter.cpp
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/channelWriters/digitalWrtiter.cpp
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/circularBuffer/ThreadSafeCircularBuffer.cpp
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/filesUtils/iniObject.cpp

@@ -60,6 +60,8 @@ void createNecessaryInstances()
   std::cout<<str<<std::endl;
   //Object in charge of routing crio datas to modbus
   m_crioToModbusBridge = std::make_shared<NItoModbusBridge>(analogReader,digitalReader,digitalWriter,modbusServer);
+    str = drawCell(30,"modbus bridge created");
+  std::cout<<str<<std::endl;
 }
 
 int main(void)

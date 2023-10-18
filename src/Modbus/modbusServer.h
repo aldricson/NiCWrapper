@@ -18,10 +18,8 @@ using namespace std;
 #include "modbusServerUtils.h"
 
 
-
-//#define  MAX_POINT  50000
-
-
+//forward definition
+class NItoModbusBridge;
 
 class ModbusServer
 {
@@ -45,8 +43,10 @@ public:
 
     bool setInputRegisterValue(int registerNumber, uint16_t Value);
     bool setInputRegisterValue(int registerNumber, float Value);
-    
 
+    // This function will be set as the slot function for newSimulationBufferReadySignal //nb for compatibility reasons, we have 64 channels
+    //in analog registers
+    void updateSimulatedModbusAnalogRegisters(NItoModbusBridge *bridge);
     
 
 private:

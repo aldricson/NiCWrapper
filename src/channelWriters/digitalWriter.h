@@ -1,9 +1,14 @@
 #ifndef DIGITALWRITER_H
 #define DIGITALWRITER_H
 
-class DigitalWriter {
+#include "baseWriter.h"
+#include "../NiWrappers/QNiDaqWrapper.h"
+#include "../NiWrappers/QNiSysConfigWrapper.h"
+
+class DigitalWriter : public BaseWriter {
 public:
-    // Constructor and member functions can be added here.
+    DigitalWriter(std::shared_ptr<QNiSysConfigWrapper> aSysConfigInstance,
+                   std::shared_ptr<QNiDaqWrapper> aDaqMxInstance);
     
 private:
     // Private members can be added here.

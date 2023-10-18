@@ -5,12 +5,21 @@ NItoModbusBridge::NItoModbusBridge(std::shared_ptr<AnalogicReader> analogicReade
                                    std::shared_ptr<DigitalReader> digitalReader,
                                    std::shared_ptr<DigitalWriter> digitalWriter,
                                    std::shared_ptr<ModbusServer>   modbusServer)
-    : m_analogicReader(analogicReader),
+    : m_simulationBuffer(),
+      m_realDataBuffer(), 
+      m_analogicReader(analogicReader),
       m_digitalReader(digitalReader),
       m_digitalWriter(digitalWriter),
-      m_modbusServer(modbusServer)
+      m_modbusServer(modbusServer) // Initialize with size 20
 {
-    // Initialization can be done here if needed
+    m_simulateTimer = std::make_shared<SimpleTimer>();
+    std::chrono::milliseconds ms(250);
+    m_simulateTimer->setInterval(ms);
+    m_simulateTimer->stop();
+    // Wire up the signals and slots
+    m_simulateTimer->setSlotFunction([this](){this->onSimulationTimerTimeOut();});
+    this->newSimulationBufferReadySignal = [this](){m_modbusServer->updateSimulatedModbusAnalogRegisters(this);
+                                                    showAnalogGridOnScreen(true);};
 }
 
 // Getters and setters for AnalogicReader
@@ -107,6 +116,9 @@ void NItoModbusBridge::dataSynchronization() {
     // (Add any cleanup code here if needed)*/
 }
 
+void NItoModbusBridge::simulateModBusDatas()
+{
+}
 
 u_int16_t NItoModbusBridge::linearInterpolation16Bits(double value, double minSource, double maxSource, u_int16_t minDestination, u_int16_t maxDestination)
 {
@@ -117,3 +129,99 @@ u_int16_t NItoModbusBridge::linearInterpolation16Bits(double value, double minSo
     // Clamp the value within the destination boundaries and cast to u_int16_t
     return static_cast<u_int16_t>(std::min(std::max(mappedValue, static_cast<double>(minDestination)), static_cast<double>(maxDestination)));
 }
+
+#include <cmath> // for std::sin
+#include <cstdlib> // for std::rand
+#include <vector>
+
+void NItoModbusBridge::onSimulationTimerTimeOut()
+{
+    if (m_simulationCounter >= 18446744073709551614ULL)
+    {
+        m_simulationCounter = 0;
+    }
+
+    std::vector<u_int16_t> analogChannelsResult;
+
+    // Generate a sine wave oscillating between 0.0 and 100.0
+    double amplitude = 50.0;
+    double offset = 50.0;
+    double omega = 2.0 * M_PI / 1000.0; // Frequency component, adjust as needed
+    double sineValue = amplitude * std::sin(omega * m_simulationCounter) + offset;
+    // Loop to fill values in 64AnalogChannelsResult
+    for (int i = 0; i < 64; ++i)
+    {
+        // Add or subtract random noise (up to 10%)
+        double noise = ((std::rand() % 21) - 10) / 100.0; // Random value between -0.1 and 0.1
+        double noisySineValue = sineValue * (1.0 + noise);
+        // Map the double value to a 16-bit unsigned integer
+        u_int16_t mappedValue = linearInterpolation16Bits(noisySineValue, 0.0, 100.0, 0, 65535);
+        // Push the value into the vector
+        analogChannelsResult.push_back(mappedValue);
+    }
+    m_simulationBuffer.push_back(analogChannelsResult);
+    m_simulationCounter++;
+    //signal that a new buffer is ready
+    if (newSimulationBufferReadySignal)
+    {
+           newSimulationBufferReadySignal(); 
+    }
+}
+
+
+void NItoModbusBridge::showAnalogGridOnScreen(bool isSimulated)
+{
+    clearConsole();  // Ensure this function is properly declared and defined
+    std::unique_ptr<StringGrid> resultGrid = std::make_unique<StringGrid>();
+    // Declare a variable to hold the popped value
+    std::vector<u_int16_t> values;
+    // Initialize a boolean variable to check if pop_front succeeded
+    bool popSuccess = false;
+    if (isSimulated) {
+        // Pop the front of the simulation buffer
+        popSuccess = m_simulationBuffer.pop_front(values);
+    } else {
+        // Pop the front of the real data buffer
+        popSuccess = m_realDataBuffer.pop_front(values);
+    }
+    // Check if pop_front succeeded
+    if (popSuccess) {
+        // Initialize a temporary vector to hold the strings for each row
+        std::vector<std::string> tempRow;   
+        // Iterate over the popped values
+        for (size_t i = 0; i < values.size(); ++i) {
+            // Convert the u_int16_t value to string
+            std::string cellValue = std::to_string(values[i]);
+            // Add the value to the temporary row
+            tempRow.push_back(cellValue);
+            // If we have collected 4 values or this is the last value, add a new row
+            if (tempRow.size() == 4 || i == values.size() - 1) {
+                resultGrid->addRow(tempRow);
+                tempRow.clear();  // Clear the temporary row for the next set of values
+            }
+        }
+        //display
+        resultGrid->renderGrid();
+    } 
+    else 
+    {
+        // Handle the case where the buffer was empty or an error occurred
+        // Implement your logic here, like logging or displaying an error message
+    }
+}
+
+
+
+// thread safe function to get the latest simulated data.
+std::vector<u_int16_t> NItoModbusBridge::getLatestSimulatedData() 
+{
+    std::vector<std::vector<u_int16_t>> allData = m_simulationBuffer.copy();
+    if (!allData.empty()) {
+        return allData.back(); // Return the latest data.
+    } else {
+        return std::vector<u_int16_t>(); // Return an empty vector if no data.
+    }
+}
+
+
+

@@ -13,6 +13,7 @@
 #include "../circularBuffer/ThreadSafeCircularBuffer.h"
 #include "../stringUtils/stringGrid.h"
 #include "../stringUtils/stringUtils.h"
+#include "../Signals/KeyboardPoller.h"
 #include <algorithm> 
 
 
@@ -42,7 +43,10 @@ public:
      // Data synchronization method
     void dataSynchronization();
 
-    void simulateModBusDatas();
+    void startModbusSimulation();
+    void stopModbusSimulation();
+    void startAcquisition();
+    void stopAcquisition();
     std::vector<u_int16_t> getLatestSimulatedData(); 
 
 private:
@@ -50,15 +54,19 @@ private:
     ThreadSafeCircularBuffer<std::vector<u_int16_t>>     m_simulationBuffer;
     ThreadSafeCircularBuffer<std::vector<u_int16_t>>     m_realDataBuffer;         
     std::shared_ptr<SimpleTimer>                         m_simulateTimer;
+    std::shared_ptr<SimpleTimer>                         m_dataAcquTimer;
     std::shared_ptr<AnalogicReader>                      m_analogicReader;
     std::shared_ptr<DigitalReader>                       m_digitalReader;
     std::shared_ptr<DigitalWriter>                       m_digitalWriter;
     std::shared_ptr<ModbusServer>                        m_modbusServer;
+    std::shared_ptr<KeyboardPoller>                      m_keyboardPoller;
     std::vector<MappingData>                             m_mappingData;
 
     u_int16_t linearInterpolation16Bits(double value, double minSource, double maxSource, u_int16_t minDestination, u_int16_t maxDestination);
 
+    void onKeyboardHit(char key);
     void onSimulationTimerTimeOut();
+    void onDataAcquisitionTimerTimeOut();
     void showAnalogGridOnScreen(bool isSimulated);
 
     // Signal functions to notify changes

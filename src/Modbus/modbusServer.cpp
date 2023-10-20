@@ -14,9 +14,12 @@
  **************************************************************/
 bool ModbusServer::initModbus(std::string Host_Ip = "127.0.0.1", int port = 502, bool debugging = true)
 {
-    std::cout<<"create modbus context: listening on "<<Host_Ip<<" port:"<<std::to_string(port)<<std::endl;
+    std::string str;
+    str=drawCell(23,"create modbus context");
+    std::cout<<str<<std::endl;
     // Create a new Modbus context for TCP/IPv4
     ctx = modbus_new_tcp(Host_Ip.c_str(), port);
+    std::cout<<"[context]"<<std::endl<<"listening on "<<Host_Ip<<" port:"<<std::to_string(port)<<std::endl;
     std::cout<<"set modbus debug flag to "<<std::to_string(debugging)<<std::endl;
     // Enable or disable debugging based on the parameter
     modbus_set_debug(ctx, debugging);
@@ -26,9 +29,11 @@ bool ModbusServer::initModbus(std::string Host_Ip = "127.0.0.1", int port = 502,
         fprintf(stderr, "There was an error allocating the Modbus context\n");
         throw -1;
     }
-    std::cout<<"modbus context set with SUCCES"<<std::endl;
+    str=drawCell(31,"create modbus context SUCCESS");
+    std::cout<<str<<std::endl;
     // Listen for incoming Modbus requests on the created context
-    std::cout<<"initialize modbus tcp socket in listen mode"<<std::endl;
+    str = drawCell(34,"modbus tcp socket in listen mode");
+    std::cout<<str<<std::endl;
     m_modbusSocket = modbus_tcp_listen(ctx, 1);
     // Create a new Modbus mapping with the specified number of bits and registers
     // The parameters are for coils, discrete inputs, input registers, and holding registers respectively
@@ -42,6 +47,8 @@ bool ModbusServer::initModbus(std::string Host_Ip = "127.0.0.1", int port = 502,
         return false;
     }
     // Mark the Modbus server as initialized
+    str = drawCell(23,"modbus server is UP !");
+    std::cout<<str<<std::endl;
     m_initialized = true;
     return true;
 }
@@ -234,7 +241,7 @@ bool ModbusServer::setInputRegisterValue(int registerStartaddress, float Value)
 
 void ModbusServer::updateSimulatedModbusAnalogRegisters(NItoModbusBridge *bridge)
 {
-     std::vector<u_int16_t> latestData = bridge->getLatestSimulatedData();
+    std::vector<u_int16_t> latestData = bridge->getLatestSimulatedData();
     if (latestData.size() != 64) 
     { // Safety check
         return;

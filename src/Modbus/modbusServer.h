@@ -16,6 +16,7 @@ using namespace std;
 #include <sys/time.h>
 #include <sys/select.h>
 #include "modbusServerUtils.h"
+#include "../stringUtils/stringUtils.h"
 
 
 //forward definition

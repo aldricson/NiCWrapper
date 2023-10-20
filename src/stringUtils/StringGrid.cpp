@@ -71,6 +71,70 @@ int StringGrid::findLongestField(const std::string& fileName, bool &ok) {
 }
 
 
+void StringGrid::setCSVFromString(const std::string& csvContent) {
+    try {
+        // Clear previous data
+        currentCsv.clear();
+        m_drawGrid.clear();
+        m_contentGrid.clear();
+
+        // Find the longest field in the CSV content
+        std::stringstream findLongestFieldStream(csvContent);
+        std::string line;
+        int longestField = 0;
+        while (getline(findLongestFieldStream, line)) {
+            std::stringstream ss(line);
+            std::string cell;
+            while (getline(ss, cell, ';')) {
+                longestField = std::max(longestField, static_cast<int>(cell.size()));
+            }
+        }
+        maxCellSize = longestField;
+
+        // Parse the CSV content
+        std::stringstream csvStream(csvContent);
+        while (getline(csvStream, line)) {
+            currentCsv += line + "\n";
+
+            std::stringstream ss(line);
+            std::string cell;
+            std::vector<std::string> drawingRow;
+            std::vector<std::string> contentRow;
+
+            // Parse each cell in the line
+            while (getline(ss, cell, ';')) {
+                // Add the raw content to 'contentRow'
+                contentRow.push_back(cell);
+
+                // Draw the cell and add to 'drawingRow'
+                std::string str = drawCell(maxCellSize, cell);
+                drawingRow.push_back(str);
+            }
+
+            // Add the row to the grid for rendering
+            m_drawGrid.push_back(drawingRow);
+
+            // Add the row to contentGrid for raw content
+            m_contentGrid.push_back(contentRow);
+        }
+
+        // Initialize the number of rows and columns
+        rows = m_drawGrid.size();
+        cols = m_drawGrid.empty() ? 0 : m_drawGrid[0].size() + 1; // +1 for the index column
+
+        // Render the grid to the console
+        renderGrid();
+    }
+    catch (const std::exception& e) {
+        std::cerr << "Error: Standard exception caught. Details: " << e.what() << std::endl;
+    }
+    catch (...) {
+        std::cerr << "Error: Unknown exception caught." << std::endl;
+    }
+}
+
+
+
 // Function to load a CSV file into the grid
 void StringGrid::loadCsv(const std::string& fileName) {
     try {
@@ -423,29 +487,63 @@ void StringGrid::insertAfter(int index, const std::vector<std::string>& newRow) 
 }
 
 // Function to add a new row at the end of the grid
+//     void StringGrid::addRow(const std::vector<std::string>& newRow) {
+//         // Create the drawing and content rows
+//         std::vector<std::string> drawingRow;
+//         std::vector<std::string> contentRow;
+//         // Prepend the index field to the drawing and content rows
+//         std::string newIndex = std::to_string(rows); // Indexing starts from 1
+//         drawingRow.push_back(drawCell(maxCellSize, newIndex));
+//         contentRow.push_back(newIndex);
+//         // Add the rest of the fields
+//         for (const auto& cell : newRow) {
+//             drawingRow.push_back(drawCell(maxCellSize, cell));
+//             contentRow.push_back(cell);
+//         }
+//         // Add the new row to m_drawGrid and m_contentGrid
+//         m_drawGrid.push_back(drawingRow);
+//         m_contentGrid.push_back(contentRow);
+//         // Update the row count
+//         ++rows;
+//          // Re-index the rows
+//         reindexRows();
+//         // Re-render the grid
+//         updateGrid();
+//     }
+
+// Function to add a new row at the end of the grid
 void StringGrid::addRow(const std::vector<std::string>& newRow) {
-    // Create the drawing and content rows
-    std::vector<std::string> drawingRow;
-    std::vector<std::string> contentRow;
-    // Prepend the index field to the drawing and content rows
-    std::string newIndex = std::to_string(rows); // Indexing starts from 1
-    drawingRow.push_back(drawCell(maxCellSize, newIndex));
-    contentRow.push_back(newIndex);
-    // Add the rest of the fields
-    for (const auto& cell : newRow) {
-        drawingRow.push_back(drawCell(maxCellSize, cell));
-        contentRow.push_back(cell);
+    try {
+        // Create the drawing and content rows
+        std::vector<std::string> drawingRow;
+        std::vector<std::string> contentRow;
+        // Prepend the index field to the drawing and content rows
+        std::string newIndex = std::to_string(rows); // Indexing starts from 1
+        drawingRow.push_back(drawCell(maxCellSize, newIndex));
+        contentRow.push_back(newIndex);
+        // Add the rest of the fields
+        for (const auto& cell : newRow) {
+            drawingRow.push_back(drawCell(maxCellSize, cell));
+            contentRow.push_back(cell);
+        }
+        // Add the new row to m_drawGrid and m_contentGrid
+        m_drawGrid.push_back(drawingRow);
+        m_contentGrid.push_back(contentRow);
+        // Update the row count
+        ++rows;
+        // Re-index the rows
+        reindexRows();
+        // Re-render the grid
+        updateGrid();
     }
-    // Add the new row to m_drawGrid and m_contentGrid
-    m_drawGrid.push_back(drawingRow);
-    m_contentGrid.push_back(contentRow);
-    // Update the row count
-    ++rows;
-     // Re-index the rows
-    reindexRows();
-    // Re-render the grid
-    updateGrid();
+    catch (const std::bad_alloc& e) {
+        std::cerr << "Memory allocation failed: " << e.what() << std::endl;
+    }
+    catch (const std::exception& e) {
+        std::cerr << "An exception occurred: " << e.what() << std::endl;
+    }
 }
+
 
 // Function to remove a row based on its index
 void StringGrid::removeRow(int index) {

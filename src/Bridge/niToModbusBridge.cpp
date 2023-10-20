@@ -12,14 +12,28 @@ NItoModbusBridge::NItoModbusBridge(std::shared_ptr<AnalogicReader> analogicReade
       m_digitalWriter(digitalWriter),
       m_modbusServer(modbusServer) // Initialize with size 20
 {
+    m_keyboardPoller = std::make_shared<KeyboardPoller>();         //this object handle keyboards events while polling (e.g. escape key to stop polling)    
+    m_keyboardPoller->keyboardHitSignal = std::bind(&NItoModbusBridge::onKeyboardHit,this,std::placeholders::_1); //signal to slot
+    
+    
     m_simulateTimer = std::make_shared<SimpleTimer>();
-    std::chrono::milliseconds ms(250);
-    m_simulateTimer->setInterval(ms);
+    std::chrono::milliseconds mss(250);
+    m_simulateTimer->setInterval(mss);
     m_simulateTimer->stop();
     // Wire up the signals and slots
     m_simulateTimer->setSlotFunction([this](){this->onSimulationTimerTimeOut();});
+
+
+    m_dataAcquTimer = std::make_shared<SimpleTimer>();
+    std::chrono::milliseconds msr(500);
+    m_dataAcquTimer->setInterval(msr);
+    m_dataAcquTimer->stop();
+    // Wire up the signals and slots
+    m_dataAcquTimer->setSlotFunction([this](){this->onDataAcquisitionTimerTimeOut();});
+
     this->newSimulationBufferReadySignal = [this](){m_modbusServer->updateSimulatedModbusAnalogRegisters(this);
                                                     showAnalogGridOnScreen(true);};
+
 }
 
 // Getters and setters for AnalogicReader
@@ -116,8 +130,29 @@ void NItoModbusBridge::dataSynchronization() {
     // (Add any cleanup code here if needed)*/
 }
 
-void NItoModbusBridge::simulateModBusDatas()
+void NItoModbusBridge::startModbusSimulation()
 {
+    if (m_simulateTimer->isActive()) return;
+    m_dataAcquTimer->stop();
+    m_simulationBuffer.clear();
+    m_simulateTimer->start();
+}
+
+void NItoModbusBridge::stopModbusSimulation()
+{
+    m_simulateTimer->stop();
+}
+
+void NItoModbusBridge::startAcquisition()
+{
+    if (m_dataAcquTimer->isActive()) return;
+    m_simulateTimer->stop();
+    m_dataAcquTimer->start();
+}
+
+void NItoModbusBridge::stopAcquisition()
+{
+    m_dataAcquTimer->stop();
 }
 
 u_int16_t NItoModbusBridge::linearInterpolation16Bits(double value, double minSource, double maxSource, u_int16_t minDestination, u_int16_t maxDestination)
@@ -134,8 +169,22 @@ u_int16_t NItoModbusBridge::linearInterpolation16Bits(double value, double minSo
 #include <cstdlib> // for std::rand
 #include <vector>
 
+void NItoModbusBridge::onKeyboardHit(char key)
+{
+    if (key==27)
+    {
+        if (m_simulateTimer->isActive())
+        {
+            m_simulateTimer->stop();
+            m_simulationBuffer.clear();
+        }
+    }  
+}
+
 void NItoModbusBridge::onSimulationTimerTimeOut()
 {
+    //avoid re-entrance by stoping the threaded timer, it will be restarted at the end of the display
+   // m_simulateTimer->stop();
     // Constants for simulating sine wave data
     constexpr double amplitude = 50.0;  // Amplitude of the sine wave
     constexpr double offset = 50.0;     // DC offset to shift the sine wave
@@ -169,11 +218,15 @@ void NItoModbusBridge::onSimulationTimerTimeOut()
     m_simulationCounter = (m_simulationCounter + 1) % maxCounterValue;
 }
 
-
+void NItoModbusBridge::onDataAcquisitionTimerTimeOut()
+{
+    //TODO
+}
 
 void NItoModbusBridge::showAnalogGridOnScreen(bool isSimulated)
 {
     clearConsole();  // Ensure this function is properly declared and defined
+    std::cout<<"press esc to stop simulation"<<std::endl;
     std::unique_ptr<StringGrid> resultGrid = std::make_unique<StringGrid>();
     // Declare a variable to hold the popped value
     std::vector<u_int16_t> values;
@@ -189,21 +242,17 @@ void NItoModbusBridge::showAnalogGridOnScreen(bool isSimulated)
     // Check if pop_front succeeded
     if (popSuccess) {
         // Initialize a temporary vector to hold the strings for each row
-        std::vector<std::string> tempRow;   
+        std::string csvString;
         // Iterate over the popped values
-        for (size_t i = 0; i < values.size(); ++i) {
+        for (size_t i = 1; i < values.size()+1; ++i) 
+        {
             // Convert the u_int16_t value to string
-            std::string cellValue = std::to_string(values[i]);
-            // Add the value to the temporary row
-            tempRow.push_back(cellValue);
-            // If we have collected 4 values or this is the last value, add a new row
-            if (tempRow.size() == 4 || i == values.size() - 1) {
-                resultGrid->addRow(tempRow);
-                tempRow.clear();  // Clear the temporary row for the next set of values
-            }
+            std::string cellValue = std::to_string(values[i-1]);
+            csvString += cellValue;
+            (i%8 != 0) ? csvString += ";" : csvString += "\n";
         }
         //display
-        resultGrid->renderGrid();
+        resultGrid->setCSVFromString(csvString);
     } 
     else 
     {

@@ -57,7 +57,7 @@ endforeach()
 # *** Add libmodbus Start ***
 
 # Locate libmodbus
-set(LIBMODBUS_PATH "C:/build/23.0/x64/sysroots/core2-64-nilrt-linux/usr/lib/libmodbus.so.5.0.5")
+set(LIBMODBUS_PATH "C:/build/20.x/x64/sysroots/core2-64-nilrt-linux/usr/local/lib/libmodbus.so.5.1.0")
 set(LIBMODBUS_INCLUDE_PATH "../src/Modbus/libmodbus/")
 
 FILE (APPEND ../buildLog.txt "*** libModbus ***\n")

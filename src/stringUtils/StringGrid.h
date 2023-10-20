@@ -21,6 +21,7 @@ public:
     ~StringGrid();
 
     // Load and save CSV
+    void setCSVFromString(const std::string& csvContent);
     void loadCsv(const std::string& fileName);
     void saveCsv(const std::string& fileName);
     void setCellContent(int row, int col, std::string content);

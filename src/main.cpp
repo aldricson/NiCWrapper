@@ -105,6 +105,10 @@ int main(void)
      std::cout << "╚═══════════════════════════════════════╝"<< std::endl;
    }
     //boot strap sinished 
-     mainMenu m_mainMenu(sysConfig,analogReader,digitalReader);
+     mainMenu m_mainMenu(sysConfig,analogReader,digitalReader, digitalWriter, m_crioToModbusBridge);
      m_mainMenu.exitProgramSignal = std::bind(closeLambda);
+         // Keep the main thread alive
+    while (true) {
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+    }
 }

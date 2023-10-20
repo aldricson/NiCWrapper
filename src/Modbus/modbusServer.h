@@ -7,6 +7,7 @@
 #include <iostream>
 #include <mutex>
 #include <string>
+#include <atomic>
 using namespace std;
 #include <modbus.h>
 #include <unistd.h>
@@ -29,7 +30,7 @@ public:
     ~ModbusServer();
 
 public:
-    void recieveMessages();
+    void receiveMessages();
     bool modbus_set_slave_id(int id);
     bool initModbus(std::string Host_Ip, int port, bool debugging);
     
@@ -51,11 +52,15 @@ public:
     
 
 private:
+    fd_set refset;
+    int fdmax;
     std::mutex slavemutex;
     int m_errCount{ 0 };
     int m_modbusSocket{ -1 };
     bool m_initialized{ false };
     modbus_t* ctx{ nullptr };
+
+    std::atomic<bool> m_stopRequested;  // Flag to request server stop
 
 /*********************************************************
  * modbus_mapping_t explainations
@@ -86,6 +91,9 @@ typedef struct _modbus_mapping_t
 public:
     void loadFromConfigFile();
     void run();
+    void stop();
+    bool isModbusActive();
+
 };
 
 #endif 

@@ -1,4 +1,8 @@
 #include "NItoModbusBridge.h"
+#include <cmath> // for std::sin
+#include <cstdlib> // for std::rand
+#include <vector>
+
 
 // Constructor
 NItoModbusBridge::NItoModbusBridge(std::shared_ptr<AnalogicReader> analogicReader,
@@ -32,7 +36,7 @@ NItoModbusBridge::NItoModbusBridge(std::shared_ptr<AnalogicReader> analogicReade
     m_dataAcquTimer->setSlotFunction([this](){this->onDataAcquisitionTimerTimeOut();});
 
     this->newSimulationBufferReadySignal = [this](){m_modbusServer->updateSimulatedModbusAnalogRegisters(this);
-                                                    showAnalogGridOnScreen(true);};
+                                                    /*showAnalogGridOnScreen(true);*/};
 
 }
 
@@ -135,12 +139,22 @@ void NItoModbusBridge::startModbusSimulation()
     if (m_simulateTimer->isActive()) return;
     m_dataAcquTimer->stop();
     m_simulationBuffer.clear();
+    m_keyboardPoller->start();
+   // if (!m_modbusServer->isModbusActive())
+  //  {
+        m_modbusServer->run();
+        std::cout<<"modbus part is running"<<std::endl;
+  //  }
     m_simulateTimer->start();
 }
 
 void NItoModbusBridge::stopModbusSimulation()
 {
     m_simulateTimer->stop();
+    if (m_modbusServer->isModbusActive())
+    {
+        m_modbusServer->stop();
+    }
 }
 
 void NItoModbusBridge::startAcquisition()
@@ -165,9 +179,6 @@ u_int16_t NItoModbusBridge::linearInterpolation16Bits(double value, double minSo
     return static_cast<u_int16_t>(std::min(std::max(mappedValue, static_cast<double>(minDestination)), static_cast<double>(maxDestination)));
 }
 
-#include <cmath> // for std::sin
-#include <cstdlib> // for std::rand
-#include <vector>
 
 void NItoModbusBridge::onKeyboardHit(char key)
 {

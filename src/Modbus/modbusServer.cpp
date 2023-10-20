@@ -35,6 +35,7 @@ bool ModbusServer::initModbus(std::string Host_Ip = "127.0.0.1", int port = 502,
     str = drawCell(34,"modbus tcp socket in listen mode");
     std::cout<<str<<std::endl;
     m_modbusSocket = modbus_tcp_listen(ctx, 1);
+    fdmax = m_modbusSocket;
     // Create a new Modbus mapping with the specified number of bits and registers
     // The parameters are for coils, discrete inputs, input registers, and holding registers respectively
     mapping = modbus_mapping_new(m_numBits, m_numInputBits, m_numInputRegisters, m_numRegisters);
@@ -57,7 +58,7 @@ bool ModbusServer::initModbus(std::string Host_Ip = "127.0.0.1", int port = 502,
 ModbusServer::ModbusServer(string host, uint16_t port)
 {
     initModbus(host, port, false);
-    //TODO：
+    m_stopRequested.store(false);
 }
 
 ModbusServer::~ModbusServer()
@@ -75,17 +76,20 @@ void ModbusServer::loadFromConfigFile()
 // Run the Modbus server in a separate thread to continuously receive messages
 void ModbusServer::run()
 {
+    std::cout<<"ready to launch thread"<<std::endl;
     // Create a new thread to handle the Modbus server's operations
     std::thread loop([this]()
     {
+        std::cout<<"thread loop"<<std::endl;
         // Run an infinite loop to keep the server running
-        while (true)
+        while (!m_stopRequested.load())  // Check the stop flag using load()
         {
             // Check if the Modbus server is initialized
             if (m_initialized)
             {
+                 std::cout<<"check for init ok"<<std::endl;
                 // If initialized, call the function to receive messages from clients
-                recieveMessages();
+                receiveMessages();
             }
             else
             {
@@ -98,9 +102,56 @@ void ModbusServer::run()
     
     // Detach the thread so it runs independently of the main thread
     loop.detach();
-    
     return;
 }
+
+// stop the Modbus server
+void ModbusServer::stop()
+{
+     std::lock_guard<std::mutex> lock(slavemutex);
+    m_stopRequested.store(true);  // Set the stop flag using store()
+    // Disconnect all clients before shutting down the server
+     // Disconnect all clients before shutting down the server
+    for (int master_socket = 0; master_socket <= fdmax; master_socket++)
+    {
+        // Skip the server socket
+        if (master_socket == m_modbusSocket)
+        {
+            continue;
+        }
+        // Close the client socket
+        if (close(master_socket) == -1)
+        {
+            std::cout << "Error closing client socket" << std::endl;
+        }
+        else
+        {
+            printf("Successfully closed connection on socket %d\n", master_socket);
+        }
+
+        // Remove the socket from the set
+        FD_CLR(master_socket, &refset);  // Using the member variable here
+    }
+    // Close the Modbus context and free resources
+    modbus_mapping_free(mapping);
+    modbus_close(ctx);
+    modbus_free(ctx);
+    m_initialized = false;  // Mark the server as uninitialized
+}
+
+
+// Function to check if the Modbus server is active
+bool ModbusServer::isModbusActive()
+{
+    // Lock the mutex to ensure thread safety while checking the state
+    slavemutex.lock();   
+    // Check if the Modbus server is initialized and not stopped
+    bool isActive = m_initialized && !m_stopRequested.load();
+    // Unlock the mutex
+    slavemutex.unlock();
+    return isActive;
+}
+
 
 // Set the Modbus slave ID for the server
 bool ModbusServer::modbus_set_slave_id(int id)
@@ -128,16 +179,12 @@ bool ModbusServer::setInputRegisterValue(int registerStartaddress, uint16_t Valu
     {
         return false;
     }
-    
     // Lock the mutex to ensure thread safety
     slavemutex.lock();
-    
     // Set the value in the input register
     mapping->tab_input_registers[registerStartaddress] = Value;
-    
     // Unlock the mutex
     slavemutex.unlock();
-    
     return true;
 }
 
@@ -225,10 +272,8 @@ bool ModbusServer::setInputRegisterValue(int registerStartaddress, float Value)
     {
         return false;
     }
-    
     // Lock the mutex to ensure thread safety
     slavemutex.lock();
-    
     // Use libmodbus function to set the float value in the input register
     // This function handles the conversion to Modbus format
     modbus_set_float(Value, &mapping->tab_input_registers[registerStartaddress]);
@@ -266,22 +311,26 @@ float ModbusServer::getHoldingRegisterFloatValue(int registerStartaddress)
 }
 
 // Function to handle incoming Modbus messages
-void ModbusServer::recieveMessages()
+void ModbusServer::receiveMessages()
 {
-    uint8_t query[MODBUS_TCP_MAX_ADU_LENGTH];
-    int master_socket;
-    int rc;
-    fd_set refset;
-    fd_set rdset;
-    int fdmax;
+    
+    std::lock_guard<std::mutex> lock(slavemutex);
+    uint8_t query[MODBUS_TCP_MAX_ADU_LENGTH];  // Buffer to store incoming Modbus queries
+    int master_socket;  // Socket descriptor for the master socket
+    int rc;  // Return code for various operations
+    fd_set rdset;  // Working set of socket descriptors for select()
     // Initialize the socket set for select()
-    FD_ZERO(&refset);
-    FD_SET(m_modbusSocket, &refset);
-    fdmax = m_modbusSocket;
+    FD_ZERO(&refset);  // Clear all entries from the set to initialize it.
+                       //This ensures that the set is empty before we add any sockets to it.
+    FD_SET(m_modbusSocket, &refset);  // Add the server socket (m_modbusSocket) to the set. 
+                                       //This allows the select() function to monitor this socket for incoming connections or data.
+    fdmax = m_modbusSocket;  // Set the maximum file descriptor number to the server socket's descriptor.
+                             //This is used in the select() function to specify the range of file descriptors to be monitored.
+    // Infinite loop to keep the server running
     while(true)
     {
         rdset = refset;
-        // Use select() to wait for an activity on any of the sockets
+        // Use select() to wait for activity on any of the sockets
         if (select(fdmax + 1, &rdset, NULL, NULL, NULL) == -1)
         {
             perror("Server select() failure.");
@@ -295,16 +344,24 @@ void ModbusServer::recieveMessages()
                 continue;
             }
 
+            // Handle new client connections
             if (master_socket == m_modbusSocket)
             {
-                // Handle new client connections
+
+                 // Declare a variable 'addrlen' of type 'socklen_t' to hold the size of the client address structure. 
                 socklen_t addrlen;
+                // Declare a structure 'clientaddr' of type 'sockaddr_in' to store the client's address information. 
                 struct sockaddr_in clientaddr;
-                int newfd;
-                addrlen = sizeof(clientaddr);
-                memset(&clientaddr, 0, sizeof(clientaddr));
-                newfd = accept(m_modbusSocket, (struct sockaddr *)&clientaddr, &addrlen);
-                
+                // Declare an integer 'newfd' to hold the new socket file descriptor for the accepted client connection.  
+                int newfd;  
+                // Initialize 'addrlen' with the size of 'clientaddr'. This is required for the 'accept()' function. 
+                addrlen = sizeof(clientaddr);  
+                // Initialize all bytes in 'clientaddr' to zero. This is to ensure that it doesn't contain any garbage values before we use it.
+                memset(&clientaddr, 0, sizeof(clientaddr)); 
+                // Call the 'accept()' function to accept a new client connection.
+                // 'm_modbusSocket' is the listening socket, 'clientaddr' will be filled with the client's address information,
+                // and 'addrlen' is the size of 'clientaddr'. 
+                newfd = accept(m_modbusSocket, (struct sockaddr *)&clientaddr, &addrlen);  
                 if (newfd == -1)
                 {
                     perror("Server accept() error");
@@ -316,6 +373,7 @@ void ModbusServer::recieveMessages()
                     {
                         fdmax = newfd;
                     }
+                    //we received a new connection
                     printf("New connection from %s:%d on socket %d\n", inet_ntoa(clientaddr.sin_addr), clientaddr.sin_port, newfd);
                 }
             }
@@ -325,10 +383,44 @@ void ModbusServer::recieveMessages()
                 modbus_set_socket(ctx, master_socket);
                 rc = modbus_receive(ctx, query);
                 
+                // Debugging: Log the entire Modbus query frame
+                // a modbusframe looks like 0 0 0 0 0 6 1 4 0 1 0 40 if osiris is asking
+                // each number (or number pair) is a field 
+                //[Transaction Identifier] [Protocol Identifier] [Length Field] [Unit Identifier] [Function Code] [Data]
+                //For example, consider the frame 0 0 0 0 0 6 1 4 0 1 0 40:
+                //Transaction Identifier: 0 0 (2 bytes)
+                //Protocol Identifier: 0 0 (2 bytes, always 0 for Modbus)
+                //Length Field: 0 6 (2 bytes, length of the remaining bytes)
+                //Unit Identifier: 1 (1 byte, usually 1 for Modbus TCP)
+                //Function Code: 4 (1 byte, Read Analog Input Registers)
+                //Data: 0 1 0 40 (Start address and quantity of registers to read)
                 if (rc > 0)
                 {
+                    std::cout << "Received Modbus query frame: ";
+                    for (int i = 0; i < rc; ++i)
+                    {
+                        std::cout << std::hex << static_cast<int>(query[i]) << " ";
+                    }
+                    std::cout << std::endl;
+                    //Human-readable breakdown of the Modbus query frame
+                    std::cout << "Human-readable breakdown:" << std::endl;
+                    std::cout << "  Transaction Identifier: " << std::hex << static_cast<int>(query[0]) << " " << static_cast<int>(query[1]) << std::endl;
+                    std::cout << "  Protocol Identifier: " << std::hex << static_cast<int>(query[2]) << " " << static_cast<int>(query[3]) << std::endl;
+                    std::cout << "  Length Field: " << std::hex << static_cast<int>(query[4]) << " " << static_cast<int>(query[5]) << std::endl;
+                    std::cout << "  Unit Identifier: " << std::hex << static_cast<int>(query[6]) << std::endl;
+                    std::cout << "  Function Code: " << std::hex << static_cast<int>(query[7]) << std::endl;
+                    std::cout << "  Data: ";
+                    for (int i = 8; i < rc; ++i)
+                    {
+                       std::cout << std::hex << static_cast<int>(query[i]) << " ";
+                    }
+                    std::cout << std::endl;
+                    
+                    // Reply to the Modbus query
                     modbus_reply(ctx, query, rc, mapping);
                 }
+
+
                 else if (rc == -1)
                 {
                     printf("Connection closed on socket %d\n", master_socket);
@@ -342,5 +434,6 @@ void ModbusServer::recieveMessages()
             }
         }
     }
+    // Set the initialized flag to false if the loop breaks
     m_initialized = false;
 }

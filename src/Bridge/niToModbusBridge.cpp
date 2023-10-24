@@ -98,40 +98,7 @@ void NItoModbusBridge::loadMapping() {
 }
 
 void NItoModbusBridge::dataSynchronization() {
-    // Initialization
-    // (Add any initialization code here if needed)
-
-    // Timed Loop
- /*   while (true) {  // Replace with a proper loop exit condition
-        // Read Data
-        auto analogicData = m_analogicReader->readData();
-        auto digitalData = m_digitalReader->readData();
-
-        // Map Data
-        for (const auto& mapping : m_mappingData) {
-            // Perform linear interpolation for analogic data
-            if (mapping.moduleType == ModuleType::Analog) {
-                double rawValue = analogicData[mapping.channelSource];
-                u_int16_t modbusValue = linearInterpolation16Bits(rawValue, mapping.minSource, mapping.maxSource, mapping.minDestination, mapping.maxDestination);
-                // Store modbusValue or send it to Modbus layer
-            }
-            // Handle digital data
-            else if (mapping.moduleType == ModuleType::Digital) {
-                // Map digitalData to Modbus layer
-            }
-        }
-
-        // Write Data
-        // (Use m_digitalWriter to write mapped data to Modbus layer)
-
-        // Sleep to control the loop frequency
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));  // Sleep for 100 milliseconds
-
-        // (Add any loop exit condition here)
-    }
-
-    // Cleanup
-    // (Add any cleanup code here if needed)*/
+   
 }
 
 void NItoModbusBridge::startModbusSimulation()
@@ -169,14 +136,14 @@ void NItoModbusBridge::stopAcquisition()
     m_dataAcquTimer->stop();
 }
 
-u_int16_t NItoModbusBridge::linearInterpolation16Bits(double value, double minSource, double maxSource, u_int16_t minDestination, u_int16_t maxDestination)
+uint16_t NItoModbusBridge::linearInterpolation16Bits(double value, double minSource, double maxSource, uint16_t minDestination, uint16_t maxDestination)
 {
     // Calculate the scaling factor
     double scale = (maxDestination - minDestination) / (maxSource - minSource);
     // Perform the linear interpolation
     double mappedValue = minDestination + scale * (value - minSource);
-    // Clamp the value within the destination boundaries and cast to u_int16_t
-    return static_cast<u_int16_t>(std::min(std::max(mappedValue, static_cast<double>(minDestination)), static_cast<double>(maxDestination)));
+    // Clamp the value within the destination boundaries and cast to uint16_t
+    return static_cast<uint16_t>(std::min(std::max(mappedValue, static_cast<double>(minDestination)), static_cast<double>(maxDestination)));
 }
 
 
@@ -203,7 +170,7 @@ void NItoModbusBridge::onSimulationTimerTimeOut()
     constexpr int numChannels = 64;     // Number of channels to simulate
     constexpr uint64_t maxCounterValue = 18446744073709551615ULL;  // Max counter value for wrap-around
     // Vector to hold simulated data for each channel
-    std::vector<u_int16_t> analogChannelsResult;
+    std::vector<uint16_t> analogChannelsResult;
     // Calculate the sine value for the current simulation counter
     double sineValue = amplitude * std::sin(omega * m_simulationCounter) + offset;
     // Loop through each channel to generate simulated data
@@ -214,7 +181,7 @@ void NItoModbusBridge::onSimulationTimerTimeOut()
         // Add noise to the sine value
         double noisySineValue = sineValue * (1.0 + noise);
         // Map the noisy sine value to a 16-bit unsigned integer
-        u_int16_t mappedValue = linearInterpolation16Bits(noisySineValue, 0.0, 100.0, 0, 65535);
+        uint16_t mappedValue = linearInterpolation16Bits(noisySineValue, 0.0, 100.0, 0, 65535);
         // Add the mapped value to the result vector
         analogChannelsResult.push_back(mappedValue);
     }
@@ -240,7 +207,7 @@ void NItoModbusBridge::showAnalogGridOnScreen(bool isSimulated)
     std::cout<<"press esc to stop simulation"<<std::endl;
     std::unique_ptr<StringGrid> resultGrid = std::make_unique<StringGrid>();
     // Declare a variable to hold the popped value
-    std::vector<u_int16_t> values;
+    std::vector<uint16_t> values;
     // Initialize a boolean variable to check if pop_front succeeded
     bool popSuccess = false;
     if (isSimulated) {
@@ -257,7 +224,7 @@ void NItoModbusBridge::showAnalogGridOnScreen(bool isSimulated)
         // Iterate over the popped values
         for (size_t i = 1; i < values.size()+1; ++i) 
         {
-            // Convert the u_int16_t value to string
+            // Convert the uint16_t value to string
             std::string cellValue = std::to_string(values[i-1]);
             csvString += cellValue;
             (i%8 != 0) ? csvString += ";" : csvString += "\n";
@@ -275,13 +242,13 @@ void NItoModbusBridge::showAnalogGridOnScreen(bool isSimulated)
 
 
 // thread safe function to get the latest simulated data.
-std::vector<u_int16_t> NItoModbusBridge::getLatestSimulatedData() 
+std::vector<uint16_t> NItoModbusBridge::getLatestSimulatedData() 
 {
-    std::vector<std::vector<u_int16_t>> allData = m_simulationBuffer.copy();
+    std::vector<std::vector<uint16_t>> allData = m_simulationBuffer.copy();
     if (!allData.empty()) {
         return allData.back(); // Return the latest data.
     } else {
-        return std::vector<u_int16_t>(); // Return an empty vector if no data.
+        return std::vector<uint16_t>(); // Return an empty vector if no data.
     }
 }
 

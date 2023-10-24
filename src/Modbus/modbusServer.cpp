@@ -38,7 +38,7 @@ bool ModbusServer::initModbus(std::string Host_Ip = "127.0.0.1", int port = 502,
     fdmax = m_modbusSocket;
     // Create a new Modbus mapping with the specified number of bits and registers
     // The parameters are for coils, discrete inputs, input registers, and holding registers respectively
-    mapping = modbus_mapping_new(m_numBits, m_numInputBits, m_numInputRegisters, m_numRegisters);
+    mapping = modbus_mapping_new(m_nbCoils, m_numInputBits, m_numInputRegisters, m_numRegisters);
     // Check if the Modbus mapping was successfully created
     if (mapping == NULL)
     {
@@ -156,9 +156,19 @@ bool ModbusServer::isModbusActive()
 // Set the Modbus slave ID for the server
 bool ModbusServer::modbus_set_slave_id(int id)
 {
+
+    int clamped = id; 
+    if (clamped < 0)
+    {
+        clamped = 0;
+    }
+    else if (clamped > 255)
+    {
+        clamped = 255;
+    }
     // Call the libmodbus function to set the slave ID
-    int rc = modbus_set_slave(ctx, id);
-    
+    int rc = modbus_set_slave(ctx, clamped);
+    m_slave_Id = static_cast<uint8_t>(clamped); 
     // Check if setting the slave ID was successful
     if (rc == -1)
     {
@@ -172,34 +182,34 @@ bool ModbusServer::modbus_set_slave_id(int id)
 }
 
 // Set a 16-bit value in the Modbus server's input register
-bool ModbusServer::setInputRegisterValue(int registerStartaddress, uint16_t Value)
+bool ModbusServer::setInputRegisterValue(int registerNumber, uint16_t Value)
 {
     // Check if the register address is within the valid range
-    if (registerStartaddress > (m_numRegisters - 1))
+    if (registerNumber > (m_numRegisters - 1))
     {
         return false;
     }
     // Lock the mutex to ensure thread safety
-    slavemutex.lock();
+ //   slavemutex.lock();
     // Set the value in the input register
-    mapping->tab_input_registers[registerStartaddress] = Value;
+    mapping->tab_input_registers[registerNumber] = Value;
     // Unlock the mutex
-    slavemutex.unlock();
+//    slavemutex.unlock();
     return true;
 }
 
 // Initialize the Modbus server's holding register with a 16-bit unsigned integer value
-bool ModbusServer::setHoldingRegisterValue(int registerStartaddress, uint16_t Value)
+bool ModbusServer::setHoldingRegisterValue(int registerNumber, uint16_t Value)
 {
     // Check if the register address is within the valid range
-    if (registerStartaddress > (m_numRegisters - 1))
+    if (registerNumber > (m_numRegisters - 1))
     {
         return false;
     }
     // Lock the mutex to ensure thread safety
     slavemutex.lock();
     // Set the value in the holding register
-    mapping->tab_registers[registerStartaddress] = Value;
+    mapping->tab_registers[registerNumber] = Value;
     // Unlock the mutex
     slavemutex.unlock();
     return true;
@@ -286,14 +296,14 @@ bool ModbusServer::setInputRegisterValue(int registerStartaddress, float Value)
 
 void ModbusServer::updateSimulatedModbusAnalogRegisters(NItoModbusBridge *bridge)
 {
-    std::vector<u_int16_t> latestData = bridge->getLatestSimulatedData();
+    std::vector<uint16_t> latestData = bridge->getLatestSimulatedData();
     if (latestData.size() != 64) 
     { // Safety check
         return;
     }
     for (int i = 0; i < 64; ++i) 
     {
-        setHoldingRegisterValue(i, latestData[i]);
+        setInputRegisterValue(i, latestData[i]);
     }
 }
 
@@ -310,25 +320,413 @@ float ModbusServer::getHoldingRegisterFloatValue(int registerStartaddress)
     return unsignedIntPairToFloat(&mapping->tab_registers[registerStartaddress]);
 }
 
+void ModbusServer::showTCPFrameForDebugPurpose(const uint8_t *query, const uint8_t functionCode, const uint16_t startingAddres, const uint16_t quantity, const int rc)
+{          
+    // Debugging: Log the entire Modbus query frame
+    // a modbusframe looks like 0 0 0 0 0 6 1 4 0 1 0 40 if osiris is asking
+    // each number (or number pair) is a field 
+    //[Transaction Identifier] [Protocol Identifier] [Length Field] [Unit Identifier] [Function Code] [Data]
+    //For example, consider the frame 0 0 0 0 0 6 1 4 0 1 0 40:
+    //Transaction Identifier: 0 0 (2 bytes)
+    //Protocol Identifier: 0 0 (2 bytes, always 0 for Modbus)
+    //Length Field: 0 6 (2 bytes, length of the remaining bytes)
+    //Unit Identifier: 1 (1 byte, usually 1 for Modbus TCP)
+    //Function Code: 4 (1 byte, Read Analog Input Registers)
+    //Data: 0 1 0 40 (Start address and quantity of registers to read)
+    std::cout << std::endl;
+    std::cout << "Received Modbus query frame: ";
+    for (int i = 0; i < rc; ++i)
+    {
+        std::cout << "0x" << std::hex << static_cast<int>(query[i]) << " ";
+    }
+    std::cout << std::endl;
+    //Human-readable breakdown of the Modbus query frame
+    std::cout << "*****************************" << std::endl;
+    std::cout << "* Human-readable breakdown: *" << std::endl;
+    std::cout << "*****************************" << std::endl;
+    std::cout << std::endl;
+    std::cout << "  Transaction Identifier: "  << "0x" << std::hex << static_cast<int>(query[0]) << " " << "0x" << static_cast<int>(query[1]) << std::endl;
+    std::cout << "  Protocol Identifier: " << "0x" << std::hex << static_cast<int>(query[2]) << " " << "0x" << static_cast<int>(query[3]) << std::endl;
+    std::cout << "  Length Field: " << "0x" << std::hex << static_cast<int>(query[4]) << " " << "0x" << static_cast<int>(query[5]) << std::endl;
+    std::cout << "  Unit Identifier: " << "0x" << std::hex << static_cast<int>(query[6]) << std::endl;
+    std::cout << "  Function Code: " << "0x" << std::hex << static_cast<int>(query[7]) << std::endl;
+    if (query[7]==functionCode)
+    {
+        std::cout << "  Function verified ok: ";
+        switch (functionCode)
+        {
+            case 0x04 :
+            {
+                std::cout<<"Read input registers" << endl;
+                std::cout<<"  Registers start adress: "<< std::to_string(startingAddres) << endl;
+                std::cout<<"  Asked quantity: "<< std::to_string(quantity);
+            }
+        }
+    }
+    std::cout << "  Data: ";
+    for (int i = 8; i < rc; ++i)
+    {
+       std::cout << std::hex << static_cast<int>(query[i]) << " ";
+    }
+    std::cout << std::endl;
+                    
+}
+
+bool ModbusServer::parseReceivedData(const uint8_t *buffer, int bytesRead, uint8_t &functionCode, uint16_t &startingAddress, uint16_t &quantity)
+{
+    // Check if the received data is at least the minimum length for a Modbus TCP frame
+    if (bytesRead < 9) {
+        std::cerr << "Received data is too short to be a valid Modbus TCP frame." << std::endl;
+        return false;
+    }
+    // In a Modbus TCP frame, the function code is at the 8th byte (index 7)
+    functionCode = buffer[7];
+    // The starting address is at the 9th and 10th bytes (index 8 and 9)
+    // Modbus uses big-endian, so we need to swap the bytes
+    startingAddress = (buffer[8] << 8) | buffer[9];
+    // The quantity is at the 11th and 12th bytes (index 10 and 11)
+    // Again, Modbus uses big-endian
+    quantity = (buffer[10] << 8) | buffer[11];
+    return true;
+}
+
+
+//Function to calcultae remaining bytes to follow after transactionId and protocolId 
+bool ModbusServer::calculateRemainingBytes(const int totalLengthInBytes,
+                                           uint8_t &highByte,
+                                           uint8_t &lowByte)
+{
+    // Step 1: Force totalLengthInBytes into the range [0, 65535]
+    std::cout<<"total length :"<<std::to_string(totalLengthInBytes)<<" bytes"<<endl;
+    int clampedLength = totalLengthInBytes-6; //-6 because we substract 2 octets for the transaction Id
+                                              //                        2 octets for the protocol Id
+                                              //                        2 octets for the length  
+    if (clampedLength < 0)
+    {
+        clampedLength = 0;
+    }
+    else if (clampedLength > 65535)
+    {
+        clampedLength = 65535;
+    }
+    
+    //the first one at this stage will be the device address (1 byte)
+    //then comes the function code                           (1 byte)
+    //then the payload size                                  (1 byte)
+    //then the payload! So... 1+1+1=3 that's a minimum to have a payload size ok, But if there's no payload after then there's a problem
+    //that's why we check it here
+    if (clampedLength<=3)
+    {
+        std::cout<<"Protocol error the number of remaining bytes is too small for a valid Modbus frame"<<std::endl;
+        return false;
+    } 
+    // Step 1b: Convert to uint16_t if needed (it's probably not obligatory BUT STILL it's good practice when you play with bytes to be very precise on typing variables)
+    uint16_t clampedLengthUint16 = static_cast<uint16_t>(clampedLength);
+
+    // Step 2: Split into high and low bytes
+    highByte = (clampedLengthUint16 >> 8) & 0xFF; // Extract the high byte
+    lowByte = clampedLengthUint16 & 0xFF;         // Extract the low byte
+
+    return true; // Everything went right
+}
+
+// Validate the starting address and quantity for reading registers
+bool ModbusServer::validateAddressAndQuantity(uint16_t startingAddress, uint16_t quantity, uint16_t maxRegisters)
+{
+    if (startingAddress >= maxRegisters || (startingAddress + quantity) > maxRegisters)
+    {
+        std::cerr << "Invalid starting address or quantity for reading registers." << std::endl;
+        return false;
+    }
+    return true;
+}
+
+// Prepare the response header for Modbus TCP frame
+void ModbusServer::prepareResponseHeader(
+                                          uint8_t transactionIdHigh,
+                                          uint8_t transactionIdLow,
+                                          uint8_t protocolIdHigh,
+                                          uint8_t protocolIdLow,
+                                          uint8_t functionCode,
+                                          uint16_t quantity,
+                                          uint8_t *responseBuffer)
+{
+    uint8_t clampedQuantity;
+    if (quantity<0)
+    {
+        quantity = 0;
+    }
+    else if (quantity>128)
+    {
+       quantity = 128;
+    } 
+    clampedQuantity = static_cast<uint8_t>(quantity);
+    // Prepare the response header
+    responseBuffer[0] = transactionIdHigh;            // Transaction Identifier (High byte)
+    responseBuffer[1] = transactionIdLow;             // Transaction Identifier (Low byte)
+    responseBuffer[2] = protocolIdHigh;               // Protocol Identifier (High byte)
+    responseBuffer[3] = protocolIdLow;                // Protocol Identifier (Low byte)
+    responseBuffer[4] = 0x00;                         // Length (High byte)
+    responseBuffer[5] = 0x00;                         // Length (Low byte)
+    responseBuffer[6] = m_slave_Id;                   // Unit Identifier
+    responseBuffer[7] = functionCode;                 // Function Code for Read Input Registers
+    responseBuffer[8] = clampedQuantity * sizeof(uint16_t); // Byte count of the payload *2 (uint_16t is 2 bytes, so size of will return 2) because we count in bytes but each values is 16 bits (2 bytes)
+}
+
+// Fill the response payload for Modbus TCP frame
+int ModbusServer::fillResponsePayload(uint16_t *payload, uint16_t quantity, uint8_t *responseBuffer, int startIndex)
+{
+    int responseIndex = startIndex;
+    for (uint16_t i = 0; i < quantity; ++i)
+    {
+        uint16_t registerValue = payload[i];
+        responseBuffer[responseIndex++] = (registerValue >> 8) & 0xFF; // High byte
+        responseBuffer[responseIndex++] = registerValue & 0xFF;        // Low byte
+    }
+    return responseIndex;
+}
+
+// Overloaded function to fill response payload for uint8_t
+int ModbusServer::fillResponsePayload(uint8_t *payload, int payloadSize, uint8_t *responseBuffer, int startIndex)
+{
+    // Initialize the response index to the starting index
+    int responseIndex = startIndex;
+    // Loop through the payload and fill the response buffer
+    for (int i = 0; i < payloadSize; ++i)
+    {
+        // Directly copy the 8-bit value from payload to responseBuffer
+        responseBuffer[responseIndex++] = payload[i];
+    }
+    // Return the updated response index
+    return responseIndex;
+}
+
+
+//function to read coils
+int ModbusServer::readCoils(
+    uint8_t transactionIdHigh, uint8_t transactionIdLow,
+    uint8_t protocolIdHigh, uint8_t protocolIdLow,
+    uint8_t functionCode, uint16_t startingAddress,
+    uint16_t quantity, uint8_t *responseBuffer, modbus_t *ctx)
+{
+    // Validate the starting address and quantity against the total number of coils (m_numCoils)
+    if (!validateAddressAndQuantity(startingAddress, quantity, m_nbCoils))
+    {
+        return -1;  // Return -1 if validation fails
+    }
+
+    // Calculate the number of bytes needed to represent the coils
+    // Coils are packed 8 to a byte, so (quantity + 7) / 8 rounds up to the nearest byte
+    int payloadSize = (quantity + 7) / 8;
+
+    // Create a buffer to hold the coil values
+    uint8_t *payload = new uint8_t[payloadSize];
+
+    // Initialize all elements in the payload to zero
+    memset(payload, 0, payloadSize);
+
+    // Populate the payload buffer with coil values
+    for (size_t i = 0; i < quantity; ++i)
+    {
+        // Check if the coil at the current address is set (1)
+        if (mapping->tab_bits[startingAddress + i])
+        {
+            // Set the corresponding bit in the payload
+            //i / 8: This calculates which byte in the payload array we are dealing with.
+            //Since each byte can represent 8 coils, we divide the coil index i by 8 to find the byte index.
+            //i % 8: This calculates which bit within that byte we are dealing with. The remainder of i / 8 gives us the bit position within the byte.
+            //1 << (i % 8): This shifts the binary representation of 1 to the left by (i % 8) positions.
+            //This effectively creates a bitmask where only the bit at the position (i % 8) is set to 1.
+            //payload[i / 8] |= (1 << (i % 8)): This uses the bitwise OR assignment operator |= to set the bit at the position (i % 8) in payload[i / 8] to 1.
+            //yeah right, Sidali once you master bytewise operations you can do all that in a single lightening fast line :
+            payload[i / 8] |= (1 << (i % 8));
+        }
+    }
+    // Prepare the response header with transaction ID, protocol ID, and other details
+    prepareResponseHeader(transactionIdHigh, transactionIdLow, protocolIdHigh, protocolIdLow, functionCode, quantity, responseBuffer);
+    // Set the byte count field in the response buffer
+    // This is the number of bytes that the coils are packed into
+    responseBuffer[8] = payloadSize;
+    // Fill the response payload starting from index 9 in the response buffer
+    int responseIndex = fillResponsePayload(payload, payloadSize, responseBuffer, 9);    
+    // Declare variables to hold the high and low bytes of the total remaining length
+    uint8_t totalRemainingLengthHighByte;
+    uint8_t totalRemainingLengthLowByte;
+    // Calculate the remaining bytes in the response frame
+    if (!calculateRemainingBytes(responseIndex, totalRemainingLengthHighByte, totalRemainingLengthLowByte))
+    {
+        std::cout << "Impossible to calculate remaining bytes of the response frame" << std::endl;
+        return 0;  // Return 0 if calculation fails
+    }
+    else
+    {
+        // Update the length field in the response header with the calculated high and low bytes
+        responseBuffer[4] = totalRemainingLengthHighByte;  // Length (High byte)
+        responseBuffer[5] = totalRemainingLengthLowByte;   // Length (Low byte)
+    }
+    // Free the dynamically allocated payload buffer
+    delete[] payload;
+    // Return the total length of the response
+    return responseIndex;
+}
+
+
+int ModbusServer::writeSingleCoil(
+    uint8_t transactionIdHigh, uint8_t transactionIdLow,
+    uint8_t protocolIdHigh, uint8_t protocolIdLow,
+    uint8_t functionCode, uint16_t coilAddress,
+    bool value, uint8_t *responseBuffer, modbus_t *ctx)
+{
+    // Validate the coil address
+    if (coilAddress >= m_nbCoils)
+    {
+        return -1;
+    }
+    // Update the coil value in the mapping
+    mapping->tab_bits[coilAddress] = value;
+    // Prepare the response header
+    prepareResponseHeader(transactionIdHigh, transactionIdLow, protocolIdHigh, protocolIdLow, functionCode, 1, responseBuffer);
+    // Fill the response payload with the coil address and value
+    responseBuffer[8] = (coilAddress >> 8) & 0xFF;  // Coil address high byte
+    responseBuffer[9] = coilAddress & 0xFF;         // Coil address low byte
+    responseBuffer[10] = value ? 0xFF : 0x00;       // Coil value
+    // Update the length field in the response header
+    responseBuffer[4] = 0;  // Length (High byte)
+    responseBuffer[5] = 6;  // Length (Low byte)
+    return 11;  // Return the total length of the response
+}
+
+
+
+// Function to read input registers and prepare the response
+int ModbusServer::readInputRegisters(
+                                      uint8_t transactionIdHigh,
+                                      uint8_t transcationIdLow,
+                                      uint8_t protocolIdHigh,
+                                      uint8_t protocolIdLow,
+                                      uint8_t functionCode,
+                                      uint16_t startingAddress,
+                                      uint16_t quantity,
+                                      uint8_t *responseBuffer,
+                                      modbus_t *ctx)
+{
+    // Check if the starting address and quantity are within the valid range
+    // Validate the starting address and quantity
+    if (!validateAddressAndQuantity(startingAddress, quantity, m_numInputRegisters))
+    {
+        return -1;
+    }
+    // Create a buffer to hold the register values
+    uint16_t *payload = new uint16_t[quantity];
+    // Use memset to set all elements to zero
+    memset(payload, 0, quantity * sizeof(uint16_t));
+
+    for (size_t i = 0; i < quantity; ++i)
+    {
+        payload[i] = mapping->tab_input_registers[i]; //kind of get on the modbus registers
+    }
+    // Prepare the response header
+    prepareResponseHeader(transactionIdHigh, transcationIdLow, protocolIdHigh, protocolIdLow, functionCode, quantity, responseBuffer); 
+     // prepare the response payload
+    int responseIndex = fillResponsePayload(payload, quantity, responseBuffer, 9);    
+    //from here the payload is ready, the header is... well... not so ready yet, let's complete it
+    // Update the length field in the response header
+    uint8_t totalRemainingLengthHighByte; //let's prepare 2 x 8 bit regiters... because our length will be 16 bits 
+    uint8_t totalRemainingLengtLowByte;   //and we need to cut it off in high and low value
+    if (!calculateRemainingBytes(responseIndex, totalRemainingLengthHighByte, totalRemainingLengtLowByte))
+    {
+        std::cout << "Impossible to calculate remaining bytes of the response frame" << std::endl;
+        return 0;
+    }
+    else
+    {
+        responseBuffer[4] = totalRemainingLengthHighByte; // Length (High byte)
+        responseBuffer[5] = totalRemainingLengtLowByte;   // Length (Low byte)
+    }
+    // Free the resources
+    delete[] payload;
+    return responseIndex; // Return the total length of the response
+}
+
+
+// Function to read holding registers and prepare the response
+// Function to read holding registers and prepare the response
+int ModbusServer::readHoldingRegisters(
+    uint8_t transactionIdHigh, uint8_t transactionIdLow,
+    uint8_t protocolIdHigh, uint8_t protocolIdLow,
+    uint8_t functionCode, uint16_t startingAddress,
+    uint16_t quantity, uint8_t *responseBuffer, modbus_t *ctx)
+{
+    // Validate the starting address and quantity
+    if (!validateAddressAndQuantity(startingAddress, quantity, m_numRegisters))
+    {
+        return -1;
+    }
+
+    // Lock the mutex to ensure thread safety
+    std::lock_guard<std::mutex> lock(slavemutex);
+
+    // Create a buffer to hold the register values
+    uint16_t *payload = new uint16_t[quantity];
+    memset(payload, 0, quantity * sizeof(uint16_t)); // Initialize all elements to zero
+
+    // Populate the payload buffer with register values
+    for (size_t i = 0; i < quantity; ++i)
+    {
+        payload[i] = mapping->tab_registers[startingAddress + i];
+    }
+
+    // Prepare the response header
+    prepareResponseHeader(transactionIdHigh, transactionIdLow, protocolIdHigh, protocolIdLow, functionCode, quantity, responseBuffer);
+
+    // Byte count of the payload
+    responseBuffer[8] = quantity * 2; // Each register is 2 bytes
+
+    // Fill the response payload
+    int responseIndex = fillResponsePayload(payload, quantity, responseBuffer, 9);
+
+    // Update the length field in the response header
+    uint8_t totalRemainingLengthHighByte;
+    uint8_t totalRemainingLengthLowByte;
+    if (!calculateRemainingBytes(responseIndex, totalRemainingLengthHighByte, totalRemainingLengthLowByte))
+    {
+        std::cout << "Impossible to calculate remaining bytes of the response frame" << std::endl;
+        return 0;
+    }
+    else
+    {
+        responseBuffer[4] = totalRemainingLengthHighByte; // Length (High byte)
+        responseBuffer[5] = totalRemainingLengthLowByte;  // Length (Low byte)
+    }
+
+    // Free the resources
+    delete[] payload;
+
+    return responseIndex; // Return the total length of the response
+}
+
+
 // Function to handle incoming Modbus messages
 void ModbusServer::receiveMessages()
-{
-    
+{  
     std::lock_guard<std::mutex> lock(slavemutex);
     uint8_t query[MODBUS_TCP_MAX_ADU_LENGTH];  // Buffer to store incoming Modbus queries
-    int master_socket;  // Socket descriptor for the master socket
-    int rc;  // Return code for various operations
-    fd_set rdset;  // Working set of socket descriptors for select()
+    int master_socket;                         // Socket descriptor for the master socket
+    int rc;                                    // Return code for various operations
+    fd_set rdset;                              // Working set of socket descriptors for select()
     // Initialize the socket set for select()
     FD_ZERO(&refset);  // Clear all entries from the set to initialize it.
                        //This ensures that the set is empty before we add any sockets to it.
     FD_SET(m_modbusSocket, &refset);  // Add the server socket (m_modbusSocket) to the set. 
-                                       //This allows the select() function to monitor this socket for incoming connections or data.
-    fdmax = m_modbusSocket;  // Set the maximum file descriptor number to the server socket's descriptor.
-                             //This is used in the select() function to specify the range of file descriptors to be monitored.
+                                      //This allows the select() function to monitor this socket for incoming connections or data.
+    fdmax = m_modbusSocket;           // Set the maximum file descriptor number to the server socket's descriptor.
+                                      //This is used in the select() function to specify the range of file descriptors to be monitored.                                     
+    socklen_t addrlen;                // Declare a variable 'addrlen' of type 'socklen_t' to hold the size of the client address structure.  
+    struct sockaddr_in clientaddr;    // Declare a structure 'clientaddr' of type 'sockaddr_in' to store the client's address information.
     // Infinite loop to keep the server running
     while(true)
     {
+
         rdset = refset;
         // Use select() to wait for activity on any of the sockets
         if (select(fdmax + 1, &rdset, NULL, NULL, NULL) == -1)
@@ -347,12 +745,7 @@ void ModbusServer::receiveMessages()
             // Handle new client connections
             if (master_socket == m_modbusSocket)
             {
-
-                 // Declare a variable 'addrlen' of type 'socklen_t' to hold the size of the client address structure. 
-                socklen_t addrlen;
-                // Declare a structure 'clientaddr' of type 'sockaddr_in' to store the client's address information. 
-                struct sockaddr_in clientaddr;
-                // Declare an integer 'newfd' to hold the new socket file descriptor for the accepted client connection.  
+                // Declare an integer 'newfd' to hold the new socket file descriptor for the accepted client connection. 
                 int newfd;  
                 // Initialize 'addrlen' with the size of 'clientaddr'. This is required for the 'accept()' function. 
                 addrlen = sizeof(clientaddr);  
@@ -380,47 +773,129 @@ void ModbusServer::receiveMessages()
             else
             {
                 // Handle data from a client
-                modbus_set_socket(ctx, master_socket);
+                modbus_set_socket  (ctx, master_socket);
                 rc = modbus_receive(ctx, query);
                 
-                // Debugging: Log the entire Modbus query frame
-                // a modbusframe looks like 0 0 0 0 0 6 1 4 0 1 0 40 if osiris is asking
-                // each number (or number pair) is a field 
-                //[Transaction Identifier] [Protocol Identifier] [Length Field] [Unit Identifier] [Function Code] [Data]
-                //For example, consider the frame 0 0 0 0 0 6 1 4 0 1 0 40:
-                //Transaction Identifier: 0 0 (2 bytes)
-                //Protocol Identifier: 0 0 (2 bytes, always 0 for Modbus)
-                //Length Field: 0 6 (2 bytes, length of the remaining bytes)
-                //Unit Identifier: 1 (1 byte, usually 1 for Modbus TCP)
-                //Function Code: 4 (1 byte, Read Analog Input Registers)
-                //Data: 0 1 0 40 (Start address and quantity of registers to read)
                 if (rc > 0)
-                {
-                    std::cout << "Received Modbus query frame: ";
-                    for (int i = 0; i < rc; ++i)
+                {                    
+                    // Parse the received query
+                    uint8_t  functionCode;
+                    uint16_t startingAddress;
+                    uint16_t quantity;
+                    if (parseReceivedData(query, rc, functionCode, startingAddress, quantity))
                     {
-                        std::cout << std::hex << static_cast<int>(query[i]) << " ";
+                        // Handle the parsed data based on the function code
                     }
-                    std::cout << std::endl;
-                    //Human-readable breakdown of the Modbus query frame
-                    std::cout << "Human-readable breakdown:" << std::endl;
-                    std::cout << "  Transaction Identifier: " << std::hex << static_cast<int>(query[0]) << " " << static_cast<int>(query[1]) << std::endl;
-                    std::cout << "  Protocol Identifier: " << std::hex << static_cast<int>(query[2]) << " " << static_cast<int>(query[3]) << std::endl;
-                    std::cout << "  Length Field: " << std::hex << static_cast<int>(query[4]) << " " << static_cast<int>(query[5]) << std::endl;
-                    std::cout << "  Unit Identifier: " << std::hex << static_cast<int>(query[6]) << std::endl;
-                    std::cout << "  Function Code: " << std::hex << static_cast<int>(query[7]) << std::endl;
-                    std::cout << "  Data: ";
-                    for (int i = 8; i < rc; ++i)
+                    else
                     {
-                       std::cout << std::hex << static_cast<int>(query[i]) << " ";
+                        std::cerr << "Failed to parse Modbus query." << std::endl;
                     }
-                    std::cout << std::endl;
-                    
-                    // Reply to the Modbus query
-                    modbus_reply(ctx, query, rc, mapping);
+                    showTCPFrameForDebugPurpose(query,functionCode,startingAddress,quantity,rc);
+                    //From here we have the absolute minimum datas to understand the client request
+                    //we need then to generate an answer
+                    // Perform action based on function code
+                    uint8_t responseBuffer[256];
+                    int    responseLength = 0;
+                    switch (functionCode) 
+                    {
+
+                        case 0x03: // Read Holding Registers
+                        {
+                            // Call the function to read holding registers and store the response length
+                            int responseLength = readHoldingRegisters(
+                                                                        query[0], //high value of transcation ID   1 byte |
+                                                                        query[1], //low value of transaction ID    1 byte |___> total 2 bytes (unint16_t type can do the job) 
+                                                                        
+                                                                        query[2], //high value of the protocol ID  1 byte |
+                                                                        query[3], //low value of the protcol ID    1 byte |__> total 2 bytes 
+                                                                        query[7], //function code 1 byte
+        
+                                                                        startingAddress, //2 bytes (uint16_t)
+                                                                        
+                                                                        quantity,        //2 bytes (uint16_t) 
+                                                                        responseBuffer,  //this buffer will be filled with values 
+                                                                        ctx);    
+                            // Check if the read operation was successful
+                            if (responseLength > 0)
+                            {
+                                // Use the custom SendData function to send the response back to the client
+                                ssize_t bytes_sent = sendData(master_socket, responseBuffer, responseLength, clientaddr);
+                                // Check if the send operation was successful
+                                if (bytes_sent == -1)
+                                {
+                                    std::cerr << "Failed to send Modbus response using SendData." << std::endl;
+                                }
+                            }
+                            else
+                            {
+                                std::cerr << "Failed to read holding registers." << std::endl;
+                            }
+                            break;
+                        }
+
+                        case 0x04: //read Input registers
+                        {
+                            std::cout<<std::endl;
+                            std::cout<<"*************************************"<<std::endl;
+                            std::cout<<"* Preparing response for the client *"<<std::endl;
+                            std::cout<<"*************************************"<<std::endl;
+                            std::cout<<std::endl;
+                            //the next fuction is the core of the response generation, it will recreate an header and a payload
+                            //inside a buffer ready to be sended back on the socket
+                            responseLength = readInputRegisters(
+                                                                query[0], //high value of transcation ID   1 byte |
+                                                                query[1], //low value of transaction ID    1 byte |___> total 2 bytes (unint16_t type can do the job) 
+                                                                
+                                                                query[2], //high value of the protocol ID  1 byte |
+                                                                query[3], //low value of the protcol ID    1 byte |__> total 2 bytes 
+                                                                query[7], //function code 1 byte
+
+                                                                startingAddress, //2 bytes (uint16_t)
+                                                                
+                                                                quantity,        //2 bytes (uint16_t) 
+                                                                responseBuffer,  //this buffer will be filled with values 
+                                                                ctx
+                                                               );
+                            std::cout<<"   response length: "<<std::to_string(responseLength)<<std::endl;
+                            if (responseLength > 0)
+                            {
+                                std::cout<<"ready to send data response buffer:"<<std::endl;
+                                for (int i=0;i<responseLength;++i)
+                                {
+                                    std::cout<<"0x"<< static_cast<int>(responseBuffer[i]) << " ";
+
+                                }
+                                std::cout<<std::endl;  
+                                ssize_t bytes_sent = sendData(master_socket, responseBuffer, responseLength, clientaddr);
+                                if (bytes_sent == -1)
+                                {
+                                    std::cerr << "Failed to send Modbus response using SendData." << std::endl;
+                                }
+                            }
+                            else
+                            {
+                                std::cerr << "Failed to read input registers." << std::endl;
+                            }
+                            break;
+                           //TODO
+                           break;
+                        }
+
+
+                        case 0x06: // Write Single Register
+                        {
+                           // responseLength = writeSingleRegister(startingAddress, quantity, responseBuffer);
+                            break;
+                        }
+                        // Add more cases for other function codes
+                        default:
+                        {
+                            // Handle unknown function code
+                            break;
+                        }
+                    }
+
                 }
-
-
                 else if (rc == -1)
                 {
                     printf("Connection closed on socket %d\n", master_socket);
@@ -436,4 +911,20 @@ void ModbusServer::receiveMessages()
     }
     // Set the initialized flag to false if the loop breaks
     m_initialized = false;
+}
+
+ssize_t ModbusServer::sendData(int socket_fd, const uint8_t *data, size_t length, const sockaddr_in &clientaddr)
+{
+  // Lock the mutex to ensure thread safety
+ // std::lock_guard<std::mutex> lock(slavemutex);
+
+  // Use the sendto() system call to send data
+  ssize_t bytes_sent = sendto(socket_fd, data, length, 0, (struct sockaddr *)&clientaddr, sizeof(clientaddr));
+
+  // Check for errors
+  if (bytes_sent == -1) {
+      perror("SendData failed");
+      return -1;
+  }
+  return bytes_sent; 
 }

@@ -55,7 +55,8 @@ void createNecessaryInstances()
     str = drawCell(30,"digital writer created");
   std::cout<<str<<std::endl;
   //Object that handle the modbus server
-  modbusServer  = std::make_shared<ModbusServer>("0.0.0.0",503);
+  modbusServer  = std::make_shared<ModbusServer>("0.0.0.0",502);
+  modbusServer->modbus_set_slave_id(1);
   str = drawCell(30,"modbus server created");
   std::cout<<str<<std::endl;
   //Object in charge of routing crio datas to modbus

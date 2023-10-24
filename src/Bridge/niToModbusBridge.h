@@ -47,12 +47,12 @@ public:
     void stopModbusSimulation();
     void startAcquisition();
     void stopAcquisition();
-    std::vector<u_int16_t> getLatestSimulatedData(); 
+    std::vector<uint16_t> getLatestSimulatedData(); 
 
 private:
     unsigned long long m_simulationCounter=0;
-    ThreadSafeCircularBuffer<std::vector<u_int16_t>>     m_simulationBuffer;
-    ThreadSafeCircularBuffer<std::vector<u_int16_t>>     m_realDataBuffer;         
+    ThreadSafeCircularBuffer<std::vector<uint16_t>>     m_simulationBuffer;
+    ThreadSafeCircularBuffer<std::vector<uint16_t>>     m_realDataBuffer;         
     std::shared_ptr<SimpleTimer>                         m_simulateTimer;
     std::shared_ptr<SimpleTimer>                         m_dataAcquTimer;
     std::shared_ptr<AnalogicReader>                      m_analogicReader;
@@ -62,7 +62,7 @@ private:
     std::shared_ptr<KeyboardPoller>                      m_keyboardPoller;
     std::vector<MappingData>                             m_mappingData;
 
-    u_int16_t linearInterpolation16Bits(double value, double minSource, double maxSource, u_int16_t minDestination, u_int16_t maxDestination);
+    uint16_t linearInterpolation16Bits(double value, double minSource, double maxSource, uint16_t minDestination, uint16_t maxDestination);
 
     void onKeyboardHit(char key);
     void onSimulationTimerTimeOut();

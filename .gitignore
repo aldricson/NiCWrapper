@@ -6,4 +6,4 @@ build/*
 build/.ninja_deps
 build/.ninja_deps
 build/.ninja_log
-build/bin/daqMxTest
+build/bin/

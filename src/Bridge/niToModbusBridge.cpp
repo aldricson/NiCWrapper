@@ -166,7 +166,7 @@ void NItoModbusBridge::onSimulationTimerTimeOut()
     std::vector<uint16_t> analogChannelsResult;
     simulateAnalogicInputs(analogChannelsResult);
     simulateCounters(analogChannelsResult);
-
+    simulateCoders(analogChannelsResult);
     //simulateCounters(analogChannelsResult);
     // Push the new simulated data into the buffer
     m_simulationBuffer.clear();
@@ -186,7 +186,7 @@ void NItoModbusBridge::simulateAnalogicInputs(std::vector<uint16_t> &analogChann
     constexpr double amplitude   = 50.0;                           // Amplitude of the sine wave
     constexpr double offset      = 50.0;                           // DC offset to shift the sine wave
     constexpr double omega       = 2.0 * M_PI / 1000.0;            // Frequency component for sine wave
-    int              numChannels = m_modbusServer->nbSRUAnalogs(); // Number of channels to simulate
+    int              numChannels = m_modbusServer->nbSRUAnalogsIn(); // Number of channels to simulate
     
 
     // Calculate the sine value for the current simulation counter
@@ -205,15 +205,28 @@ void NItoModbusBridge::simulateAnalogicInputs(std::vector<uint16_t> &analogChann
         analogChannelsResult.push_back(mappedValue);
     }
 }
+
+
 void NItoModbusBridge::simulateCounters(std::vector<uint16_t> &analogChannelsResult)
-{
-    
+{   
     for (int i = 0; i<m_modbusServer->nbSRUCounters();++i)
     {
         analogChannelsResult.push_back(32768); //first 16 bits are for frequency (spm) 0=0 ----> 65535=3000 for SRU
         m_simulatedCounterValue ++;
         uint16_t highValue = static_cast<uint16_t>((m_simulatedCounterValue >> 16) & 0xFFFF); // High 16 bits
         uint16_t lowValue = static_cast<uint16_t>  (m_simulatedCounterValue & 0xFFFF);        // Low 16 bits
+        analogChannelsResult.push_back(highValue);    //16 bits for high (int 32)  
+        analogChannelsResult.push_back(lowValue);    //16 bits for low (int 32)  
+    }
+}
+
+void NItoModbusBridge::simulateCoders(std::vector<uint16_t> &analogChannelsResult)
+{   
+    for (int i = 0; i<m_modbusServer->nbSRUCoders();++i)
+    {
+        if (m_simulationCounter%4 == 0) m_simulatedCodersValue++;
+        uint16_t highValue = static_cast<uint16_t>((m_simulatedCodersValue >> 16) & 0xFFFF); // High 16 bits
+        uint16_t lowValue = static_cast<uint16_t>  (m_simulatedCodersValue & 0xFFFF);        // Low 16 bits       
         analogChannelsResult.push_back(highValue);    //16 bits for high (int 32)  
         analogChannelsResult.push_back(lowValue);    //16 bits for low (int 32)  
     }

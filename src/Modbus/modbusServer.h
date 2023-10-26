@@ -145,10 +145,12 @@ typedef struct _modbus_mapping_t
     int m_numRegisters     { 60000 };
     int m_numInputRegisters{ 60000 };
 
-    bool m_modeSRU      = true; 
-    int  m_nbSRUAnalogs = 64;
+    bool m_modeSRU         = true; 
+    int  m_nbSRUAnalogsIn  = 64;
+    int  m_nbSRUAnalogsOut = 0;
+    int  m_nbSRUCounters   = 12;
+    int  m_nbSRUCoders     = 3;
 
-    int m_nbSRUCounters = 8;
 
 public:
     bool loadConfig();
@@ -156,9 +158,10 @@ public:
     void stop();
     bool isModbusActive();
 
-    int  nbSRUAnalogs();
-    int  nbSRUCounters();
-    bool modeSRU();
+    int  nbSRUAnalogsIn();
+    int  nbSRUCounters ();
+    int  nbSRUCoders   ();
+    bool modeSRU       ();
 
 };
 

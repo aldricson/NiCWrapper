@@ -68,6 +68,7 @@ private:
     void onSimulationTimerTimeOut ();
     void simulateAnalogicInputs   (std::vector<uint16_t> &analogChannelsResult);
     void simulateCounters         (std::vector<uint16_t> &analogChannelsResult);
+    void simulateCoders           (std::vector<uint16_t> &analogChannelsResult);
     
     void onDataAcquisitionTimerTimeOut();
     void showAnalogGridOnScreen(bool isSimulated);
@@ -78,7 +79,8 @@ private:
     std::function<void()> onDigitalWriterChanged;
     std::function<void()> newSimulationBufferReadySignal;
 
-    uint32_t m_simulatedCounterValue=0;
+    uint32_t m_simulatedCounterValue = 0;
+    uint32_t m_simulatedCodersValue  = 0;
 };
 
 #endif // NITOMODBUSBRIDGE_H

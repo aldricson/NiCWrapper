@@ -148,14 +148,19 @@ bool ModbusServer::isModbusActive()
     return isActive;
 }
 
-int ModbusServer::nbSRUAnalogs()
+int ModbusServer::nbSRUAnalogsIn()
 {
-    return m_nbSRUAnalogs;
+    return m_nbSRUAnalogsIn;
 }
 
 int ModbusServer::nbSRUCounters()
 {
     return m_nbSRUCounters;
+}
+
+int ModbusServer::nbSRUCoders()
+{
+    return m_nbSRUCoders;
 }
 
 bool ModbusServer::modeSRU()

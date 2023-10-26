@@ -64,8 +64,11 @@ private:
 
     uint16_t linearInterpolation16Bits(double value, double minSource, double maxSource, uint16_t minDestination, uint16_t maxDestination);
 
-    void onKeyboardHit(char key);
-    void onSimulationTimerTimeOut();
+    void onKeyboardHit            (char key);
+    void onSimulationTimerTimeOut ();
+    void simulateAnalogicInputs   (std::vector<uint16_t> &analogChannelsResult);
+    void simulateCounters         (std::vector<uint16_t> &analogChannelsResult);
+    
     void onDataAcquisitionTimerTimeOut();
     void showAnalogGridOnScreen(bool isSimulated);
 
@@ -74,6 +77,8 @@ private:
     std::function<void()> onDigitalReaderChanged;
     std::function<void()> onDigitalWriterChanged;
     std::function<void()> newSimulationBufferReadySignal;
+
+    std::vector<uint32_t> m_simulatedCounterValues;
 };
 
 #endif // NITOMODBUSBRIDGE_H

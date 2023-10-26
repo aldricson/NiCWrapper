@@ -68,10 +68,6 @@ ModbusServer::~ModbusServer()
     modbus_free(ctx);
 }
 
-void ModbusServer::loadFromConfigFile()
-{
-    return;
-}
 
 // Run the Modbus server in a separate thread to continuously receive messages
 void ModbusServer::run()
@@ -152,6 +148,20 @@ bool ModbusServer::isModbusActive()
     return isActive;
 }
 
+int ModbusServer::nbSRUAnalogs()
+{
+    return m_nbSRUAnalogs;
+}
+
+int ModbusServer::nbSRUCounters()
+{
+    return m_nbSRUCounters;
+}
+
+bool ModbusServer::modeSRU()
+{
+    return m_modeSRU;
+}
 
 // Set the Modbus slave ID for the server
 bool ModbusServer::modbus_set_slave_id(int id)
@@ -181,6 +191,27 @@ bool ModbusServer::modbus_set_slave_id(int id)
     return true;
 }
 
+// Set a floating-point value in the Modbus server's input register
+bool ModbusServer::setInputRegisterValue(int registerStartaddress, float Value)
+{
+    // Check if the register address is within the valid range
+    // Note: We check for (m_numRegisters - 2) because a float takes two registers
+    if (registerStartaddress > (m_numRegisters - 2))
+    {
+        return false;
+    }
+    // Lock the mutex to ensure thread safety
+    slavemutex.lock();
+    // Use libmodbus function to set the float value in the input register
+    // This function handles the conversion to Modbus format
+    modbus_set_float(Value, &mapping->tab_input_registers[registerStartaddress]);
+    
+    // Unlock the mutex
+    slavemutex.unlock();
+    
+    return true;
+}
+
 // Set a 16-bit value in the Modbus server's input register
 bool ModbusServer::setInputRegisterValue(int registerNumber, uint16_t Value)
 {
@@ -189,14 +220,36 @@ bool ModbusServer::setInputRegisterValue(int registerNumber, uint16_t Value)
     {
         return false;
     }
-    // Lock the mutex to ensure thread safety
- //   slavemutex.lock();
     // Set the value in the input register
     mapping->tab_input_registers[registerNumber] = Value;
-    // Unlock the mutex
-//    slavemutex.unlock();
+
     return true;
 }
+
+
+
+// Set a 32-bit value in the Modbus server's input register (for example for counters)
+bool ModbusServer::setInputRegisterValue(int registerNumber, uint32_t value)
+{
+    // Check if the register address and the next one are within the valid range
+    if (registerNumber > (m_numRegisters - 2))
+    {
+        return false;
+    }
+
+    // Split the 32-bit value into two 16-bit values
+    uint16_t highValue = static_cast<uint16_t>((value >> 16) & 0xFFFF); // High 16 bits
+    uint16_t lowValue = static_cast<uint16_t>(value & 0xFFFF);         // Low 16 bits
+
+    // Set the high 16 bits in the first input register
+    mapping->tab_input_registers[registerNumber] = highValue;
+
+    // Set the low 16 bits in the next input register
+    mapping->tab_input_registers[registerNumber + 1] = lowValue;
+
+    return true;
+}
+
 
 // Initialize the Modbus server's holding register with a 16-bit unsigned integer value
 bool ModbusServer::setHoldingRegisterValue(int registerNumber, uint16_t Value)
@@ -273,37 +326,16 @@ bool ModbusServer::setHoldingRegisterValue(int registerStartaddress, float Value
     return true;
 }
 
-// Set a floating-point value in the Modbus server's input register
-bool ModbusServer::setInputRegisterValue(int registerStartaddress, float Value)
-{
-    // Check if the register address is within the valid range
-    // Note: We check for (m_numRegisters - 2) because a float takes two registers
-    if (registerStartaddress > (m_numRegisters - 2))
-    {
-        return false;
-    }
-    // Lock the mutex to ensure thread safety
-    slavemutex.lock();
-    // Use libmodbus function to set the float value in the input register
-    // This function handles the conversion to Modbus format
-    modbus_set_float(Value, &mapping->tab_input_registers[registerStartaddress]);
-    
-    // Unlock the mutex
-    slavemutex.unlock();
-    
-    return true;
-}
+
 
 void ModbusServer::updateSimulatedModbusAnalogRegisters(NItoModbusBridge *bridge)
 {
     std::vector<uint16_t> latestData = bridge->getLatestSimulatedData();
-    if (latestData.size() != 64) 
-    { // Safety check
-        return;
-    }
-    for (int i = 0; i < 64; ++i) 
+    std::size_t i = 0;
+    for (const auto& data : latestData) 
     {
-        setInputRegisterValue(i, latestData[i]);
+        setInputRegisterValue(i, data);
+        ++i;
     }
 }
 
@@ -794,7 +826,7 @@ void ModbusServer::receiveMessages()
                     //From here we have the absolute minimum datas to understand the client request
                     //we need then to generate an answer
                     // Perform action based on function code
-                    uint8_t responseBuffer[256];
+                    uint8_t responseBuffer[4096];
                     int    responseLength = 0;
                     switch (functionCode) 
                     {
@@ -927,4 +959,10 @@ ssize_t ModbusServer::sendData(int socket_fd, const uint8_t *data, size_t length
       return -1;
   }
   return bytes_sent; 
+}
+
+
+bool ModbusServer::loadConfig()
+{
+    return false;
 }

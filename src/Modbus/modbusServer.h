@@ -99,6 +99,7 @@ public:
     bool setHoldingRegisterValue(int registerNumber, float Value);
 
     bool setInputRegisterValue(int registerNumber, uint16_t Value);
+    bool setInputRegisterValue(int registerNumber, uint32_t value);
     bool setInputRegisterValue(int registerNumber, float Value);
 
     // This function will be set as the slot function for newSimulationBufferReadySignal //nb for compatibility reasons, we have 64 channels
@@ -144,11 +145,20 @@ typedef struct _modbus_mapping_t
     int m_numRegisters     { 60000 };
     int m_numInputRegisters{ 60000 };
 
+    bool m_modeSRU      = true; 
+    int  m_nbSRUAnalogs = 64;
+
+    int m_nbSRUCounters = 8;
+
 public:
-    void loadFromConfigFile();
+    bool loadConfig();
     void run();
     void stop();
     bool isModbusActive();
+
+    int  nbSRUAnalogs();
+    int  nbSRUCounters();
+    bool modeSRU();
 
 };
 

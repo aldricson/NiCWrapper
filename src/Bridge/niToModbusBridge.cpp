@@ -165,7 +165,12 @@ void NItoModbusBridge::onSimulationTimerTimeOut()
     // Vector to hold simulated data for each channel
     std::vector<uint16_t> analogChannelsResult;
     simulateAnalogicInputs(analogChannelsResult);
-    simulateCounters(analogChannelsResult);
+    analogChannelsResult.push_back(32768); //first 16 bits are for frequency
+    
+    analogChannelsResult.push_back(0);     //second 16 bits for high (int 32)
+    analogChannelsResult.push_back(50);    //third 16 bits for low (int 32)  
+
+    //simulateCounters(analogChannelsResult);
     // Push the new simulated data into the buffer
     m_simulationBuffer.clear();
     m_simulationBuffer.push_back(analogChannelsResult);     

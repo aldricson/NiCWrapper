@@ -78,7 +78,7 @@ private:
     std::function<void()> onDigitalWriterChanged;
     std::function<void()> newSimulationBufferReadySignal;
 
-    std::vector<uint32_t> m_simulatedCounterValues;
+    uint32_t m_simulatedCounterValue=0;
 };
 
 #endif // NITOMODBUSBRIDGE_H

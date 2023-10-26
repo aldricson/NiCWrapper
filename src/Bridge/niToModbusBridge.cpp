@@ -165,10 +165,7 @@ void NItoModbusBridge::onSimulationTimerTimeOut()
     // Vector to hold simulated data for each channel
     std::vector<uint16_t> analogChannelsResult;
     simulateAnalogicInputs(analogChannelsResult);
-    analogChannelsResult.push_back(32768); //first 16 bits are for frequency
-    
-    analogChannelsResult.push_back(0);     //second 16 bits for high (int 32)
-    analogChannelsResult.push_back(50);    //third 16 bits for low (int 32)  
+    simulateCounters(analogChannelsResult);
 
     //simulateCounters(analogChannelsResult);
     // Push the new simulated data into the buffer
@@ -210,65 +207,16 @@ void NItoModbusBridge::simulateAnalogicInputs(std::vector<uint16_t> &analogChann
 }
 void NItoModbusBridge::simulateCounters(std::vector<uint16_t> &analogChannelsResult)
 {
-    if (m_simulatedCounterValues.size() < static_cast<std::size_t>(m_modbusServer->nbSRUCounters()))
-    {
-        m_simulatedCounterValues.reserve(m_modbusServer->nbSRUCounters()*2); //allocate twice the size we need ... why... well it's a scientific "large enough" approach
-    }
-    if (m_simulatedCounterValues.back() >= 4000000000) m_simulatedCounterValues[0] = 0; // Wrap around at a huge value (we do not care it's simulation)
-    int startSlot = m_modbusServer->nbSRUAnalogs();
-    startSlot++; //the first counter slot is just behind the last analog slot
-    for (int i = 0; i < m_modbusServer->nbSRUCounters(); ++i)
-    {
-        m_simulatedCounterValues[i]++  ;   
-        m_simulatedCounterValues[i]+=i ; //offset it to have different values on counters
-        uint16_t highValue = static_cast<uint16_t>((m_simulatedCounterValues[i] >> 16) & 0xFFFF); // High 16 bits
-        uint16_t lowValue = static_cast<uint16_t>  (m_simulatedCounterValues[i] & 0xFFFF);        // Low 16 bits
-        //let's say spm is 1500 + counter index for the simulation
-        uint16_t spm = 1500+i;
-        analogChannelsResult[startSlot]      = lowValue;   //register 1 65
-        analogChannelsResult[startSlot+1]    = highValue;  //register 2 66
-        analogChannelsResult[startSlot+2]    = spm;        //register 3 67
-        startSlot = startSlot + 3;                         //65 + 3 = 68 ----> next counter  
-    }
     
-
-
-    /*if (static_cast<int>(m_simulatedCounterValues.size()) < m_modbusServer->nbSRUCounters())
+    for (int i = 0; i<m_modbusServer->nbSRUCounters();++i)
     {
-        m_simulatedCounterValues.resize(m_modbusServer->nbSRUCounters());
+        analogChannelsResult.push_back(32768); //first 16 bits are for frequency (spm) 0=0 ----> 65535=3000 for SRU
+        m_simulatedCounterValue ++;
+        uint16_t highValue = static_cast<uint16_t>((m_simulatedCounterValue >> 16) & 0xFFFF); // High 16 bits
+        uint16_t lowValue = static_cast<uint16_t>  (m_simulatedCounterValue & 0xFFFF);        // Low 16 bits
+        analogChannelsResult.push_back(highValue);    //16 bits for high (int 32)  
+        analogChannelsResult.push_back(lowValue);    //16 bits for low (int 32)  
     }
-    
-  
-    m_simulatedCounterValues[0] = 2882400170; //++;
-    for (int i = 1; i < m_modbusServer->nbSRUCounters(); ++i)
-    {
-        m_simulatedCounterValues[i] = 2882400170; //m_simulatedCounterValues[i - 1] + 1;
-    }
-    // Iterate through m_simulatedCounterValues and split each 32-bit value into two 16-bit values
-    //Remove last element from vector to be aligned
-    for (const auto& value : m_simulatedCounterValues)
-    {
-        uint32_t bigEndianValue = ((value & 0xFF000000) >> 24) |
-                                  ((value & 0x00FF0000) >> 8)  |
-                                  ((value & 0x0000FF00) << 8)  |
-                                  ((value & 0x000000FF) << 24);
-        
-        // Split the 32-bit value into high and low 16-bit values
-        uint16_t highValue = static_cast<uint16_t>((bigEndianValue >> 16) & 0xFFFF); // High 16 bits
-        uint16_t lowValue = static_cast<uint16_t>(bigEndianValue & 0xFFFF);         // Low 16 bits
-        if (m_modbusServer->modeSRU()) 
-        // Push the high and low 16-bit values into the channel vector
-        
-       analogChannelsResult.push_back(0xFFFF);   
-       analogChannelsResult.push_back(0xFFFF);
-       analogChannelsResult.push_back(0xFFFF);
-       analogChannelsResult.push_back(0xFFFF);
-       analogChannelsResult.push_back(0xFFFF);
-       analogChannelsResult.push_back(0xFFFF);
-       
-    }
-
-    // Now, registersVector is filled with the 16-bit high and low values of each 32-bit value in m_simulatedCounterValues*/
 }
 
 

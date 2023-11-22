@@ -78,22 +78,30 @@ void NItoModbusBridge::setDigitalWriter(std::shared_ptr<DigitalWriter> digitalWr
 
 void NItoModbusBridge::loadMapping() {
     std::ifstream file("mapping.csv");
+    if (!file.is_open()) {
+        std::cerr << "Failed to open mapping.csv file" << std::endl;
+        return;
+    }
+
     std::string line;
-    while (std::getline(file, line)) {
+    getline(file, line); // Skip the header line
+
+    while (getline(file, line)) {
         std::istringstream iss(line);
+        MappingConfig config;
         std::string token;
-        MappingData data;
-        std::getline(iss, token, ';'); data.index = std::stoi(token);
-        std::getline(iss, token, ';'); data.moduleIo = static_cast<ModuleIo>(std::stoi(token));
-        std::getline(iss, token, ';'); data.moduleType = static_cast<ModuleType>(std::stoi(token));
-        std::getline(iss, token, ';'); data.moduleSource = token;
-        std::getline(iss, token, ';'); data.channelSource = token;
-        std::getline(iss, token, ';'); data.minSource = std::stof(token);
-        std::getline(iss, token, ';'); data.maxSource = std::stof(token);
-        std::getline(iss, token, ';'); data.minDestination = std::stoi(token);
-        std::getline(iss, token, ';'); data.maxDestination = std::stoi(token);
-        std::getline(iss, token, ';'); data.destinationModbusChannel = std::stoi(token);
-        m_mappingData.push_back(data);
+
+        getline(iss, token, ';'); config.index = std::stoi(token);
+        getline(iss, token, ';'); config.moduleType = static_cast<ModuleType>(std::stoi(token));
+        getline(iss, token, ';'); config.module = token;
+        getline(iss, token, ';'); config.channel = token;
+        getline(iss, token, ';'); config.minSource = std::stof(token);
+        getline(iss, token, ';'); config.maxSource = std::stof(token);
+        getline(iss, token, ';'); config.minDest = static_cast<uint16_t>(std::stoi(token));
+        getline(iss, token, ';'); config.maxDest = static_cast<uint16_t>(std::stoi(token));
+        getline(iss, token, ';'); config.modbusChannel = std::stoi(token);
+
+        m_mappingData.push_back(config);
     }
 }
 
@@ -232,6 +240,56 @@ void NItoModbusBridge::simulateCoders(std::vector<uint16_t> &analogChannelsResul
     }
 }
 
+
+uint16_t NItoModbusBridge::acquireData(const MappingConfig& config) {
+    double readValue = 0.0;
+
+    // Select the appropriate reader based on the module type
+    std::shared_ptr<BaseReader> reader;
+    switch (config.moduleType) {
+        case ModuleType::ANALOG:
+            reader = m_analogicReader;
+            break;
+        case ModuleType::DIGITAL:
+            reader = m_digitalReader;
+            break;
+        // Handle other types (COUNTER, CODER) here or use a default case
+        default:
+            // Handle unexpected module types or throw an exception
+            break;
+    }
+
+    if (reader) {
+        reader->selectModuleAndChannel(config.module, config.channel);
+        reader->manualReadOneShot(readValue);
+    }
+
+    return linearInterpolation16Bits(readValue, config.minSource, config.maxSource, config.minDest, config.maxDest);
+}
+
+
+void NItoModbusBridge::updateModbusRegisters() 
+{
+    for (const auto& config : m_mappingData) 
+    {
+        switch (config.moduleType) 
+        {
+            case ModuleType::ANALOG: 
+            {
+                uint16_t mappedValue = acquireData(config);
+                m_modbusServer->setInputRegisterValue(config.modbusChannel, mappedValue);
+                break;
+            }
+            case ModuleType::DIGITAL:
+                // Implementation for digital modules
+                break;
+            // Handle other types (COUNTER, CODER) similarly
+            default:
+                // Handle unexpected module types or throw an exception
+                break;
+        }
+    }
+}
 
 
 void NItoModbusBridge::onDataAcquisitionTimerTimeOut()

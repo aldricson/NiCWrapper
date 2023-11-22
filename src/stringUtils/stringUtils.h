@@ -191,6 +191,25 @@ static inline std::string concatenateRow(const std::vector<std::string>& row) {
     return result;
 }
 
+
+static inline unsigned int strToUnsignedInt(const std::string& str, bool& ok) {
+    try {
+        unsigned long ul = std::stoul(str);
+        if (ul <= std::numeric_limits<unsigned int>::max()) {
+            ok = true;  // Conversion successful
+            return static_cast<unsigned int>(ul);
+        } else {
+            ok = false; // Value is too large for unsigned int
+            return 0;   // Return a default value or handle the error as needed
+        }
+    } catch (const std::exception& e) {
+        ok = false; // Exception occurred during conversion
+        return 0;   // Return a default value or handle the error as needed
+    }
+}
+
+
+
 static inline void showBanner()
 {
     std::cout <<"          `^^^^^^^`              ______ _       _"<< std::endl;

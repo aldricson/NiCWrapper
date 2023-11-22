@@ -131,6 +131,18 @@ void BaseReader::displayShowValueMenu()
     }
 }
 
+void BaseReader::selectModuleAndChannel(const std::string &moduleName, const std::string &channelName)
+{
+    // Copy moduleName into m_manuallySelectedModuleName, ensuring no buffer overflow
+    std::strncpy(m_manuallySelectedModuleName, moduleName.c_str(), sizeof(m_manuallySelectedModuleName) - 1);
+    m_manuallySelectedModuleName[sizeof(m_manuallySelectedModuleName) - 1] = '\0';  // Null-terminate
+
+    // Copy channelName into m_manuallySelectedChanName, ensuring no buffer overflow
+    std::strncpy(m_manuallySelectedChanName, channelName.c_str(), sizeof(m_manuallySelectedChanName) - 1);
+    m_manuallySelectedChanName[sizeof(m_manuallySelectedChanName) - 1] = '\0';  // Null-terminate
+}
+
+
 //--------- public slots ----------
 
 void BaseReader::onPollingTimerTimeOut()
@@ -252,7 +264,8 @@ std::shared_ptr<QNiDaqWrapper> BaseReader::getDaqMx() const
 void BaseReader::setSysConfig(const std::shared_ptr<QNiSysConfigWrapper> &newSysConfig)
 {
     m_sysConfig = newSysConfig;
-    if (sysConfigChangedSignal) {
+    if (sysConfigChangedSignal) 
+    {
         sysConfigChangedSignal(m_sysConfig, this);
     }
 }
@@ -260,7 +273,8 @@ void BaseReader::setSysConfig(const std::shared_ptr<QNiSysConfigWrapper> &newSys
 void BaseReader::setDaqMx(const std::shared_ptr<QNiDaqWrapper> &newDaqMx)
 {
     m_daqMx = newDaqMx;
-    if (daqMxChangedSignal) {
+    if (daqMxChangedSignal) 
+    {
         daqMxChangedSignal(m_daqMx, this);
     }
 }

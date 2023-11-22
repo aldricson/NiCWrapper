@@ -40,6 +40,7 @@ C:/Users/aldric/Desktop/dataDril20.0/build/../src/NiWrappers/QNiDaqWrapper.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/NiWrappers/QNiSysConfigWrapper.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/Signals/KeyboardPoller.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/Signals/QSignalTest.h
+C:/Users/aldric/Desktop/dataDril20.0/build/../src/TCP Command server/CrioTCPServer.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/channelReaders/analogicReader.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/channelReaders/baseReader.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/channelReaders/digitalReader.h
@@ -60,6 +61,7 @@ C:/Users/aldric/Desktop/dataDril20.0/build/../src/startUpManager.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/stringUtils/mappingGrid.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/stringUtils/stringGrid.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/stringUtils/stringUtils.h
+C:/Users/aldric/Desktop/dataDril20.0/build/../src/systemPatches/stdOptionalReplacement.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/testFunctions.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/timers/simpleTimer.h
 List of Source Files:
@@ -82,6 +84,7 @@ C:/Users/aldric/Desktop/dataDril20.0/build/../src/NiModulesDefinitions/NIDeviceM
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/NiWrappers/QNiDaqWrapper.cpp
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/NiWrappers/QNiSysConfigWrapper.cpp
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/Signals/KeyboardPoller.cpp
+C:/Users/aldric/Desktop/dataDril20.0/build/../src/TCP Command server/CrioTCPServer.cpp
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/channelReaders/analogicReader.cpp
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/channelReaders/baseReader.cpp
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/channelReaders/digitalReader.cpp
@@ -113,7 +116,7 @@ C:/Users/aldric/Desktop/dataDril20.0/build/../src/Modbus/libmodbus/modbus-tcp-pr
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/Modbus/libmodbus/modbus-tcp.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/Modbus/libmodbus/modbus-version.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/Modbus/libmodbus/modbus.h
-List of libmodbus Source Files:
+
 linux librairies selected: C:/Program Files (x86)/National Instruments/Shared/ExternalCompilerSupport/C/lib64/gcc
 
 List of daqmx linux libraries:
@@ -126,5 +129,4 @@ C:/Program Files (x86)/National Instruments/Shared/ExternalCompilerSupport/C/inc
 C:/Program Files (x86)/National Instruments/Shared/ExternalCompilerSupport/C/include/nisyscfg_wide.h
 all files has been added to linux elf executable 
 Nidaqmx, NiSysConfig, libmodbus headers directories are now added to the project
-daqmx, libmodbus and linux threading libraries are now linked to the project
-linux thrading libraries are now linked to the project
+daqmx, libmodbus, FTXUI, and linux threading libraries are now linked to the project

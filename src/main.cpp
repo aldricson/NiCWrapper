@@ -15,6 +15,7 @@
 #include "./Signals/QSignalTest.h"
 #include "./Menus/mainMenu.h"
 #include "./stringUtils/stringUtils.h"
+#include "./TCP Command server/CrioTCPServer.h"
 
 
 #include "testFunctions.h"
@@ -30,6 +31,7 @@ std::shared_ptr<DigitalReader>       digitalReader;
 std::shared_ptr<DigitalWriter>       digitalWriter;
 std::shared_ptr<ModbusServer>        modbusServer;
 std::shared_ptr<NItoModbusBridge>    m_crioToModbusBridge;
+std::shared_ptr<CrioTCPServer>       m_crioTCPServer;
 
 void createNecessaryInstances()
 {
@@ -61,7 +63,11 @@ void createNecessaryInstances()
   std::cout<<str<<std::endl;
   //Object in charge of routing crio datas to modbus
   m_crioToModbusBridge = std::make_shared<NItoModbusBridge>(analogReader,digitalReader,digitalWriter,modbusServer);
-    str = drawCell(30,"modbus bridge created");
+  str = drawCell(30,"modbus bridge created");
+  std::cout<<str<<std::endl;
+  //object in charge of all non ssh commands
+  m_crioTCPServer = std::make_shared<CrioTCPServer>(8222,sysConfig,daqMx,analogReader,digitalReader, digitalWriter, m_crioToModbusBridge);
+  str = drawCell(30,"TCP server created");
   std::cout<<str<<std::endl;
 }
 
@@ -105,7 +111,10 @@ int main(void)
      std::cout << "║ "<< str    << std::endl;
      std::cout << "╚═══════════════════════════════════════╝"<< std::endl;
    }
-    //boot strap sinished 
+    //boot strap finished
+    m_crioTCPServer->startServer();
+    std::cout <<  std::endl;
+    std::cout << "*** Init phase 3: command server started ***" << std::endl<< std::endl; 
      mainMenu m_mainMenu(sysConfig,analogReader,digitalReader, digitalWriter, m_crioToModbusBridge);
      m_mainMenu.exitProgramSignal = std::bind(closeLambda);
          // Keep the main thread alive

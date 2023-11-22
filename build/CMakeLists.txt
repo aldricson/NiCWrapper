@@ -19,7 +19,7 @@ set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY BOTH)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE BOTH)
 set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE BOTH)
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 FILE (APPEND ../buildLog.txt "*** TOOL CHAIN AND COMPILER CONFIGURED ***\n\n")
 
 FILE (APPEND ../buildLog.txt "*** Project specific ***\n")
@@ -55,23 +55,25 @@ foreach(str ${DAQMX_HEADER_FILES})
 endforeach()
 
 # *** Add libmodbus Start ***
-
-# Locate libmodbus
+# ***  Locate libmodbus   ***
 set(LIBMODBUS_PATH "C:/build/20.x/x64/sysroots/core2-64-nilrt-linux/usr/local/lib/libmodbus.so.5.1.0")
 set(LIBMODBUS_INCLUDE_PATH "../src/Modbus/libmodbus/")
 
 FILE (APPEND ../buildLog.txt "*** libModbus ***\n")
-file(GLOB_RECURSE LIBMODBUS_SOURCE_FILES "../src/Modbus/libmodbus/*.c")
+#file(GLOB_RECURSE LIBMODBUS_SOURCE_FILES "../src/Modbus/libmodbus/*.c")
 file(GLOB_RECURSE LIBMODBUS_HEADER_FILES "../src/Modbus/libmodbus/*.h")
 FILE (APPEND ../buildLog.txt "\nList of libmodbus Header Files:\n")
 foreach(str ${LIBMODBUS_HEADER_FILES})
     FILE (APPEND ../buildLog.txt "${str}\n")
 endforeach()
-FILE (APPEND ../buildLog.txt "List of libmodbus Source Files:\n")
-foreach(src ${LIBMODBUS_SOURCE_FILES})
-    FILE (APPEND ../buildLog.txt "${src}\n")
-endforeach()
+FILE (APPEND ../buildLog.txt "\n")
+#FILE (APPEND ../buildLog.txt "List of libmodbus Source Files:\n")
+#foreach(src ${LIBMODBUS_SOURCE_FILES})
+#    FILE (APPEND ../buildLog.txt "${src}\n")
+#endforeach()
+#FILE (APPEND ../buildLog.txt "\n")
 # *** Add libmodbus End ***
+
 
 
 set (DAQMX_LIB "C:/Program\ Files\ (x86)/National\ Instruments/Shared/ExternalCompilerSupport/C/lib64/gcc")
@@ -90,17 +92,14 @@ foreach(str ${NISYSCFG_HEADER_FILES})
 endforeach()
 
 
-add_executable(${PROJECT_NAME} ${SOURCE_FILES})
+add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${FTXUI_HEADER_FILES})
 
 
 FILE (APPEND ../buildLog.txt "all files has been added to linux elf executable \n")
 
 # Update include directories and linked libraries
-target_include_directories(${PROJECT_NAME} PUBLIC ${DAQMX_INCLUDE} ${NISYSCFG_INCLUDE} ${LIBMODBUS_INCLUDE_PATH})
+target_include_directories(${PROJECT_NAME} PUBLIC ${DAQMX_INCLUDE} ${NISYSCFG_INCLUDE} ${LIBMODBUS_INCLUDE_PATH} )
 FILE (APPEND ../buildLog.txt "Nidaqmx, NiSysConfig, libmodbus headers directories are now added to the project\n")
 
-target_link_libraries(${PROJECT_NAME} PUBLIC ${DAQMX_LINUXLIB_FILES} ${LIBMODBUS_PATH}  pthread)
-FILE (APPEND ../buildLog.txt "daqmx, libmodbus and linux threading libraries are now linked to the project\n")
-
-
-FILE (APPEND ../buildLog.txt "linux thrading libraries are now linked to the project\n")
+target_link_libraries(${PROJECT_NAME} PUBLIC ${DAQMX_LINUXLIB_FILES} ${LIBMODBUS_PATH} pthread)
+FILE (APPEND ../buildLog.txt "daqmx, libmodbus, FTXUI, and linux threading libraries are now linked to the project\n")

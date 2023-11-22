@@ -33,6 +33,8 @@ public:
     virtual void displayChooseModuleMenu  ();
     virtual void displayChooseChannelMenu ();
     virtual void displayShowValueMenu     ();
+    //acquisition 
+    virtual void selectModuleAndChannel(const std::string& moduleName, const std::string& channelName);
     //public slots
     virtual void onPollingTimerTimeOut();
     virtual void onKeyboardHit(char key);

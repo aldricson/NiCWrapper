@@ -60,7 +60,13 @@ private:
     std::shared_ptr<DigitalWriter>                       m_digitalWriter;
     std::shared_ptr<ModbusServer>                        m_modbusServer;
     std::shared_ptr<KeyboardPoller>                      m_keyboardPoller;
-    std::vector<MappingData>                             m_mappingData;
+    std::vector<MappingConfig>                           m_mappingData;
+
+
+    uint16_t acquireData(const MappingConfig& config);
+    void     updateModbusRegisters();
+
+
 
     uint16_t linearInterpolation16Bits(double value, double minSource, double maxSource, uint16_t minDestination, uint16_t maxDestination);
 

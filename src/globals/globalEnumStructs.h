@@ -13,17 +13,19 @@ enum class ModuleType {
     CODER = 3
 };
 
-struct MappingData {
+struct MappingConfig {
     int index;
-    ModuleIo moduleIo;
     ModuleType moduleType;
-    std::string moduleSource;
-    std::string channelSource;
+    std::string module;
+    std::string channel;
     float minSource;
     float maxSource;
-    int minDestination;
-    int maxDestination;
-    int destinationModbusChannel;
+    uint16_t minDest;
+    uint16_t maxDest;
+    int modbusChannel;
+
+    MappingConfig() : index(0), moduleType(ModuleType::ANALOG), minSource(0.0f), maxSource(0.0f), 
+                      minDest(0), maxDest(0), modbusChannel(0) {}
 };
 
 #endif

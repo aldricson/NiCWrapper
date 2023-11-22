@@ -13,6 +13,7 @@
 #include "./NiModulesDefinitions/NI9208.h"
 #include "./Signals/QSignalTest.h"
 
+
 static inline void testStringGrid(bool & ok)
 {
     ok = false;
@@ -228,7 +229,6 @@ static inline void testIniFileSystem(bool &ok)
        std::cout<<testInfo<<std::endl;
     }
 }
-
 
 
 

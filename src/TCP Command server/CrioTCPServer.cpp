@@ -83,19 +83,71 @@ std::string CrioTCPServer::parseRequest(const std::string& request)
     std::vector<std::string> tokens; 
     tokenize(requestCopy, tokens);
 
-    if (checkForReadCurrent(tokens[0]))
+    if (checkForReadCommand(tokens[0],"readCurrent"))
     {
-        std::string moduleAlias = tokens[1];
-        bool ok;
-        unsigned int channelIndex = strToUnsignedInt(tokens[2],ok);
-        NIDeviceModule *deviceModule     = m_cfgWrapper->getModuleByAlias(moduleAlias);
-        double result = m_daqWrapper->readCurrent(deviceModule,channelIndex,50,true); 
-        return  std::to_string(result); 
-
+        try
+        {
+            std::string moduleAlias = tokens[1];
+            bool ok;
+            unsigned int channelIndex = strToUnsignedInt(tokens[2],ok);
+            NIDeviceModule *deviceModule     = m_cfgWrapper->getModuleByAlias(moduleAlias);
+            double result = m_daqWrapper->readCurrent(deviceModule,channelIndex,50,true); 
+            return  std::to_string(result); 
+        }
+        catch(const std::exception& e)
+        {
+            std::cerr << e.what() << '\n';
+            return ("NACK");
+        }   
     }
-
-    return "unknow command";
-    
+    else if (checkForReadCommand(tokens[0],"readVoltage"))
+    {
+        try
+        {
+            std::string moduleAlias = tokens[1];
+            bool ok;
+            unsigned int channelIndex = strToUnsignedInt(tokens[2],ok);
+            NIDeviceModule *deviceModule     = m_cfgWrapper->getModuleByAlias(moduleAlias);
+            double result = m_daqWrapper->readVoltage(deviceModule,channelIndex,50);
+            return std::to_string(result);
+        }
+        catch(const std::exception& e)
+        {
+            std::cerr << e.what() << '\n';
+            return ("NACK");
+        }      
+    }
+    else if (checkForReadCommand(tokens[0],"startModbusSimulation"))
+    {
+        try
+        {
+            m_bridge->stopAcquisition();
+            m_bridge->startModbusSimulation();
+            return ("ACK"); 
+        }
+        catch(const std::exception& e)
+        {
+            std::cerr << e.what() << '\n';
+            return ("NACK");
+        }
+    }
+    else if (checkForReadCommand(tokens[0],"stopModbusSimulation"))
+    {
+        try
+        {
+            m_bridge->stopModbusSimulation();
+            return ("ACK"); 
+        }
+        catch(const std::exception& e)
+        {
+            std::cerr << e.what() << '\n';
+            return ("NACK");
+        }
+    }
+    else
+    {
+        return "unknow command";
+    }
 }
 
 
@@ -117,10 +169,13 @@ void CrioTCPServer::tokenize(const std::string& input, std::vector<std::string>&
     }
 }
 
-bool CrioTCPServer::checkForReadCurrent(const std::string& request)
+bool CrioTCPServer::checkForReadCommand(const std::string& request, const std::string& command)
 {
     std::string mainString      =  request;
-    std::string substringToFind = "readCurrent";
+    std::string substringToFind = command;
     size_t foundPos = mainString.find(substringToFind);
     return foundPos != std::string::npos;
 }
+
+
+

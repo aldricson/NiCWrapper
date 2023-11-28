@@ -51,8 +51,7 @@ private:
     void handleClient(int clientSocket);
     std::string parseRequest(const std::string& request);
     void tokenize(const std::string& input, std::vector<std::string>& tokens); 
-    bool checkForReadCurrent(const std::string& request);
-
+    bool checkForReadCommand(const std::string& request, const std::string& command);
 
 };
 

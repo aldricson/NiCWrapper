@@ -97,7 +97,7 @@ std::string CrioTCPServer::parseRequest(const std::string& request)
         catch(const std::exception& e)
         {
             std::cerr << e.what() << '\n';
-            return ("NACK");
+            return std::string("NACK:") + e.what();
         }   
     }
     else if (checkForReadCommand(tokens[0],"readVoltage"))
@@ -107,14 +107,40 @@ std::string CrioTCPServer::parseRequest(const std::string& request)
             std::string moduleAlias = tokens[1];
             bool ok;
             unsigned int channelIndex = strToUnsignedInt(tokens[2],ok);
-            NIDeviceModule *deviceModule     = m_cfgWrapper->getModuleByAlias(moduleAlias);
-            double result = m_daqWrapper->readVoltage(deviceModule,channelIndex,50);
-            return std::to_string(result);
+            if (ok)
+            {
+                std::cout<<"received readVoltage: "<<moduleAlias<<" channel index: "<<tokens[2]<<std::endl;
+
+                try 
+                {
+                    NIDeviceModule *deviceModule = m_cfgWrapper->getModuleByAlias(moduleAlias);
+                    if (deviceModule != nullptr) 
+                    {
+                        double result = m_daqWrapper->readVoltage(deviceModule,channelIndex,50);
+                        return std::to_string(result);
+                    } 
+                    else 
+                    {
+                        return std::string("NACK: deviceModule is nullptr");
+                    }
+                }
+                catch (const std::bad_alloc& e)
+                {
+                    // Handle memory allocation failure
+                    std::cerr << "Memory allocation failed: " << e.what() << '\n';
+                    return std::string("NACK: Memory allocation failed") + e.what();
+                }
+                
+            }
+            else
+            {
+                return ("NACK:Impossible to convert "+tokens[2]+"to unsignedInt");
+            }
         }
         catch(const std::exception& e)
         {
             std::cerr << e.what() << '\n';
-            return ("NACK");
+            return std::string("NACK:") + e.what();
         }      
     }
     else if (checkForReadCommand(tokens[0],"startModbusSimulation"))
@@ -128,7 +154,7 @@ std::string CrioTCPServer::parseRequest(const std::string& request)
         catch(const std::exception& e)
         {
             std::cerr << e.what() << '\n';
-            return ("NACK");
+            return std::string("NACK:") + e.what();
         }
     }
     else if (checkForReadCommand(tokens[0],"stopModbusSimulation"))
@@ -141,7 +167,7 @@ std::string CrioTCPServer::parseRequest(const std::string& request)
         catch(const std::exception& e)
         {
             std::cerr << e.what() << '\n';
-            return ("NACK");
+            return std::string("NACK:") + e.what();
         }
     }
     else

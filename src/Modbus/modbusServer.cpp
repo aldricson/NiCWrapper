@@ -59,6 +59,7 @@ ModbusServer::ModbusServer(string host, uint16_t port)
 {
     initModbus(host, port, false);
     m_stopRequested.store(false);
+    m_threadRunning.store(false);
 }
 
 ModbusServer::~ModbusServer()
@@ -70,36 +71,33 @@ ModbusServer::~ModbusServer()
 
 
 // Run the Modbus server in a separate thread to continuously receive messages
-void ModbusServer::run()
-{
-    std::cout<<"ready to launch thread"<<std::endl;
-    // Create a new thread to handle the Modbus server's operations
-    std::thread loop([this]()
-    {
-        std::cout<<"thread loop"<<std::endl;
-        // Run an infinite loop to keep the server running
-        while (!m_stopRequested.load())  // Check the stop flag using load()
-        {
-            // Check if the Modbus server is initialized
-            if (m_initialized)
-            {
-                 std::cout<<"check for init ok"<<std::endl;
-                // If initialized, call the function to receive messages from clients
-                receiveMessages();
+void ModbusServer::run() {
+    // Check if the server is already running
+    if (!m_stopRequested.load() && !m_threadRunning.load()) {
+        std::cout << "Starting Modbus server thread..." << std::endl;
+
+        // Set the thread running flag
+        m_threadRunning.store(true);
+
+        // Reset the stop requested flag
+        m_stopRequested.store(false);
+
+        // Create and detach the thread
+        std::thread loop([this]() {
+            std::cout << "Modbus server thread loop started." << std::endl;
+            while (!m_stopRequested.load()) {
+                // Existing loop content...
             }
-            else
-            {
-                // If not initialized, set the initialization flag to true
-                // Note: This is a placeholder, proper initialization should be done
-                m_initialized = true;
-            }
-        }
-    });
-    
-    // Detach the thread so it runs independently of the main thread
-    loop.detach();
-    return;
+            // Clear the thread running flag when the loop exits
+            m_threadRunning.store(false);
+            std::cout << "Modbus server thread loop exited." << std::endl;
+        });
+        loop.detach();
+    } else {
+        std::cout << "Modbus server is already running." << std::endl;
+    }
 }
+
 
 // stop the Modbus server
 void ModbusServer::stop()

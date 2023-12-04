@@ -38,6 +38,13 @@ public:
     std::shared_ptr<DigitalWriter> getDigitalWriter() const;
     void setDigitalWriter(std::shared_ptr<DigitalWriter> digitalWriter);
 
+    ThreadSafeCircularBuffer<std::vector<uint16_t>>& getSimulationBuffer();
+    std::shared_ptr<SimpleTimer>      getSimulateTimer()  const;
+    std::shared_ptr<SimpleTimer>      getDataAcquTimer()  const;
+    std::shared_ptr<ModbusServer>     getModbusServer()   const;
+    std::shared_ptr<KeyboardPoller>   getKeyboardPoller() const;
+    const std::vector<MappingConfig>& getMappingData()    const;
+
     // TODO: Load mapping from a configuration file
     void loadMapping();
      // Data synchronization method
@@ -51,8 +58,8 @@ public:
 
 private:
     unsigned long long m_simulationCounter=0;
-    ThreadSafeCircularBuffer<std::vector<uint16_t>>     m_simulationBuffer;
-    ThreadSafeCircularBuffer<std::vector<uint16_t>>     m_realDataBuffer;         
+    ThreadSafeCircularBuffer<std::vector<uint16_t>>      m_simulationBuffer;
+    ThreadSafeCircularBuffer<std::vector<uint16_t>>      m_realDataBuffer;         
     std::shared_ptr<SimpleTimer>                         m_simulateTimer;
     std::shared_ptr<SimpleTimer>                         m_dataAcquTimer;
     std::shared_ptr<AnalogicReader>                      m_analogicReader;

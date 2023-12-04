@@ -348,4 +348,38 @@ std::vector<uint16_t> NItoModbusBridge::getLatestSimulatedData()
     }
 }
 
+ThreadSafeCircularBuffer<std::vector<uint16_t>>& NItoModbusBridge::getSimulationBuffer() {
+    return m_simulationBuffer;
+}
+
+// Getter for m_simulateTimer
+std::shared_ptr<SimpleTimer> NItoModbusBridge::getSimulateTimer() const 
+{
+    return m_simulateTimer;
+}
+
+// Getter for m_dataAcquTimer
+std::shared_ptr<SimpleTimer> NItoModbusBridge::getDataAcquTimer() const 
+{
+    return m_dataAcquTimer;
+}
+
+// Getter for m_modbusServer
+std::shared_ptr<ModbusServer> NItoModbusBridge::getModbusServer() const 
+{
+    return m_modbusServer;
+}
+
+// Getter for m_keyboardPoller
+std::shared_ptr<KeyboardPoller> NItoModbusBridge::getKeyboardPoller() const 
+{
+    return m_keyboardPoller;
+}
+
+// Getter for m_mappingData
+const std::vector<MappingConfig>& NItoModbusBridge::getMappingData() const 
+{
+    return m_mappingData;
+}
+
 

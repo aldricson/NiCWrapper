@@ -41,6 +41,7 @@ C:/Users/aldric/Desktop/dataDril20.0/build/../src/NiWrappers/QNiSysConfigWrapper
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/Signals/KeyboardPoller.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/Signals/QSignalTest.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/TCP Command server/CrioTCPServer.h
+C:/Users/aldric/Desktop/dataDril20.0/build/../src/UDPBroadcaster/udpBroadcast.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/channelReaders/analogicReader.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/channelReaders/baseReader.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/channelReaders/digitalReader.h
@@ -85,6 +86,7 @@ C:/Users/aldric/Desktop/dataDril20.0/build/../src/NiWrappers/QNiDaqWrapper.cpp
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/NiWrappers/QNiSysConfigWrapper.cpp
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/Signals/KeyboardPoller.cpp
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/TCP Command server/CrioTCPServer.cpp
+C:/Users/aldric/Desktop/dataDril20.0/build/../src/UDPBroadcaster/udpBroadcast.cpp
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/channelReaders/analogicReader.cpp
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/channelReaders/baseReader.cpp
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/channelReaders/digitalReader.cpp

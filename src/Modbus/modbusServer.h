@@ -118,6 +118,8 @@ private:
     modbus_t* ctx{ nullptr };
 
     std::atomic<bool> m_stopRequested;  // Flag to request server stop
+    std::atomic<bool> m_threadRunning;  // Flag to see if the modbuserver is already running;
+
 
 /*********************************************************
  * modbus_mapping_t explainations

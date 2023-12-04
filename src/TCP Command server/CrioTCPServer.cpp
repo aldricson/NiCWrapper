@@ -3,6 +3,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <unistd.h>
+#include "../UDPBroadcaster/udpBroadcast.h"
 
 CrioTCPServer::CrioTCPServer(unsigned short port,
                             std::shared_ptr<QNiSysConfigWrapper> aConfigWrapper,
@@ -145,16 +146,39 @@ std::string CrioTCPServer::parseRequest(const std::string& request)
     }
     else if (checkForReadCommand(tokens[0],"startModbusSimulation"))
     {
+        broadCastStr("crio debug:\nstartModbusSimulation detected\nin std::string CrioTCPServer::parseRequest(const std::string& request)\n"); 
         try
         {
-            m_bridge->stopAcquisition();
-            m_bridge->startModbusSimulation();
+            if (m_bridge->getSimulateTimer()->isActive()) 
+            {
+                broadCastStr("crio debug:\nsimulation timer already active\nin std::string CrioTCPServer::parseRequest(const std::string& request)\n"); 
+                //simulation already avtive
+                return "ACK";
+            }
+            //ensure it will not be called
+            m_bridge->getSimulateTimer()->stop();
+            broadCastStr("crio debug:\nsimulation timer forced to stop\ninstd::string CrioTCPServer::parseRequest(const std::string& request)\n");
+            //stop the acquisition timer
+            m_bridge->getDataAcquTimer()->stop();
+            broadCastStr("crio debug:\nacquisition timer forced to stop\ninstd::string CrioTCPServer::parseRequest(const std::string& request)\n");
+            //clean the buffer
+            m_bridge->getSimulationBuffer().clear();
+            broadCastStr("crio debug:\nsimulation buffer has been cleaned\ninstd::string CrioTCPServer::parseRequest(const std::string& request)\n");
+            //No need to poll the keyboard anymore
+            m_bridge->getKeyboardPoller()->stop();
+            broadCastStr("crio debug:\nkeyboard poller has been forced to stop\ninstd::string CrioTCPServer::parseRequest(const std::string& request)\n");
+            //start the server
+            m_bridge->getModbusServer()->run();
+            broadCastStr("crio debug:\nModbus thread is started\ninstd::string CrioTCPServer::parseRequest(const std::string& request)\n");
+            m_bridge->getSimulateTimer()->start();
+            broadCastStr("crio debug:\nsimulation timer is started\ninstd::string CrioTCPServer::parseRequest(const std::string& request)\n");
             return ("ACK"); 
         }
         catch(const std::exception& e)
         {
             std::cerr << e.what() << '\n';
-            return std::string("NACK:") + e.what();
+            broadCastStr("crio debug:\n"+ std::string(e.what())+"\nin std::string CrioTCPServer::parseRequest(const std::string& request)\n");
+            return std::string("NACK:") + std::string(e.what());
         }
     }
     else if (checkForReadCommand(tokens[0],"stopModbusSimulation"))

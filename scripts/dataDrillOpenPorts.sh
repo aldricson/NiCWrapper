@@ -1,19 +1,21 @@
 #!/bin/bash
 
-# Replace 'programName' with the actual name of your program's executable
-program_name="dataDrill"
+# Define the ports to check
+modbus_port=502
+command_port=8222
 
-# Get the PID of your program
-program_pid=$(pgrep -x "$program_name")
-
-if [ -z "$program_pid" ]; then
-  echo "Program is not running."
-  exit 1
+# Check Modbus port (502)
+modbus_scan=$(nmap 127.0.0.1 -p $modbus_port | grep "$modbus_port" | awk '{print $2}')
+if [ "$modbus_scan" == "open" ]; then
+    echo "Modbus port open"
+else
+    echo "Modbus port not open"
 fi
 
-# List all open TCP ports for the program
-echo "Open TCP ports for program $program_name (PID: $program_pid):"
-netstat -tuln | grep "$program_pid"
-
-# Alternatively, you can use 'ss' instead of 'netstat'
-# ss -tuln | grep "$program_pid"
+# Check command port (8222)
+command_scan=$(nmap 127.0.0.1 -p $command_port | grep "$command_port" | awk '{print $2}')
+if [ "$command_scan" == "open" ]; then
+    echo "Command port open"
+else
+    echo "Command port not open"
+fi

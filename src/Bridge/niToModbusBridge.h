@@ -6,14 +6,12 @@
 
 #include "../channelReaders/analogicReader.h"
 #include "../channelReaders/digitalReader.h"
-#include "../channelWriters/digitalWriter.h"
-#include "../Modbus/modbusServer.h"
+#include "../Modbus/NewModbusServer.h"
 #include "../globals/globalEnumStructs.h"
 #include "../timers/simpleTimer.h"
 #include "../circularBuffer/ThreadSafeCircularBuffer.h"
-#include "../stringUtils/stringGrid.h"
 #include "../stringUtils/stringUtils.h"
-#include "../Signals/KeyboardPoller.h"
+#include "../TCP Command server/CrioDebugServer.h"
 #include <algorithm> 
 
 
@@ -23,8 +21,8 @@ public:
     // Constructor
     NItoModbusBridge(std::shared_ptr<AnalogicReader> analogicReader,
                      std::shared_ptr<DigitalReader>  digitalReader,
-                     std::shared_ptr<DigitalWriter>  digitalWriter,
-                     std::shared_ptr<ModbusServer>   modbusServer);
+                     //std::shared_ptr<DigitalWriter>  digitalWriter,
+                     std::shared_ptr<NewModbusServer>   modbusServer);
 
     // Getters and setters for AnalogicReader
     std::shared_ptr<AnalogicReader> getAnalogicReader() const;
@@ -34,15 +32,12 @@ public:
     std::shared_ptr<DigitalReader> getDigitalReader() const;
     void setDigitalReader(std::shared_ptr<DigitalReader> digitalReader);
 
-    // Getters and setters for DigitalWriter
-    std::shared_ptr<DigitalWriter> getDigitalWriter() const;
-    void setDigitalWriter(std::shared_ptr<DigitalWriter> digitalWriter);
+
 
     ThreadSafeCircularBuffer<std::vector<uint16_t>>& getSimulationBuffer();
     std::shared_ptr<SimpleTimer>      getSimulateTimer()  const;
     std::shared_ptr<SimpleTimer>      getDataAcquTimer()  const;
-    std::shared_ptr<ModbusServer>     getModbusServer()   const;
-    std::shared_ptr<KeyboardPoller>   getKeyboardPoller() const;
+    std::shared_ptr<NewModbusServer>   getModbusServer()   const;
     const std::vector<MappingConfig>& getMappingData()    const;
 
     // TODO: Load mapping from a configuration file
@@ -50,7 +45,7 @@ public:
      // Data synchronization method
     void dataSynchronization();
 
-    void startModbusSimulation();
+    bool startModbusSimulation();
     void stopModbusSimulation();
     void startAcquisition();
     void stopAcquisition();
@@ -64,9 +59,7 @@ private:
     std::shared_ptr<SimpleTimer>                         m_dataAcquTimer;
     std::shared_ptr<AnalogicReader>                      m_analogicReader;
     std::shared_ptr<DigitalReader>                       m_digitalReader;
-    std::shared_ptr<DigitalWriter>                       m_digitalWriter;
-    std::shared_ptr<ModbusServer>                        m_modbusServer;
-    std::shared_ptr<KeyboardPoller>                      m_keyboardPoller;
+    std::shared_ptr<NewModbusServer>                        m_modbusServer;
     std::vector<MappingConfig>                           m_mappingData;
 
 
@@ -76,15 +69,12 @@ private:
 
 
     uint16_t linearInterpolation16Bits(double value, double minSource, double maxSource, uint16_t minDestination, uint16_t maxDestination);
-
-    void onKeyboardHit            (char key);
     void onSimulationTimerTimeOut ();
     void simulateAnalogicInputs   (std::vector<uint16_t> &analogChannelsResult);
     void simulateCounters         (std::vector<uint16_t> &analogChannelsResult);
     void simulateCoders           (std::vector<uint16_t> &analogChannelsResult);
     
     void onDataAcquisitionTimerTimeOut();
-    void showAnalogGridOnScreen(bool isSimulated);
 
     // Signal functions to notify changes
     std::function<void()> onAnalogicReaderChanged;

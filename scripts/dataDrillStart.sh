@@ -1,5 +1,7 @@
 #!/bin/bash
 
+#export LD_LIBRARY_PATH=/home/dataDrill/libraries
+
 # Check if a screen session with the name "dataDrill" already exists
 existing_session=$(screen -ls | grep "dataDrill")
 

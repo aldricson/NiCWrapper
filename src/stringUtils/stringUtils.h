@@ -136,22 +136,7 @@ static inline void clearConsole()
     std::cout << "\033[2J\033[1;1H";
 }
 
-// Function to draw a cell with a given size and caption
-static inline std::string drawCell(int size, std::string aCaption) {
-    
-    std::string result;
-    
-    std::string line;
-    // the top and bottom border of the cell
-    for (int i = 0; i < size+2; ++i) {
-        line += "░";
-    }
-    line += "\n";
-    std::string spacer  = centerAlignString(" ", size)+"\n";
-    std::string _caption = centerAlignString(aCaption,size)+"\n"; 
-    result = line+spacer+_caption+spacer+line;
-    return result;
-}
+
 
 static inline std::string concatenateRow(const std::vector<std::string>& row) {
     std::vector<std::vector<std::string>> linesInCells;
@@ -230,10 +215,9 @@ static inline void showBanner()
   std::cout <<"       .d$$$******$$$$c.       "<< std::endl;
   std::cout <<"            ______             "<< std::endl << std::endl;
 
-  std::string  txt=drawCell(45," WELCOME TO ELYTEQ  COMPATIBILITY LAYER ");
-  std::cout << txt.c_str();
-               txt=drawCell(45,"proudly coded by A.Gilbert and S.Klalesh");
-  std::cout << txt.c_str() << std::endl;
+
+  std::cout << " dataDrill Headless version "<<std::endl;
+
 }
 
 

@@ -430,7 +430,7 @@ void QNiDaqWrapper::handleErrorAndCleanTask()
 
 void QNiDaqWrapper::handleReadCurrentCompletion(int32 status)
 {
-     std::cout<<"task complete Current"<<std::endl;
+     //std::cout<<"task complete Current"<<std::endl;
      if (status != 0) 
      {
 
@@ -446,7 +446,7 @@ void QNiDaqWrapper::handleReadCurrentCompletion(int32 status)
 
 void QNiDaqWrapper::handleReadVoltageCompletion(int32 status)
 {
-    std::cout<<"task complete Voltage"<<std::endl;
+    //std::cout<<"task complete Voltage"<<std::endl;
      if (status != 0) 
      {
 
@@ -461,7 +461,7 @@ void QNiDaqWrapper::handleReadVoltageCompletion(int32 status)
 
 void QNiDaqWrapper::handleReadCounterCompletion(int32 status)
 {
-     std::cout<<"task complete Counter"<<std::endl;
+     //std::cout<<"task complete Counter"<<std::endl;
      if (status != 0) 
      {
 

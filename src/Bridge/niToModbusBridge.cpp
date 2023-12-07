@@ -7,19 +7,14 @@
 // Constructor
 NItoModbusBridge::NItoModbusBridge(std::shared_ptr<AnalogicReader> analogicReader,
                                    std::shared_ptr<DigitalReader> digitalReader,
-                                   std::shared_ptr<DigitalWriter> digitalWriter,
-                                   std::shared_ptr<ModbusServer>   modbusServer)
+                                   std::shared_ptr<NewModbusServer>   modbusServer)
     : m_simulationBuffer(),
-      m_realDataBuffer(), 
-      m_analogicReader(analogicReader),
-      m_digitalReader(digitalReader),
-      m_digitalWriter(digitalWriter),
-      m_modbusServer(modbusServer) // Initialize with size 20
+      m_realDataBuffer  (), 
+      m_analogicReader  (analogicReader),
+      m_digitalReader   (digitalReader),
+      m_modbusServer    (modbusServer) 
 {
-    m_keyboardPoller = std::make_shared<KeyboardPoller>();         //this object handle keyboards events while polling (e.g. escape key to stop polling)    
-    m_keyboardPoller->keyboardHitSignal = std::bind(&NItoModbusBridge::onKeyboardHit,this,std::placeholders::_1); //signal to slot
-    
-    
+        
     m_simulateTimer = std::make_shared<SimpleTimer>();
     std::chrono::milliseconds mss(250);
     m_simulateTimer->setInterval(mss);
@@ -34,9 +29,6 @@ NItoModbusBridge::NItoModbusBridge(std::shared_ptr<AnalogicReader> analogicReade
     m_dataAcquTimer->stop();
     // Wire up the signals and slots
     m_dataAcquTimer->setSlotFunction([this](){this->onDataAcquisitionTimerTimeOut();});
-
-    this->newSimulationBufferReadySignal = [this](){m_modbusServer->updateSimulatedModbusAnalogRegisters(this);
-                                                    /*showAnalogGridOnScreen(true);*/};
 
 }
 
@@ -64,17 +56,6 @@ void NItoModbusBridge::setDigitalReader(std::shared_ptr<DigitalReader> digitalRe
     }
 }
 
-// Getters and setters for DigitalWriter
-std::shared_ptr<DigitalWriter> NItoModbusBridge::getDigitalWriter() const {
-    return m_digitalWriter;
-}
-
-void NItoModbusBridge::setDigitalWriter(std::shared_ptr<DigitalWriter> digitalWriter) {
-    m_digitalWriter = digitalWriter;
-    if (onDigitalWriterChanged) {
-        onDigitalWriterChanged();
-    }
-}
 
 void NItoModbusBridge::loadMapping() {
     std::ifstream file("mapping.csv");
@@ -109,27 +90,29 @@ void NItoModbusBridge::dataSynchronization() {
    
 }
 
-void NItoModbusBridge::startModbusSimulation()
+bool NItoModbusBridge::startModbusSimulation()
 {
-    if (m_simulateTimer->isActive()) return;
-    m_dataAcquTimer->stop();
-    m_simulationBuffer.clear();
-    m_keyboardPoller->start();
-   // if (!m_modbusServer->isModbusActive())
-  //  {
-        m_modbusServer->run();
-        std::cout<<"modbus part is running"<<std::endl;
-  //  }
-    m_simulateTimer->start();
+    CrioDebugServer::broadcastMessage("enter bool NItoModbusBridge::startModbusSimulation()");
+    if (m_simulateTimer->isActive()) return true;
+    try 
+    {
+        m_dataAcquTimer->stop();
+        m_simulationBuffer.clear();
+        m_simulateTimer->start();
+        return true;
+    } 
+    catch (const std::exception& e) 
+    {
+        // Handle the exception here (you can replace this comment with your actual error handling code)
+        // You can also log the error message for debugging purposes.
+        std::cerr << "An exception occurred: " << e.what() << std::endl;
+        return false;
+    }
 }
 
 void NItoModbusBridge::stopModbusSimulation()
 {
     m_simulateTimer->stop();
-    if (m_modbusServer->isModbusActive())
-    {
-        m_modbusServer->stop();
-    }
 }
 
 void NItoModbusBridge::startAcquisition()
@@ -155,17 +138,6 @@ uint16_t NItoModbusBridge::linearInterpolation16Bits(double value, double minSou
 }
 
 
-void NItoModbusBridge::onKeyboardHit(char key)
-{
-    if (key==27)
-    {
-        if (m_simulateTimer->isActive())
-        {
-            m_simulateTimer->stop();
-            m_simulationBuffer.clear();
-        }
-    }  
-}
 
 void NItoModbusBridge::onSimulationTimerTimeOut()
 {
@@ -173,17 +145,24 @@ void NItoModbusBridge::onSimulationTimerTimeOut()
     // Vector to hold simulated data for each channel
     std::vector<uint16_t> analogChannelsResult;
     simulateAnalogicInputs(analogChannelsResult);
-    simulateCounters(analogChannelsResult);
-    simulateCoders(analogChannelsResult);
-    //simulateCounters(analogChannelsResult);
-    // Push the new simulated data into the buffer
-    m_simulationBuffer.clear();
-    m_simulationBuffer.push_back(analogChannelsResult);     
-    // Trigger a signal indicating that new simulated data is available, if the signal is set
-    if (newSimulationBufferReadySignal)
+    simulateCounters      (analogChannelsResult);
+    simulateCoders        (analogChannelsResult);
+    std::string str = "crio simulated values:\n";
+    for (int i=0; i<analogChannelsResult.size();++i)
     {
-        newSimulationBufferReadySignal(); 
+          str += std::to_string(analogChannelsResult[i])+";";  
     }
+    CrioDebugServer::broadcastMessage(str);
+    m_modbusServer->reMapInputRegisterValuesForAnalogics(analogChannelsResult);
+  ///  //simulateCounters(analogChannelsResult);
+  ///  // Push the new simulated data into the buffer
+  ///  m_simulationBuffer.clear();
+  ///  m_simulationBuffer.push_back(analogChannelsResult);     
+  ///  // Trigger a signal indicating that new simulated data is available, if the signal is set
+  ///  if (newSimulationBufferReadySignal)
+  ///  {
+  ///      newSimulationBufferReadySignal(); 
+  ///  }
     // Update the simulation counter and wrap around if necessary
     m_simulationCounter = (m_simulationCounter + 1) % maxCounterValue;
 }
@@ -191,16 +170,15 @@ void NItoModbusBridge::onSimulationTimerTimeOut()
 void NItoModbusBridge::simulateAnalogicInputs(std::vector<uint16_t> &analogChannelsResult)
 {
      // Constants for simulating sine wave data
-    constexpr double amplitude   = 50.0;                           // Amplitude of the sine wave
-    constexpr double offset      = 50.0;                           // DC offset to shift the sine wave
-    constexpr double omega       = 2.0 * M_PI / 1000.0;            // Frequency component for sine wave
-    int              numChannels = m_modbusServer->nbSRUAnalogsIn(); // Number of channels to simulate
-    
-
+    constexpr double amplitude         = 50.0;                                             // Amplitude of the sine wave
+    constexpr double offset            = 50.0;                                             // DC offset to shift the sine wave
+    constexpr double omega             = 2.0 * M_PI / 1000.0;                              // Frequency component for sine wave
+    int              numChannels       = m_modbusServer->getSRUMapping().m_nbSRUAnalogsIn; // Number of channels to simulate
+    bool             isExlogCompatible = m_modbusServer->getSRUMapping().m_modeSRU;        // To ensure compatibility with exlog
     // Calculate the sine value for the current simulation counter
     double sineValue = amplitude * std::sin(omega * m_simulationCounter) + offset;
     // Loop through each channel to generate simulated data
-    if (m_modbusServer->modeSRU()) analogChannelsResult.push_back(static_cast<uint16_t>(0)); //to emulate the pnf config "particularity of 16 bit shift" we simply add an empty 16 bit unisgned integer
+    if (isExlogCompatible) analogChannelsResult.push_back(static_cast<uint16_t>(0)); //to emulate the pnf config "particularity of 16 bit shift" we simply add an empty 16 bit unisgned integer
     for (int i = 0; i < numChannels; ++i)
     {
         // Generate random noise in the range of -0.1 to 0.1
@@ -217,7 +195,7 @@ void NItoModbusBridge::simulateAnalogicInputs(std::vector<uint16_t> &analogChann
 
 void NItoModbusBridge::simulateCounters(std::vector<uint16_t> &analogChannelsResult)
 {   
-    for (int i = 0; i<m_modbusServer->nbSRUCounters();++i)
+    for (int i = 0; i<m_modbusServer->getSRUMapping().m_nbSRUCounters;++i)
     {
         analogChannelsResult.push_back(32768); //first 16 bits are for frequency (spm) 0=0 ----> 65535=3000 for SRU
         m_simulatedCounterValue ++;
@@ -230,7 +208,7 @@ void NItoModbusBridge::simulateCounters(std::vector<uint16_t> &analogChannelsRes
 
 void NItoModbusBridge::simulateCoders(std::vector<uint16_t> &analogChannelsResult)
 {   
-    for (int i = 0; i<m_modbusServer->nbSRUCoders();++i)
+    for (int i = 0; i<m_modbusServer->getSRUMapping().m_nbSRUCoders;++i)
     {
         if (m_simulationCounter%4 == 0) m_simulatedCodersValue++;
         uint16_t highValue = static_cast<uint16_t>((m_simulatedCodersValue >> 16) & 0xFFFF); // High 16 bits
@@ -245,7 +223,7 @@ uint16_t NItoModbusBridge::acquireData(const MappingConfig& config) {
     double readValue = 0.0;
 
     // Select the appropriate reader based on the module type
-    std::shared_ptr<BaseReader> reader;
+/**    std::shared_ptr<BaseReader> reader;
     switch (config.moduleType) {
         case ModuleType::ANALOG:
             reader = m_analogicReader;
@@ -264,75 +242,38 @@ uint16_t NItoModbusBridge::acquireData(const MappingConfig& config) {
         reader->manualReadOneShot(readValue);
     }
 
-    return linearInterpolation16Bits(readValue, config.minSource, config.maxSource, config.minDest, config.maxDest);
+    return linearInterpolation16Bits(readValue, config.minSource, config.maxSource, config.minDest, config.maxDest);*/
+    return 0;
 }
 
 
 void NItoModbusBridge::updateModbusRegisters() 
 {
-    for (const auto& config : m_mappingData) 
-    {
-        switch (config.moduleType) 
-        {
-            case ModuleType::ANALOG: 
-            {
-                uint16_t mappedValue = acquireData(config);
-                m_modbusServer->setInputRegisterValue(config.modbusChannel, mappedValue);
-                break;
-            }
-            case ModuleType::DIGITAL:
-                // Implementation for digital modules
-                break;
-            // Handle other types (COUNTER, CODER) similarly
-            default:
-                // Handle unexpected module types or throw an exception
-                break;
-        }
-    }
+   // for (const auto& config : m_mappingData) 
+   // {
+   //     switch (config.moduleType) 
+   //     {
+   //         case ModuleType::ANALOG: 
+   //         {
+   //             uint16_t mappedValue = acquireData(config);
+   //             m_modbusServer->setInputRegisterValue(config.modbusChannel, mappedValue);
+   //             break;
+   //         }
+   //         case ModuleType::DIGITAL:
+   //             // Implementation for digital modules
+   //             break;
+   //         // Handle other types (COUNTER, CODER) similarly
+   //         default:
+   //             // Handle unexpected module types or throw an exception
+   //             break;
+   //     }
+   // }
 }
 
 
 void NItoModbusBridge::onDataAcquisitionTimerTimeOut()
 {
     //TODO
-}
-
-void NItoModbusBridge::showAnalogGridOnScreen(bool isSimulated)
-{
-    clearConsole();  // Ensure this function is properly declared and defined
-    std::cout<<"press esc to stop simulation"<<std::endl;
-    std::unique_ptr<StringGrid> resultGrid = std::make_unique<StringGrid>();
-    // Declare a variable to hold the popped value
-    std::vector<uint16_t> values;
-    // Initialize a boolean variable to check if pop_front succeeded
-    bool popSuccess = false;
-    if (isSimulated) {
-        // Pop the front of the simulation buffer
-        popSuccess = m_simulationBuffer.pop_front(values);
-    } else {
-        // Pop the front of the real data buffer
-        popSuccess = m_realDataBuffer.pop_front(values);
-    }
-    // Check if pop_front succeeded
-    if (popSuccess) {
-        // Initialize a temporary vector to hold the strings for each row
-        std::string csvString;
-        // Iterate over the popped values
-        for (size_t i = 1; i < values.size()+1; ++i) 
-        {
-            // Convert the uint16_t value to string
-            std::string cellValue = std::to_string(values[i-1]);
-            csvString += cellValue;
-            (i%8 != 0) ? csvString += ";" : csvString += "\n";
-        }
-        //display
-        resultGrid->setCSVFromString(csvString);
-    } 
-    else 
-    {
-        // Handle the case where the buffer was empty or an error occurred
-        // Implement your logic here, like logging or displaying an error message
-    }
 }
 
 
@@ -365,16 +306,11 @@ std::shared_ptr<SimpleTimer> NItoModbusBridge::getDataAcquTimer() const
 }
 
 // Getter for m_modbusServer
-std::shared_ptr<ModbusServer> NItoModbusBridge::getModbusServer() const 
+std::shared_ptr<NewModbusServer> NItoModbusBridge::getModbusServer() const 
 {
     return m_modbusServer;
 }
 
-// Getter for m_keyboardPoller
-std::shared_ptr<KeyboardPoller> NItoModbusBridge::getKeyboardPoller() const 
-{
-    return m_keyboardPoller;
-}
 
 // Getter for m_mappingData
 const std::vector<MappingConfig>& NItoModbusBridge::getMappingData() const 

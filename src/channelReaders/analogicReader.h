@@ -2,6 +2,7 @@
 #define AnalogicReader_H
 
 #include "baseReader.h"
+#include "../TCP Command server/CrioDebugServer.h"
 
 class AnalogicReader : public BaseReader {
 public:
@@ -10,11 +11,9 @@ public:
                   std::shared_ptr<QNiDaqWrapper> aDaqMxInstance);
     
     // Override the pure virtual functions
-    void manualReadOneShot() override;
-    void manualReadOneShot(double &returnedValue) override;
-    void manualReadPolling() override;
+    void manualReadOneShot(const std::string &moduleAlias, const unsigned int &index, double &returnedValue) override;
 
-    void displayChooseModuleMenu() override;
+
     
     // Add any additional member functions specific to DigitalReader here
 };

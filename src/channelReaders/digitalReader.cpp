@@ -8,27 +8,9 @@ DigitalReader::DigitalReader(std::shared_ptr<QNiSysConfigWrapper> aSysConfigInst
     // Add any initialization specific to DigitalReader here
 }
 
-// Implement the pure virtual functions
-void DigitalReader::manualReadOneShot()
-{
-    // Implement digital one-shot read logic here
-}
 
-void DigitalReader::manualReadOneShot(double &returnedValue)
+void DigitalReader::manualReadOneShot(const std::string &moduleAlias, const unsigned int &index, double &returnedValue)
 {
     // Implement digital one-shot read logic and set the returnedValue here
 }
 
-void DigitalReader::manualReadPolling()
-{
-    // Implement digital polling read logic here
-    // You can use the provided functions like onPollingTimerTimeOut, onKeyboardHit, etc.
-    // to manage the polling process
-}
-
-void DigitalReader::displayChooseModuleMenu()
-{
-        // Display the module selection menu and handle the user's choice
-    std::string choice = m_moduleMenu->displayChooseModuleMenu(filterMode::showOnlyReadDigitals,true);
-    m_moduleMenu->handleChoice(choice);
-}

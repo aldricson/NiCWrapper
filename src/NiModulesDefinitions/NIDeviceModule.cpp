@@ -13,12 +13,12 @@ bool NIDeviceModule::loadChannels(std::string filename)
    bool ok = m_ini->readStringVector("channels","channel",m_nbChannel,m_chanNames,filename);
    if (ok)
     {
-        std::cout<<"Channels loaded: ok"<<std::endl;
+        //std::cout<<"Channels loaded: ok"<<std::endl;
         return true;
     }
     else
     {
-        std::cout<<"Channels not loaded, defautl values initialized"<<std::endl;
+        //std::cout<<"Channels not loaded, defautl values initialized"<<std::endl;
         return false;
     }
 }
@@ -29,11 +29,11 @@ bool NIDeviceModule::loadCounters(std::string filename)
     bool ok = m_ini->readStringVector("Counters","Counter",m_nbCounters,m_counterNames,filename);
    if (ok)
     {
-        std::cout<<"Counters loaded: ok"<<std::endl;
+        //std::cout<<"Counters loaded: ok"<<std::endl;
     }
     else
     {
-        std::cout<<"Counters not loaded, defautl values initialized"<<std::endl;
+        //std::cout<<"Counters not loaded, defautl values initialized"<<std::endl;
     }
     setcounterCountingEdgeMode   (static_cast<moduleCounterEdgeConfig>(m_ini->readInteger("Counters","edgeCountingMode" ,m_counterCountingEdgeMode,filename)));
     setCounterCountDirectionMode (static_cast<moduleCounterMode>      (m_ini->readInteger("Counters","countingDirection",m_counterCountDirectionMode,filename)));
@@ -59,7 +59,7 @@ bool NIDeviceModule::loadModules(std::string filename)
 
 void NIDeviceModule::saveChannels(std::string filename)
 {
-    std::cout<<"entering save channels "<<m_moduleName<<std::endl;
+    //std::cout<<"entering save channels "<<m_moduleName<<std::endl;
     m_ini->writeUnsignedInteger("Channels", "NumberOfChannels", m_nbChannel,filename);
     m_ini->writeDouble("Channels", "max", m_analogChanMax,filename);
     m_ini->writeDouble("Channels", "min", m_analogChanMin,filename);
@@ -70,12 +70,12 @@ void NIDeviceModule::saveChannels(std::string filename)
         std::string key = "Channel" + std::to_string(i);
         m_ini->writeString("Channels", key.c_str(), m_chanNames[i],filename);
     }
-     std::cout<<"channels saved"<<m_moduleName<<std::endl;
+     //std::cout<<"channels saved"<<m_moduleName<<std::endl;
 }
 
 void NIDeviceModule::saveCounters(std::string filename)
 {
-   std::cout<<"entering save counters "<<m_moduleName<<std::endl;
+   //std::cout<<"entering save counters "<<m_moduleName<<std::endl;
    m_ini->writeUnsignedInteger("Counters", "NumberOfCounters", m_nbCounters,filename);
    
    // Save the counter names
@@ -89,12 +89,12 @@ void NIDeviceModule::saveCounters(std::string filename)
    m_ini->writeInteger("Counters", "countingDirection", static_cast<int>(m_counterCountDirectionMode),filename);
    m_ini->writeUnsignedInteger("Counters", "countingMax", m_counterMax,filename);
    m_ini->writeUnsignedInteger("Counters", "countingMin", m_counterMin,filename);
-   std::cout<<"counters saved"<<m_moduleName<<std::endl;
+   //std::cout<<"counters saved"<<m_moduleName<<std::endl;
 }
 
 void NIDeviceModule::saveModules(std::string filename)
 {
-   std::cout<<"entering save modules "<<m_moduleName<<std::endl;
+   //std::cout<<"entering save modules "<<m_moduleName<<std::endl;
    m_ini->writeInteger("Modules", "type", static_cast<int>(m_moduleType),filename);
    m_ini->writeString("Modules", "moduleName", m_moduleName,filename);
    m_ini->writeString("Modules", "Alias", m_alias,filename);
@@ -102,7 +102,7 @@ void NIDeviceModule::saveModules(std::string filename)
    m_ini->writeDouble("Modules", "shuntValue", m_shuntValue,filename);
    m_ini->writeInteger("Modules", "terminalConfig", static_cast<int>(m_moduleTerminalConfig),filename);
    m_ini->writeInteger("Modules", "moduleUnit", static_cast<int>(m_moduleUnit),filename);
-    std::cout<<"modules saved "<<m_moduleName<<std::endl;   
+  //std::cout<<"modules saved "<<m_moduleName<<std::endl;   
 }
 
 
@@ -254,13 +254,6 @@ void NIDeviceModule::setModuleUnit(moduleUnit newUnit)
     }
 }
 
-void NIDeviceModule::showModuleOnConsole() const
-{
-
-  std::cout<<"Enter showModuleOnConsole())"<<std::endl;
-  std::cout<<std::endl<<m_moduleInfo.c_str()<<std::endl;
- 
-}
 
 std::string NIDeviceModule::getModuleName() const
 {

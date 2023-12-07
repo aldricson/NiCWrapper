@@ -3,21 +3,19 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <unistd.h>
-#include "../UDPBroadcaster/udpBroadcast.h"
+
 
 CrioTCPServer::CrioTCPServer(unsigned short port,
                             std::shared_ptr<QNiSysConfigWrapper> aConfigWrapper,
                             std::shared_ptr<QNiDaqWrapper>       aDaqWrapper,
                             std::shared_ptr<AnalogicReader>      anAnalogicReader,
                             std::shared_ptr<DigitalReader>       aDigitalReader,
-                            std::shared_ptr<DigitalWriter>       aDigitalWriter,
                             std::shared_ptr<NItoModbusBridge>    aBridge) : 
                             port_(port),
                             m_cfgWrapper(aConfigWrapper),
                             m_daqWrapper(aDaqWrapper),
                             m_analogicReader(anAnalogicReader),
                             m_digitalReader(aDigitalReader),
-                            m_digitalWriter(aDigitalWriter),
                             m_bridge(aBridge),
                             serverRunning_(false) 
 {
@@ -91,8 +89,9 @@ std::string CrioTCPServer::parseRequest(const std::string& request)
             std::string moduleAlias = tokens[1];
             bool ok;
             unsigned int channelIndex = strToUnsignedInt(tokens[2],ok);
-            NIDeviceModule *deviceModule     = m_cfgWrapper->getModuleByAlias(moduleAlias);
-            double result = m_daqWrapper->readCurrent(deviceModule,channelIndex,50,true); 
+            //double result = m_daqWrapper->readCurrent(deviceModule,channelIndex,50,true); 
+            double result;
+            m_analogicReader->manualReadOneShot(moduleAlias,channelIndex,result);
             return  std::to_string(result); 
         }
         catch(const std::exception& e)
@@ -110,7 +109,7 @@ std::string CrioTCPServer::parseRequest(const std::string& request)
             unsigned int channelIndex = strToUnsignedInt(tokens[2],ok);
             if (ok)
             {
-                std::cout<<"received readVoltage: "<<moduleAlias<<" channel index: "<<tokens[2]<<std::endl;
+                //std::cout<<"received readVoltage: "<<moduleAlias<<" channel index: "<<tokens[2]<<std::endl;
 
                 try 
                 {
@@ -146,38 +145,44 @@ std::string CrioTCPServer::parseRequest(const std::string& request)
     }
     else if (checkForReadCommand(tokens[0],"startModbusSimulation"))
     {
-        broadCastStr("crio debug:\nstartModbusSimulation detected\nin std::string CrioTCPServer::parseRequest(const std::string& request)\n"); 
+        //broadCastStr("crio debug:\nstartModbusSimulation detected\nin std::string CrioTCPServer::parseRequest(const std::string& request)\n"); 
         try
         {
             if (m_bridge->getSimulateTimer()->isActive()) 
             {
-                broadCastStr("crio debug:\nsimulation timer already active\nin std::string CrioTCPServer::parseRequest(const std::string& request)\n"); 
+                //broadCastStr("crio debug:\nsimulation timer already active\nin std::string CrioTCPServer::parseRequest(const std::string& request)\n"); 
                 //simulation already avtive
                 return "ACK";
             }
-            //ensure it will not be called
+            if (m_bridge->startModbusSimulation()) 
+            {
+               return ("ACK");
+            }
+            else
+            { 
+              return ("NACK: Impossible to start modbus simulation");
+            }
+
+          /*/  //ensure it will not be called
             m_bridge->getSimulateTimer()->stop();
-            broadCastStr("crio debug:\nsimulation timer forced to stop\ninstd::string CrioTCPServer::parseRequest(const std::string& request)\n");
+            //broadCastStr("crio debug:\nsimulation timer forced to stop\ninstd::string CrioTCPServer::parseRequest(const std::string& request)\n");
             //stop the acquisition timer
             m_bridge->getDataAcquTimer()->stop();
-            broadCastStr("crio debug:\nacquisition timer forced to stop\ninstd::string CrioTCPServer::parseRequest(const std::string& request)\n");
+            //broadCastStr("crio debug:\nacquisition timer forced to stop\ninstd::string CrioTCPServer::parseRequest(const std::string& request)\n");
             //clean the buffer
             m_bridge->getSimulationBuffer().clear();
-            broadCastStr("crio debug:\nsimulation buffer has been cleaned\ninstd::string CrioTCPServer::parseRequest(const std::string& request)\n");
-            //No need to poll the keyboard anymore
-            m_bridge->getKeyboardPoller()->stop();
-            broadCastStr("crio debug:\nkeyboard poller has been forced to stop\ninstd::string CrioTCPServer::parseRequest(const std::string& request)\n");
+            //broadCastStr("crio debug:\nsimulation buffer has been cleaned\ninstd::string CrioTCPServer::parseRequest(const std::string& request)\n");
             //start the server
             m_bridge->getModbusServer()->run();
-            broadCastStr("crio debug:\nModbus thread is started\ninstd::string CrioTCPServer::parseRequest(const std::string& request)\n");
+            //broadCastStr("crio debug:\nModbus thread is started\ninstd::string CrioTCPServer::parseRequest(const std::string& request)\n");
             m_bridge->getSimulateTimer()->start();
-            broadCastStr("crio debug:\nsimulation timer is started\ninstd::string CrioTCPServer::parseRequest(const std::string& request)\n");
-            return ("ACK"); 
+            //broadCastStr("crio debug:\nsimulation timer is started\ninstd::string CrioTCPServer::parseRequest(const std::string& request)\n");
+            return ("ACK");*/ 
         }
         catch(const std::exception& e)
         {
             std::cerr << e.what() << '\n';
-            broadCastStr("crio debug:\n"+ std::string(e.what())+"\nin std::string CrioTCPServer::parseRequest(const std::string& request)\n");
+            //broadCastStr("crio debug:\n"+ std::string(e.what())+"\nin std::string CrioTCPServer::parseRequest(const std::string& request)\n");
             return std::string("NACK:") + std::string(e.what());
         }
     }

@@ -4,18 +4,18 @@
 #include <vector>
 #include <cstring>
 #include <string.h>
+#include <thread>
 #include <memory> // for std::unique_ptr
 #include "./NiWrappers/QNiSysConfigWrapper.h"
 #include "./NiWrappers/QNiDaqWrapper.h"
 #include "./channelReaders/analogicReader.h"
 #include "./channelReaders/digitalReader.h"
-#include "./channelWriters/digitalWriter.h"
-#include "./Modbus/modbusServer.h"
+#include "./Modbus/NewModbusServer.h"
 #include "./Bridge/niToModbusBridge.h"
 #include "./Signals/QSignalTest.h"
-#include "./Menus/mainMenu.h"
 #include "./stringUtils/stringUtils.h"
 #include "./TCP Command server/CrioTCPServer.h"
+#include "./TCP Command server/CrioDebugServer.h"
 
 
 #include "testFunctions.h"
@@ -28,54 +28,50 @@ std::shared_ptr<QNiSysConfigWrapper> sysConfig;
 std::shared_ptr<QNiDaqWrapper>       daqMx;
 std::shared_ptr<AnalogicReader>      analogReader;
 std::shared_ptr<DigitalReader>       digitalReader;
-std::shared_ptr<DigitalWriter>       digitalWriter;
-std::shared_ptr<ModbusServer>        modbusServer;
+std::shared_ptr<NewModbusServer>     modbusServer;
 std::shared_ptr<NItoModbusBridge>    m_crioToModbusBridge;
 std::shared_ptr<CrioTCPServer>       m_crioTCPServer;
 
+
 void createNecessaryInstances()
 {
-  std::string str; 
+  //std::string str; 
   //c++ wrapper around NiDaqMx low level C API (used mainly to read or write on devices channels) 
   daqMx         = std::make_shared<QNiDaqWrapper>();
-  str = drawCell(30,"daqMx Wrapper created");
-  std::cout<<str<<std::endl;
+  std::cout<<"daqMx Wrapper created"<<std::endl;
   //c++ wrapper around NISysConfig low level C API (used to get or set parameters of devices)
   sysConfig     = std::make_shared<QNiSysConfigWrapper>();
-  str = drawCell(30,"sysconfig Wrapper created");
-  std::cout<<str<<std::endl;
+  std::cout<<"sysconfig Wrapper created"<<std::endl;
   //object to read anlogic channels (both current and voltage)
   analogReader  = std::make_shared<AnalogicReader>     (sysConfig,daqMx);
-  str = drawCell(30,"analogic reader created");
-  std::cout<<str<<std::endl;
+  std::cout<<"analogic reader created"<<std::endl;
   //object to read mainly coders and 32 bit counters
   digitalReader = std::make_shared<DigitalReader>      (sysConfig,daqMx);
-  str = drawCell(30,"digital reader created");
-  std::cout<<str<<std::endl;
-  //Object to handle digital writers( eg relay channels)
-  digitalWriter = std::make_shared<DigitalWriter> (sysConfig,daqMx);
-    str = drawCell(30,"digital writer created");
-  std::cout<<str<<std::endl;
+  std::cout<<"digital reader created"<<std::endl;
   //Object that handle the modbus server
-  modbusServer  = std::make_shared<ModbusServer>("0.0.0.0",502);
-  modbusServer->modbus_set_slave_id(1);
-  str = drawCell(30,"modbus server created");
-  std::cout<<str<<std::endl;
+  modbusServer = std::make_shared<NewModbusServer>();
+  modbusServer->modbusSetSlaveId(1);
+  // Run the server in a separate thread
+  std::thread modbusServerThread(&NewModbusServer::runServer, modbusServer);
+  modbusServerThread.detach(); // Detach the thread to allow it to run independently
+
+    std::cout << "Modbus server created" << std::endl;
   //Object in charge of routing crio datas to modbus
-  m_crioToModbusBridge = std::make_shared<NItoModbusBridge>(analogReader,digitalReader,digitalWriter,modbusServer);
-  str = drawCell(30,"modbus bridge created");
-  std::cout<<str<<std::endl;
+  m_crioToModbusBridge = std::make_shared<NItoModbusBridge>(analogReader,digitalReader,modbusServer);
+  std::cout<<"modbus bridge created"<<std::endl;
   //object in charge of all non ssh commands
-  m_crioTCPServer = std::make_shared<CrioTCPServer>(8222,sysConfig,daqMx,analogReader,digitalReader, digitalWriter, m_crioToModbusBridge);
-  str = drawCell(30,"TCP server created");
-  std::cout<<str<<std::endl;
+  m_crioTCPServer = std::make_shared<CrioTCPServer>(8222,sysConfig,daqMx,analogReader,digitalReader, m_crioToModbusBridge);
+  std::cout<<"TCP server created"<<std::endl;
+
 }
 
 int main(void)
 {  
+  
+  unsigned short debugPort = 8223; // Choose an appropriate port number
+  CrioDebugServer debugServer(debugPort);
+  debugServer.startServer();
   bool ok;
-  testStringGrid(ok);
-  if (!ok) return EXIT_FAILURE;
   double value =  testReadCurrentFromMod1AI0(ok);
   if (!ok) return EXIT_FAILURE;
   std::cout << "Read current: " << value << " Amps" << std::endl;
@@ -85,8 +81,8 @@ int main(void)
   if (!ok) return EXIT_FAILURE;
 
   createNecessaryInstances();
-  showBanner();
-  auto closeLambda = []() { std::exit(EXIT_SUCCESS); };
+  
+  //auto closeLambda = []() { std::exit(EXIT_SUCCESS); };
   //-----------------------------------------------------------
   //get the number of modules for security testing
   daqMx->GetNumberOfModules();
@@ -115,9 +111,8 @@ int main(void)
     m_crioTCPServer->startServer();
     std::cout <<  std::endl;
     std::cout << "*** Init phase 3: command server started ***" << std::endl<< std::endl; 
-     mainMenu m_mainMenu(sysConfig,analogReader,digitalReader, digitalWriter, m_crioToModbusBridge);
-     m_mainMenu.exitProgramSignal = std::bind(closeLambda);
-         // Keep the main thread alive
+    clearConsole();
+    showBanner();
     while (true) {
         std::this_thread::sleep_for(std::chrono::seconds(1));
     }

@@ -12,13 +12,7 @@ loading sources and headers
 List of Header Files:
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/Bridge/niToModbusBridge.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/Conversions/convUtils.h
-C:/Users/aldric/Desktop/dataDril20.0/build/../src/Menus/chooseChannelMenu.h
-C:/Users/aldric/Desktop/dataDril20.0/build/../src/Menus/chooseModuleMenu.h
-C:/Users/aldric/Desktop/dataDril20.0/build/../src/Menus/chooseShowValueMenu.h
-C:/Users/aldric/Desktop/dataDril20.0/build/../src/Menus/mainMenu.h
-C:/Users/aldric/Desktop/dataDril20.0/build/../src/Menus/mappingTableMenu.h
-C:/Users/aldric/Desktop/dataDril20.0/build/../src/Menus/moduleByAliasMenu.h
-C:/Users/aldric/Desktop/dataDril20.0/build/../src/Menus/moduleBySlotMenu.h
+C:/Users/aldric/Desktop/dataDril20.0/build/../src/Modbus/NewModbusServer.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/Modbus/libmodbus/modbus-private.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/Modbus/libmodbus/modbus-rtu-private.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/Modbus/libmodbus/modbus-rtu.h
@@ -27,8 +21,6 @@ C:/Users/aldric/Desktop/dataDril20.0/build/../src/Modbus/libmodbus/modbus-tcp.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/Modbus/libmodbus/modbus-version.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/Modbus/libmodbus/modbus-version.h.in
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/Modbus/libmodbus/modbus.h
-C:/Users/aldric/Desktop/dataDril20.0/build/../src/Modbus/modbusServer.h
-C:/Users/aldric/Desktop/dataDril20.0/build/../src/Modbus/modbusServerUtils.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/NiModulesDefinitions/NI9208.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/NiModulesDefinitions/NI9239.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/NiModulesDefinitions/NI9411.h
@@ -38,15 +30,12 @@ C:/Users/aldric/Desktop/dataDril20.0/build/../src/NiModulesDefinitions/NIDeviceM
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/NiModulesDefinitions/NIDeviceModuleFactory.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/NiWrappers/QNiDaqWrapper.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/NiWrappers/QNiSysConfigWrapper.h
-C:/Users/aldric/Desktop/dataDril20.0/build/../src/Signals/KeyboardPoller.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/Signals/QSignalTest.h
+C:/Users/aldric/Desktop/dataDril20.0/build/../src/TCP Command server/CrioDebugServer.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/TCP Command server/CrioTCPServer.h
-C:/Users/aldric/Desktop/dataDril20.0/build/../src/UDPBroadcaster/udpBroadcast.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/channelReaders/analogicReader.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/channelReaders/baseReader.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/channelReaders/digitalReader.h
-C:/Users/aldric/Desktop/dataDril20.0/build/../src/channelWriters/baseWriter.h
-C:/Users/aldric/Desktop/dataDril20.0/build/../src/channelWriters/digitalWriter.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/circularBuffer/ThreadSafeCircularBuffer.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/circularBuffer/algorithm.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/circularBuffer/circular_buffer.h
@@ -59,22 +48,13 @@ C:/Users/aldric/Desktop/dataDril20.0/build/../src/filesUtils/iniObject.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/globals/globalConsts.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/globals/globalEnumStructs.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/startUpManager.h
-C:/Users/aldric/Desktop/dataDril20.0/build/../src/stringUtils/mappingGrid.h
-C:/Users/aldric/Desktop/dataDril20.0/build/../src/stringUtils/stringGrid.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/stringUtils/stringUtils.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/systemPatches/stdOptionalReplacement.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/testFunctions.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/timers/simpleTimer.h
 List of Source Files:
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/Bridge/niToModbusBridge.cpp
-C:/Users/aldric/Desktop/dataDril20.0/build/../src/Menus/chooseChannelMenu.cpp
-C:/Users/aldric/Desktop/dataDril20.0/build/../src/Menus/chooseModuleMenu.cpp
-C:/Users/aldric/Desktop/dataDril20.0/build/../src/Menus/chooseShowValueMenu.cpp
-C:/Users/aldric/Desktop/dataDril20.0/build/../src/Menus/mainMenu.cpp
-C:/Users/aldric/Desktop/dataDril20.0/build/../src/Menus/mappingTableMenu.cpp
-C:/Users/aldric/Desktop/dataDril20.0/build/../src/Menus/moduleByAliasMenu.cpp
-C:/Users/aldric/Desktop/dataDril20.0/build/../src/Menus/moduleBySlotMenu.cpp
-C:/Users/aldric/Desktop/dataDril20.0/build/../src/Modbus/modbusServer.cpp
+C:/Users/aldric/Desktop/dataDril20.0/build/../src/Modbus/NewModbusServer.cpp
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/NiModulesDefinitions/NI9208.cpp
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/NiModulesDefinitions/NI9239.cpp
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/NiModulesDefinitions/NI9411.cpp
@@ -84,21 +64,15 @@ C:/Users/aldric/Desktop/dataDril20.0/build/../src/NiModulesDefinitions/NIDeviceM
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/NiModulesDefinitions/NIDeviceModuleFactory.cpp
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/NiWrappers/QNiDaqWrapper.cpp
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/NiWrappers/QNiSysConfigWrapper.cpp
-C:/Users/aldric/Desktop/dataDril20.0/build/../src/Signals/KeyboardPoller.cpp
+C:/Users/aldric/Desktop/dataDril20.0/build/../src/TCP Command server/CrioDebugServer.cpp
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/TCP Command server/CrioTCPServer.cpp
-C:/Users/aldric/Desktop/dataDril20.0/build/../src/UDPBroadcaster/udpBroadcast.cpp
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/channelReaders/analogicReader.cpp
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/channelReaders/baseReader.cpp
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/channelReaders/digitalReader.cpp
-C:/Users/aldric/Desktop/dataDril20.0/build/../src/channelWriters/baseWriter.cpp
-C:/Users/aldric/Desktop/dataDril20.0/build/../src/channelWriters/digitalWriter.cpp
-C:/Users/aldric/Desktop/dataDril20.0/build/../src/channelWriters/digitalWrtiter.cpp
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/circularBuffer/ThreadSafeCircularBuffer.cpp
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/filesUtils/iniObject.cpp
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/main.cpp
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/startUpManager.cpp
-C:/Users/aldric/Desktop/dataDril20.0/build/../src/stringUtils/mappingGrid.cpp
-C:/Users/aldric/Desktop/dataDril20.0/build/../src/stringUtils/stringGrid.cpp
 Excutable output file set to bin bin
 build type is: Debug
 threading type is set to linux pthread library

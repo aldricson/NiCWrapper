@@ -221,7 +221,7 @@ public:
 
    
 
-    virtual void showModuleOnConsole() const;
+
      
     virtual void loadConfig()  = 0;
     virtual void saveConfig()  = 0; 

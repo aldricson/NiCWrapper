@@ -54,8 +54,7 @@ void createNecessaryInstances()
   // Run the server in a separate thread
   std::thread modbusServerThread(&NewModbusServer::runServer, modbusServer);
   modbusServerThread.detach(); // Detach the thread to allow it to run independently
-
-    std::cout << "Modbus server created" << std::endl;
+  std::cout << "Modbus server created" << std::endl;
   //Object in charge of routing crio datas to modbus
   m_crioToModbusBridge = std::make_shared<NItoModbusBridge>(analogReader,digitalReader,modbusServer);
   std::cout<<"modbus bridge created"<<std::endl;

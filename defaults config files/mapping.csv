@@ -1,3 +1,2 @@
-Index;I/O;Module type;Module;Channel;Min Source;Max Source;Min Dest;Max Dest;ModbusChannel
-0;0;0;Mod1;/ai0;4.0;20.0;0;65535;1
-1;0;0;Mod1;/ai1;4.0;20.0;0;65535;2
+0;0;Mod1;/ai0;0.004;0.02;0;65535;1
+1;0;Mod2;/ai1;0.004;0.02;0;65535;2

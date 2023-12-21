@@ -65,21 +65,22 @@ void NItoModbusBridge::loadMapping() {
     }
 
     std::string line;
-    getline(file, line); // Skip the header line
+    //getline(file, line); // Skip the header line
 
-    while (getline(file, line)) {
+    while (getline(file, line)) 
+    {
         std::istringstream iss(line);
         MappingConfig config;
         std::string token;
 
-        getline(iss, token, ';'); config.index = std::stoi(token);
-        getline(iss, token, ';'); config.moduleType = static_cast<ModuleType>(std::stoi(token));
-        getline(iss, token, ';'); config.module = token;
-        getline(iss, token, ';'); config.channel = token;
-        getline(iss, token, ';'); config.minSource = std::stof(token);
-        getline(iss, token, ';'); config.maxSource = std::stof(token);
-        getline(iss, token, ';'); config.minDest = static_cast<uint16_t>(std::stoi(token));
-        getline(iss, token, ';'); config.maxDest = static_cast<uint16_t>(std::stoi(token));
+        getline(iss, token, ';'); config.index         = std::stoi(token);
+        getline(iss, token, ';'); config.moduleType    = static_cast<ModuleType>(std::stoi(token));
+        getline(iss, token, ';'); config.module        = token;
+        getline(iss, token, ';'); config.channel       = token;
+        getline(iss, token, ';'); config.minSource     = std::stof(token);
+        getline(iss, token, ';'); config.maxSource     = std::stof(token);
+        getline(iss, token, ';'); config.minDest       = static_cast<uint16_t>(std::stoi(token));
+        getline(iss, token, ';'); config.maxDest       = static_cast<uint16_t>(std::stoi(token));
         getline(iss, token, ';'); config.modbusChannel = std::stoi(token);
 
         m_mappingData.push_back(config);
@@ -154,16 +155,6 @@ void NItoModbusBridge::onSimulationTimerTimeOut()
     }
     CrioDebugServer::broadcastMessage(str);
     m_modbusServer->reMapInputRegisterValuesForAnalogics(analogChannelsResult);
-  ///  //simulateCounters(analogChannelsResult);
-  ///  // Push the new simulated data into the buffer
-  ///  m_simulationBuffer.clear();
-  ///  m_simulationBuffer.push_back(analogChannelsResult);     
-  ///  // Trigger a signal indicating that new simulated data is available, if the signal is set
-  ///  if (newSimulationBufferReadySignal)
-  ///  {
-  ///      newSimulationBufferReadySignal(); 
-  ///  }
-    // Update the simulation counter and wrap around if necessary
     m_simulationCounter = (m_simulationCounter + 1) % maxCounterValue;
 }
 

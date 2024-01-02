@@ -14,3 +14,7 @@ void DigitalReader::manualReadOneShot(const std::string &moduleAlias, const unsi
     // Implement digital one-shot read logic and set the returnedValue here
 }
 
+void DigitalReader::manualReadOneShot(const std::string &moduleAlias, const std::string &chanName, double &returnedValue)
+{
+    //TODO
+}

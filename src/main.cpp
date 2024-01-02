@@ -80,6 +80,8 @@ int main(void)
   if (!ok) return EXIT_FAILURE;
 
   createNecessaryInstances();
+
+  m_crioToModbusBridge->loadMapping();
   
   //auto closeLambda = []() { std::exit(EXIT_SUCCESS); };
   //-----------------------------------------------------------

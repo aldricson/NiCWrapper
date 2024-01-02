@@ -92,6 +92,118 @@ std::vector<std::string> QNiDaqWrapper::GetDevicesList() {
 }
 
 
+double QNiDaqWrapper::readCurrent(NIDeviceModule *deviceModule, std::string chanName, unsigned int maxRetries, bool autoConvertTomAmps)
+{
+    if (deviceModule == nullptr)
+    {
+        throw std::invalid_argument("Null pointer passed for deviceModule.");
+    }
+    int32   error;
+    float64 readValue;
+
+    // Extract necessary information from the NIDeviceModule object
+    const char* deviceName = deviceModule->getAlias().c_str();
+    moduleShuntLocation shuntLoc = deviceModule->getModuleShuntLocation();
+    if (shuntLoc == noShunt)
+    {
+        throw std::runtime_error("Failed current modules must have a shunt");
+    }
+    float64 shuntVal = deviceModule->getModuleShuntValue();
+    double minRange  = deviceModule->getChanMin();
+    double maxRange  = deviceModule->getChanMax();
+    int32  termCfg   = deviceModule->getModuleTerminalCfg();
+    int32  unit      = deviceModule->getModuleUnit();
+
+    // Extract channelName with its index
+    const char* channelName = chanName.c_str();
+    std::string fullChannelName = std::string(deviceName) + std::string(channelName);
+
+    unsigned int retryCount = 0;
+    while (true) 
+    {
+        // Create a new task
+        error = DAQmxCreateTask("getCurrentValue", &taskHandle);
+        if (error) 
+        {
+            handleErrorAndCleanTask();  // Handle error and clean up
+            throw std::runtime_error("Failed to create task for reading current.");
+        }
+
+        // Register the Done callback before starting the task
+        error = DAQmxRegisterDoneEvent(taskHandle, 0, CurrentDoneCallback, this);
+        if (error)
+        {
+            handleErrorAndCleanTask();  // Handle error and clean up
+            throw std::runtime_error("Failed to register Done callback.");
+        }
+
+        // Create an analog input current channel
+        // DAQmxReadAnalogScalarF64 parameters:
+        // TaskHandle taskHandle : Handle to the task
+        // float64 timeout       : Time in seconds to wait for the function to read the value
+        // float64 *value        : Pointer to the variable where the read value will be stored
+        // bool32 *reserved      : Reserved for future use. Pass NULL (nullptr in C++).
+
+        error = DAQmxCreateAICurrentChan(taskHandle, 
+                                         fullChannelName.c_str(), 
+                                         "", 
+                                         termCfg, 
+                                         minRange, 
+                                         maxRange, 
+                                         unit, 
+                                         shuntLoc, 
+                                         shuntVal, 
+                                         NULL);
+
+        if (error) {
+            handleErrorAndCleanTask();  // Handle error and clean up
+            if (++retryCount >= maxRetries) 
+            {
+                throw std::runtime_error("Failed to create channel after max retries.");
+            }
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            continue;
+        }
+        break;  // Successfully created the channel, break out of the loop
+    }
+
+    // Start the task to begin sampling
+    error = DAQmxStartTask(taskHandle);
+    if (error)
+    {
+        handleErrorAndCleanTask();  // Handle error and clean up
+        throw std::runtime_error("Failed to start task for reading current.");
+    }
+
+    // Read the current value
+    error = DAQmxReadAnalogScalarF64(taskHandle, 10.0, &readValue, nullptr);
+    if (error)
+    {
+        handleErrorAndCleanTask();  // Handle error and clean up
+        throw std::runtime_error("Failed to read current value.");
+    }
+
+    // Stop the task
+    error = DAQmxStopTask(taskHandle);
+    if (error)
+    {
+        handleErrorAndCleanTask();  // Handle error and clean up
+        throw std::runtime_error("Failed to stop task.");
+    }
+
+    // Clear the task to free resources
+    DAQmxClearTask(taskHandle);
+
+    // Convert the read value to the appropriate unit (if necessary) and return it
+    double result = static_cast<double>(readValue);
+    if (autoConvertTomAmps)
+    {
+        result = ampsTomAmps(result);
+    }
+    setLastSingleCurrentChannelValue(result);
+    return result;
+}
+
 
 double QNiDaqWrapper::readCurrent(NIDeviceModule *deviceModule, unsigned int chanIndex, unsigned int maxRetries, bool autoConvertTomAmps)
 {
@@ -203,6 +315,114 @@ double QNiDaqWrapper::readCurrent(NIDeviceModule *deviceModule, unsigned int cha
     }
     setLastSingleCurrentChannelValue(result);
     return result;
+}
+
+
+double QNiDaqWrapper::readVoltage(NIDeviceModule *deviceModule, std::string chanName, unsigned int maxRetries)
+{
+    // Check for null pointer
+    if (deviceModule == nullptr)
+    {
+        throw std::invalid_argument("Null pointer passed for deviceModule.");
+    }
+    // Declare variables
+    int32 error;
+    float64 readValue;
+    TaskHandle taskHandle = 0;
+    // Extract necessary information from NIDeviceModule
+    const char* deviceName = deviceModule->getAlias().c_str();
+    double minRange  = deviceModule->getChanMin();
+    double maxRange  = deviceModule->getChanMax();
+    int32 termCfg    = deviceModule->getModuleTerminalCfg();
+    int32 unit       = deviceModule->getModuleUnit();
+    // Construct the full channel name
+    const char* channelName = chanName.c_str();
+    std::string fullChannelName = std::string(deviceName) + std::string(channelName);
+    // Initialize retry count
+    unsigned int retryCount = 0;
+    // Loop to attempt channel creation
+    while (true) 
+    {
+        // Create a new task
+        error = DAQmxCreateTask("getVoltageValue", &taskHandle);
+        if (error)
+        {
+            handleErrorAndCleanTask();  // Custom function to handle errors and clean up
+            throw std::runtime_error("Failed to create task for reading voltage.");
+        }
+        // Register Done callback
+        error = DAQmxRegisterDoneEvent(taskHandle, 0, VoltageDoneCallback, this);
+        if (error)
+        {
+            handleErrorAndCleanTask();
+            throw std::runtime_error("Failed to register Done callback.");
+        }
+        // Create an analog input voltage channel
+        //parameters in calling order  
+        //taskHandle	        The task to which to add the channels that this function creates.
+        //physicalChannel	    The names of the physical channels to use to create virtual channels.
+        //nameToAssignToChannel	The name(s) to assign to the created virtual channel(s).
+        //terminalConfig	    The input terminal configuration for the channel.
+        //minVal	            The minimum value, in units, that you expect to measure.
+        //maxVal	            The maximum value, in units, that you expect to measure.
+        //units	             	The units to use to return the voltage measurements.
+        error = DAQmxCreateAIVoltageChan(taskHandle, 
+                                         fullChannelName.c_str(), 
+                                         "", 
+                                         termCfg, 
+                                         minRange, 
+                                         maxRange, 
+                                         unit, 
+                                         NULL);
+        if (error) 
+        {
+            handleErrorAndCleanTask();
+            if (++retryCount >= maxRetries)
+            {
+                throw std::runtime_error("Failed to create channel after max retries.");
+            }
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            continue;
+        }
+        // Add sample clock timing configuration (NEW)
+        error = DAQmxCfgSampClkTiming(taskHandle, "", 1000.0, DAQmx_Val_Rising, DAQmx_Val_ContSamps, 1);
+        if (error)
+        {
+            handleErrorAndCleanTask();
+            throw std::runtime_error("Failed to set sample clock timing.");
+        }
+
+        // Start the task
+        error = DAQmxStartTask(taskHandle);
+        if (error)
+        {
+            handleErrorAndCleanTask();
+            throw std::runtime_error("Failed to start task for reading voltage.");
+        }
+        // Read a voltage value
+        error = DAQmxReadAnalogScalarF64(taskHandle, 10.0, &readValue, nullptr);
+        if (error)
+        {
+            handleErrorAndCleanTask();
+            throw std::runtime_error("Failed to read voltage value.");
+        }
+        // Stop the task
+        error = DAQmxStopTask(taskHandle);
+        if (error)
+        {
+            handleErrorAndCleanTask();
+            throw std::runtime_error("Failed to stop task.");
+        }
+        // Clear the task to free up resources
+        DAQmxClearTask(taskHandle);
+        break; // If everything goes well, break the loop
+    }
+
+    // Convert to appropriate unit (if necessary)
+    double result = static_cast<double>(readValue);
+    setLastSingleVoltageChannelValue(result);  // I'm assuming this is a custom function you have
+
+    return result;  // Return the read value
 }
 
 

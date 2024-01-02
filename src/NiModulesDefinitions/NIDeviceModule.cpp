@@ -46,7 +46,7 @@ bool NIDeviceModule::loadCounters(std::string filename)
 bool NIDeviceModule::loadModules(std::string filename)
 {
      // Add checks for required keys     
-    setModuleType           (static_cast<moduleType>(m_ini->readInteger("Modules","type",m_moduleType,filename)));
+    setModuleType           (static_cast<ModuleType>(m_ini->readInteger("Modules","type",m_moduleType,filename)));
     setModuleName           (m_ini->readString("Modules","moduleName",m_moduleName,filename));
     setAlias                (m_ini->readString("Modules","Alias",m_alias,filename));
     setModuleShuntLocation  (static_cast<moduleShuntLocation>(m_ini->readInteger("Modules","shuntLocation",m_shuntLocation,filename)));
@@ -162,7 +162,7 @@ void NIDeviceModule::setCounterNames(const std::vector<std::string> &names)
 }    
 
 
-void NIDeviceModule::setModuleType(moduleType newType)
+void NIDeviceModule::setModuleType(ModuleType newType)
 {
     m_moduleType = newType;
 }
@@ -295,7 +295,7 @@ std::vector<std::string> NIDeviceModule::getCounterNames() const
     return m_counterNames;
 }
 
-moduleType NIDeviceModule::getModuleType() const
+ModuleType NIDeviceModule::getModuleType() const
 {
     return m_moduleType;
 }

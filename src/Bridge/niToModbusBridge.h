@@ -40,16 +40,13 @@ public:
     std::shared_ptr<NewModbusServer>   getModbusServer()   const;
     const std::vector<MappingConfig>& getMappingData()    const;
 
-    // TODO: Load mapping from a configuration file
+    // Load mapping from a configuration file
     void loadMapping();
-     // Data synchronization method
-    void dataSynchronization();
 
     bool startModbusSimulation();
     void stopModbusSimulation();
-    void startAcquisition();
+    bool startAcquisition();
     void stopAcquisition();
-    std::vector<uint16_t> getLatestSimulatedData(); 
 
 private:
     unsigned long long m_simulationCounter=0;
@@ -59,12 +56,14 @@ private:
     std::shared_ptr<SimpleTimer>                         m_dataAcquTimer;
     std::shared_ptr<AnalogicReader>                      m_analogicReader;
     std::shared_ptr<DigitalReader>                       m_digitalReader;
-    std::shared_ptr<NewModbusServer>                        m_modbusServer;
+    std::shared_ptr<NewModbusServer>                     m_modbusServer;
     std::vector<MappingConfig>                           m_mappingData;
 
+    std::vector<uint16_t>                                m_realDataBufferLine;
 
-    uint16_t acquireData(const MappingConfig& config);
-    void     updateModbusRegisters();
+
+    void acquireData();
+
 
 
 
@@ -75,6 +74,7 @@ private:
     void simulateCoders           (std::vector<uint16_t> &analogChannelsResult);
     
     void onDataAcquisitionTimerTimeOut();
+    
 
     // Signal functions to notify changes
     std::function<void()> onAnalogicReaderChanged;

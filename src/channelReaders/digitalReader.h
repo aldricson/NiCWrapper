@@ -11,7 +11,7 @@ public:
     
     // Override the pure virtual functions
     void manualReadOneShot(const std::string &moduleAlias, const unsigned int &index, double &returnedValue) override;
-
+    void manualReadOneShot(const std::string &moduleAlias, const std::string  &chanName, double &returnedValue) override;
     
     // Add any additional member functions specific to DigitalReader here
 };

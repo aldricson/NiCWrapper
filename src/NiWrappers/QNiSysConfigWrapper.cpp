@@ -93,7 +93,7 @@ std::vector<std::string> QNiSysConfigWrapper::EnumerateCRIOPluggedModules() {
     unsigned int counterMin       = 0.0;
     unsigned int counterMax       = 4294967295;
     std::string  analogUnits      = "";
-    moduleType modType;
+    ModuleType modType;
     moduleShuntLocation shuntLoc;
     double              shuntVal = 0.0; 
     int slotNumber;       //slot where is the module

@@ -27,7 +27,11 @@ public:
     int32 GetNumberOfModules();
     std::vector<std::string> GetDevicesList();
     double       readCurrent(NIDeviceModule *deviceModule, unsigned int chanIndex, unsigned int maxRetries, bool autoConvertTomAmps);
+    double       readCurrent(NIDeviceModule *deviceModule, std::string  chanName, unsigned int maxRetries, bool autoConvertTomAmps);
+
     double       readVoltage(NIDeviceModule *deviceModule, unsigned int chanIndex, unsigned int maxRetries);
+    double       readVoltage(NIDeviceModule *deviceModule, std::string  chanName , unsigned int maxRetries);
+
     unsigned int readCounter(NIDeviceModule *deviceModule, unsigned int chanIndex, unsigned int maxRetries);
     void handleErrorAndCleanTask();
 

@@ -33,6 +33,8 @@ public:
     SensorRigUpStruct getSRUMapping() const;  
     void setSRUMapping(const SensorRigUpStruct& newMapping);
 
+    int getSRUMappingSizeWithoutAlarms();
+
 
 private:
     static const int NB_CONNECTION = 25 ;

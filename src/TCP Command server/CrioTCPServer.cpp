@@ -100,6 +100,7 @@ std::string CrioTCPServer::parseRequest(const std::string& request)
             return std::string("NACK:") + e.what();
         }   
     }
+
     else if (checkForReadCommand(tokens[0],"readVoltage"))
     {
         try
@@ -143,6 +144,7 @@ std::string CrioTCPServer::parseRequest(const std::string& request)
             return std::string("NACK:") + e.what();
         }      
     }
+
     else if (checkForReadCommand(tokens[0],"startModbusSimulation"))
     {
         //broadCastStr("crio debug:\nstartModbusSimulation detected\nin std::string CrioTCPServer::parseRequest(const std::string& request)\n"); 
@@ -162,22 +164,6 @@ std::string CrioTCPServer::parseRequest(const std::string& request)
             { 
               return ("NACK: Impossible to start modbus simulation");
             }
-
-          /*/  //ensure it will not be called
-            m_bridge->getSimulateTimer()->stop();
-            //broadCastStr("crio debug:\nsimulation timer forced to stop\ninstd::string CrioTCPServer::parseRequest(const std::string& request)\n");
-            //stop the acquisition timer
-            m_bridge->getDataAcquTimer()->stop();
-            //broadCastStr("crio debug:\nacquisition timer forced to stop\ninstd::string CrioTCPServer::parseRequest(const std::string& request)\n");
-            //clean the buffer
-            m_bridge->getSimulationBuffer().clear();
-            //broadCastStr("crio debug:\nsimulation buffer has been cleaned\ninstd::string CrioTCPServer::parseRequest(const std::string& request)\n");
-            //start the server
-            m_bridge->getModbusServer()->run();
-            //broadCastStr("crio debug:\nModbus thread is started\ninstd::string CrioTCPServer::parseRequest(const std::string& request)\n");
-            m_bridge->getSimulateTimer()->start();
-            //broadCastStr("crio debug:\nsimulation timer is started\ninstd::string CrioTCPServer::parseRequest(const std::string& request)\n");
-            return ("ACK");*/ 
         }
         catch(const std::exception& e)
         {
@@ -186,6 +172,7 @@ std::string CrioTCPServer::parseRequest(const std::string& request)
             return std::string("NACK:") + std::string(e.what());
         }
     }
+
     else if (checkForReadCommand(tokens[0],"stopModbusSimulation"))
     {
         try
@@ -199,6 +186,45 @@ std::string CrioTCPServer::parseRequest(const std::string& request)
             return std::string("NACK:") + e.what();
         }
     }
+
+    else if (checkForReadCommand(tokens[0],"startModbusAcquisition"))
+    {
+        try
+        {
+            if (m_bridge->getDataAcquTimer()->isActive()) 
+            {
+                return "ACK";
+            }
+            if (m_bridge->startAcquisition()) 
+            {
+               return ("ACK");
+            }
+            else
+            { 
+              return ("NACK: Impossible to start modbus acquisition");
+            }
+        }
+        catch(const std::exception& e)
+        {
+            std::cerr << e.what() << '\n';
+            return std::string("NACK:") + std::string(e.what());
+        }
+    }
+
+    else if (checkForReadCommand(tokens[0],"stopModbusAcquisition"))
+    {
+        try
+        {
+            m_bridge->stopAcquisition();
+            return ("ACK"); 
+        }
+        catch(const std::exception& e)
+        {
+            std::cerr << e.what() << '\n';
+            return std::string("NACK:") + e.what();
+        }
+    }
+
     else
     {
         return "unknow command";

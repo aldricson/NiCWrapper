@@ -261,3 +261,12 @@ void NewModbusServer::setSRUMapping(const SensorRigUpStruct &newMapping)
     std::lock_guard<std::mutex> lock(sruMappingMutex);
     SRUMapping = newMapping;
 }
+
+int NewModbusServer::getSRUMappingSizeWithoutAlarms()
+{
+    int totalSize =  SRUMapping.m_nbSRUAnalogsIn    +
+                     SRUMapping.m_nbSRUAnalogsOut   +
+                    (SRUMapping.m_nbSRUCoders   *2) + //2 register of 16 bits by coder
+                    (SRUMapping.m_nbSRUCounters *3);  //3 register of 16 bits by counter (1x for frequency 2x value)  
+    return totalSize;
+}

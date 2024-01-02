@@ -23,6 +23,7 @@ public:
     ~BaseReader();
     //raw data acquisition PURE VIRTUAL
     virtual void manualReadOneShot(const std::string &moduleAlias, const unsigned int &index, double &returnedValue) = 0;
+    virtual void manualReadOneShot(const std::string &moduleAlias, const std::string  &chanName, double &returnedValue) = 0;
     //acquisition 
     virtual void selectModuleAndChannel(const std::string& moduleName, const std::string& channelName);
     //public slots

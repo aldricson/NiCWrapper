@@ -22,21 +22,24 @@ public:
     static void broadcastMessage(const std::string& message);
 
 private:
-    unsigned short port_;
-    std::atomic<bool> serverRunning_;
-    std::vector<std::thread> clientThreads_;
-    std::mutex clientMutex_;
-    std::condition_variable clientCondition_;
+    unsigned short           port_           ;
+    std::atomic<bool>        serverRunning_  ;
+    std::vector<std::thread> clientThreads_  ;
+    std::mutex               clientMutex_    ;
+    std::condition_variable  clientCondition_;
 
-    static std::mutex broadcastMutex_;
-    static std::vector<int> clientSockets_;
-    static std::queue<std::string> messageQueue_;
+    static std::mutex              broadcastMutex_  ;
+    static std::vector<int>        clientSockets_   ;
+    static std::queue<std::string> messageQueue_    ;
     static std::condition_variable messageCondition_;
+    static std::atomic<bool> shutdownRequested_; // Static member declaration
 
-    void acceptClients();
-    void handleClient(int clientSocket);
-    static void sendMessageToAllClients(const std::string& message);
-    void processMessageQueue();
+
+    void         acceptClients           ()                          ;
+    void         handleClient            (int clientSocket)          ;
+    static void  signalHandler           (int signum)                ;
+    static void  sendMessageToAllClients (const std::string& message);
+    void         processMessageQueue     ()                          ;
 
 };
 

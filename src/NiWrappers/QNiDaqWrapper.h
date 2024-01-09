@@ -8,6 +8,8 @@
 #include <chrono>
 #include <thread>
 #include <functional>
+#include <mutex>
+#include <atomic>
 #include "../Conversions/convUtils.h"
 
 #include "../config.h"
@@ -57,11 +59,15 @@ public:
     void handleReadCurrentCompletion(int32 status);
     void handleReadVoltageCompletion(int32 status);
     void handleReadCounterCompletion(int32 status);
+    unsigned char random_char();
+    std::string generate_hex(const unsigned int len);
     
 private:
+    std::mutex voltageMutex;
+    std::mutex currentMutex;
     TaskHandle taskHandle;
-    double       m_lastSingleCurrentChannelValue = 0.0;
-    double       m_lastSingleVoltageChannelValue = 0.0;
+    std::atomic<double> m_lastSingleCurrentChannelValue;
+    std::atomic<double> m_lastSingleVoltageChannelValue;
     unsigned int m_lastSingleCounter             = 0;  
 };
 

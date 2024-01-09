@@ -50,34 +50,6 @@ void CrioDebugServer::stopServer() {
     }
 }
 
-
-// void CrioDebugServer::acceptClients() 
-// {
-//     int serverSocket = socket(AF_INET, SOCK_STREAM, 0);
-//     sockaddr_in serverAddr;
-//     serverAddr.sin_family = AF_INET;
-//     serverAddr.sin_port = htons(port_);
-//     serverAddr.sin_addr.s_addr = INADDR_ANY;
-// 
-//     bind(serverSocket, (struct sockaddr *)&serverAddr, sizeof(serverAddr));
-//     listen(serverSocket, 10);
-// 
-//     while (serverRunning_) {
-//         int clientSocket = accept(serverSocket, nullptr, nullptr);
-//         if (clientSocket > 0) {
-//             //std::cout << "New client on debug server" << std::endl;
-//             std::lock_guard<std::mutex> lock(clientMutex_);
-//             clientThreads_.push_back(std::thread(&CrioDebugServer::handleClient, this, clientSocket));
-//             {
-//                 std::lock_guard<std::mutex> broadcastLock(broadcastMutex_);
-//                 clientSockets_.push_back(clientSocket);
-//             }
-//         }
-//     }
-// 
-//     close(serverSocket);
-// }
-
 void CrioDebugServer::acceptClients() {
     int serverSocket = socket(AF_INET, SOCK_STREAM, 0);
     if (serverSocket < 0) {

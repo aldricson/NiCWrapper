@@ -1,6 +1,7 @@
 #include "QNiDaqWrapper.h"
 #include <iostream>
 #include <cstring>
+#include <random>
 #include "../NiModulesDefinitions/NIDeviceModule.h"
 
 //NiDaqMx callbacks
@@ -32,17 +33,22 @@ static int32 CVICALLBACK CounterDoneCallback(TaskHandle taskHandle,
     return 0;
 }
 
-QNiDaqWrapper::QNiDaqWrapper() {
+QNiDaqWrapper::QNiDaqWrapper() 
+{
     taskHandle = 0;
+    m_lastSingleCurrentChannelValue.store(0.0);
+    m_lastSingleVoltageChannelValue.store(0.0);
 }
 
 QNiDaqWrapper::~QNiDaqWrapper() {
-    if (taskHandle != 0) {
+    if (taskHandle != 0) 
+    {
         DAQmxClearTask(taskHandle);
     }
 }
 
-int32 QNiDaqWrapper::GetNumberOfModules() {
+int32 QNiDaqWrapper::GetNumberOfModules() 
+{
     char devNames[512];
     int32 error = DAQmxGetSystemInfoAttribute(DAQmx_Sys_DevNames, devNames, sizeof(devNames));
     if (error) {
@@ -62,7 +68,8 @@ int32 QNiDaqWrapper::GetNumberOfModules() {
     return moduleCount;
 }
 
-std::vector<std::string> QNiDaqWrapper::GetDevicesList() {
+std::vector<std::string> QNiDaqWrapper::GetDevicesList() 
+{
     std::vector<std::string> devices;
     int32 error;
     uInt32 bufferSize = 0;
@@ -92,8 +99,30 @@ std::vector<std::string> QNiDaqWrapper::GetDevicesList() {
 }
 
 
+unsigned char QNiDaqWrapper::random_char() 
+{
+    std::random_device rd;
+    std::mt19937 gen(rd()); 
+    std::uniform_int_distribution<> dis(0, 255);
+    return static_cast<unsigned char>(dis(gen));
+}
+
+std::string QNiDaqWrapper::generate_hex(const unsigned int len) 
+{
+    std::stringstream ss;
+    for(auto i = 0; i < len; i++) {
+        auto rc = random_char();
+        std::stringstream hexstream;
+        hexstream << std::hex << int(rc);
+        auto hex = hexstream.str(); 
+        ss << (hex.length() < 2 ? '0' + hex : hex);
+    }        
+    return ss.str();
+}
+
 double QNiDaqWrapper::readCurrent(NIDeviceModule *deviceModule, std::string chanName, unsigned int maxRetries, bool autoConvertTomAmps)
 {
+    std::lock_guard<std::mutex> lock(currentMutex);
     if (deviceModule == nullptr)
     {
         throw std::invalid_argument("Null pointer passed for deviceModule.");
@@ -122,7 +151,8 @@ double QNiDaqWrapper::readCurrent(NIDeviceModule *deviceModule, std::string chan
     while (true) 
     {
         // Create a new task
-        error = DAQmxCreateTask("getCurrentValue", &taskHandle);
+        std::string unicKey = "getCurrentValue"+generate_hex(8);
+        error = DAQmxCreateTask(unicKey.c_str(), &taskHandle);
         if (error) 
         {
             handleErrorAndCleanTask();  // Handle error and clean up
@@ -207,6 +237,7 @@ double QNiDaqWrapper::readCurrent(NIDeviceModule *deviceModule, std::string chan
 
 double QNiDaqWrapper::readCurrent(NIDeviceModule *deviceModule, unsigned int chanIndex, unsigned int maxRetries, bool autoConvertTomAmps)
 {
+    std::lock_guard<std::mutex> lock(currentMutex);
     if (deviceModule == nullptr)
     {
         throw std::invalid_argument("Null pointer passed for deviceModule.");
@@ -235,7 +266,8 @@ double QNiDaqWrapper::readCurrent(NIDeviceModule *deviceModule, unsigned int cha
     while (true) 
     {
         // Create a new task
-        error = DAQmxCreateTask("getCurrentValue", &taskHandle);
+        std::string unicKey = "getCurrentValue"+generate_hex(8);
+        error = DAQmxCreateTask(unicKey.c_str(), &taskHandle);
         if (error) 
         {
             handleErrorAndCleanTask();  // Handle error and clean up
@@ -303,7 +335,8 @@ double QNiDaqWrapper::readCurrent(NIDeviceModule *deviceModule, unsigned int cha
         handleErrorAndCleanTask();  // Handle error and clean up
         throw std::runtime_error("Failed to stop task.");
     }
-
+    //stop the task
+    DAQmxStopTask(taskHandle);
     // Clear the task to free resources
     DAQmxClearTask(taskHandle);
 
@@ -320,6 +353,7 @@ double QNiDaqWrapper::readCurrent(NIDeviceModule *deviceModule, unsigned int cha
 
 double QNiDaqWrapper::readVoltage(NIDeviceModule *deviceModule, std::string chanName, unsigned int maxRetries)
 {
+    std::lock_guard<std::mutex> lock(voltageMutex);
     // Check for null pointer
     if (deviceModule == nullptr)
     {
@@ -344,7 +378,8 @@ double QNiDaqWrapper::readVoltage(NIDeviceModule *deviceModule, std::string chan
     while (true) 
     {
         // Create a new task
-        error = DAQmxCreateTask("getVoltageValue", &taskHandle);
+        std::string unicKey = "getVoltageValue"+generate_hex(8);
+        error = DAQmxCreateTask(unicKey.c_str(), &taskHandle);
         if (error)
         {
             handleErrorAndCleanTask();  // Custom function to handle errors and clean up
@@ -413,6 +448,7 @@ double QNiDaqWrapper::readVoltage(NIDeviceModule *deviceModule, std::string chan
             handleErrorAndCleanTask();
             throw std::runtime_error("Failed to stop task.");
         }
+        DAQmxStopTask(taskHandle);
         // Clear the task to free up resources
         DAQmxClearTask(taskHandle);
         break; // If everything goes well, break the loop
@@ -429,6 +465,7 @@ double QNiDaqWrapper::readVoltage(NIDeviceModule *deviceModule, std::string chan
 
 double QNiDaqWrapper::readVoltage(NIDeviceModule *deviceModule, unsigned int chanIndex, unsigned int maxRetries)
 {
+    std::lock_guard<std::mutex> lock(voltageMutex);
     // Check for null pointer
     if (deviceModule == nullptr)
     {
@@ -453,7 +490,8 @@ double QNiDaqWrapper::readVoltage(NIDeviceModule *deviceModule, unsigned int cha
     while (true) 
     {
         // Create a new task
-        error = DAQmxCreateTask("getVoltageValue", &taskHandle);
+        std::string unicKey = "getVoltageValue"+generate_hex(8);
+        error = DAQmxCreateTask(unicKey.c_str(), &taskHandle);
         if (error)
         {
             handleErrorAndCleanTask();  // Custom function to handle errors and clean up
@@ -523,6 +561,7 @@ double QNiDaqWrapper::readVoltage(NIDeviceModule *deviceModule, unsigned int cha
             throw std::runtime_error("Failed to stop task.");
         }
         // Clear the task to free up resources
+        DAQmxStopTask(taskHandle);
         DAQmxClearTask(taskHandle);
         break; // If everything goes well, break the loop
     }

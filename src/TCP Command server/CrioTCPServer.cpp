@@ -41,40 +41,164 @@ void CrioTCPServer::stopServer() {
     }
 }
 
+
+//void CrioTCPServer::acceptClients() {
+//    int serverSocket = socket(AF_INET, SOCK_STREAM, 0);
+//    if (serverSocket < 0) {
+//        throw std::runtime_error("Failed to create socket: " + std::string(strerror(errno)));
+//    }
+//
+//    auto cleanup = [&]() { close(serverSocket); };
+//
+//    int opt = 1;
+//    if (setsockopt(serverSocket, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0) {
+//        cleanup();
+//        throw std::runtime_error("Failed to set SO_REUSEADDR: " + std::string(strerror(errno)));
+//    }
+//
+//    sockaddr_in serverAddr;
+//    serverAddr.sin_family = AF_INET;
+//    serverAddr.sin_port = htons(port_);
+//    serverAddr.sin_addr.s_addr = INADDR_ANY;
+//
+//    if (bind(serverSocket, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0) {
+//        cleanup();
+//        throw std::runtime_error("Failed to bind to port: " + std::string(strerror(errno)));
+//    }
+//
+//    if (listen(serverSocket, 10) < 0) {
+//        cleanup();
+//        throw std::runtime_error("Failed to listen on socket: " + std::string(strerror(errno)));
+//    }
+//
+//    while (serverRunning_) {
+//        int clientSocket = accept(serverSocket, nullptr, nullptr);
+//        if (clientSocket < 0) {
+//            if (errno == EINTR) {
+//                // If accept was interrupted by a signal, check if server is still running, then continue
+//                continue;
+//            } else {
+//                cleanup();
+//                throw std::runtime_error("Failed to accept client: " + std::string(strerror(errno)));
+//            }
+//        }
+//        
+//        // Successfully accepted a client
+//        std::lock_guard<std::mutex> lock(clientMutex_);
+//        clientThreads_.push_back(std::thread(&CrioTCPServer::handleClient, this, clientSocket));
+//    }
+//
+//    cleanup();
+//}
+//
+//
+//
+//void CrioTCPServer::handleClient(int clientSocket) {
+//    char buffer[1024];
+//    while (serverRunning_) {
+//        ssize_t bytesRead = recv(clientSocket, buffer, 1024, 0);
+//        if (bytesRead <= 0) {
+//            break;
+//        }
+//        std::string request(buffer, bytesRead);
+//        std::string response = parseRequest(request);
+//        send(clientSocket, response.c_str(), response.size(), 0);
+//    }
+//    close(clientSocket);
+//}
+
 void CrioTCPServer::acceptClients() {
     int serverSocket = socket(AF_INET, SOCK_STREAM, 0);
+    if (serverSocket < 0) {
+        throw std::runtime_error("Failed to create socket: " + std::string(strerror(errno)));
+    }
+
+    auto cleanup = [&]() { close(serverSocket); };
+
+    int opt = 1;
+    if (setsockopt(serverSocket, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0) {
+        cleanup();
+        throw std::runtime_error("Failed to set SO_REUSEADDR: " + std::string(strerror(errno)));
+    }
+
     sockaddr_in serverAddr;
     serverAddr.sin_family = AF_INET;
     serverAddr.sin_port = htons(port_);
     serverAddr.sin_addr.s_addr = INADDR_ANY;
 
-    bind(serverSocket, (struct sockaddr *)&serverAddr, sizeof(serverAddr));
-    listen(serverSocket, 10);
+    if (bind(serverSocket, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0) {
+        cleanup();
+        throw std::runtime_error("Failed to bind to port: " + std::string(strerror(errno)));
+    }
+
+    if (listen(serverSocket, 10) < 0) {
+        cleanup();
+        throw std::runtime_error("Failed to listen on socket: " + std::string(strerror(errno)));
+    }
 
     while (serverRunning_) {
         int clientSocket = accept(serverSocket, nullptr, nullptr);
-        if (clientSocket > 0) {
-            std::lock_guard<std::mutex> lock(clientMutex_);
-            clientThreads_.push_back(std::thread(&CrioTCPServer::handleClient, this, clientSocket));
+        if (clientSocket < 0) {
+            if (errno == EINTR) {
+                // If accept was interrupted by a signal, check if server is still running, then continue
+                continue;
+            } else {
+                cleanup();
+                throw std::runtime_error("Failed to accept client: " + std::string(strerror(errno)));
+            }
         }
+        
+        // Successfully accepted a client
+        std::lock_guard<std::mutex> lock(clientMutex_);
+        clientThreads_.push_back(std::thread(&CrioTCPServer::handleClient, this, clientSocket));
     }
 
-    close(serverSocket);
+    cleanup();
 }
+
+
 
 void CrioTCPServer::handleClient(int clientSocket) {
-    char buffer[1024];
+    char buffer[257]; // Buffer size increased by 1 for null termination
+    std::string accumulatedData;
+    const size_t maxMessageSize = 256;
+
     while (serverRunning_) {
-        ssize_t bytesRead = recv(clientSocket, buffer, 1024, 0);
+        memset(buffer, 0, sizeof(buffer));
+        ssize_t bytesRead = recv(clientSocket, buffer, maxMessageSize, 0);
         if (bytesRead <= 0) {
+            if (bytesRead == 0) {
+                std::cout << "Client disconnected: Socket " << clientSocket << std::endl;
+            } else {
+                std::cerr << "Error receiving data: Socket " << clientSocket << std::endl;
+            }
             break;
         }
-        std::string request(buffer, bytesRead);
-        std::string response = parseRequest(request);
-        send(clientSocket, response.c_str(), response.size(), 0);
+
+        buffer[bytesRead] = '\0';
+        accumulatedData += buffer;
+
+        if (accumulatedData.length() > maxMessageSize) {
+            std::string response = "NACK: command rejected";
+            send(clientSocket, response.c_str(), response.size(), 0);
+            break; // Optionally disconnect the client
+        }
+
+        size_t delimiterPos = accumulatedData.find('\n');
+        if (delimiterPos != std::string::npos) {
+            std::string completeMessage = accumulatedData.substr(0, delimiterPos);
+            accumulatedData.erase(0, delimiterPos + 1);
+
+            std::string response = parseRequest(completeMessage);
+            send(clientSocket, response.c_str(), response.size(), 0);
+        }
     }
+
     close(clientSocket);
 }
+
+
+
 
 std::string CrioTCPServer::parseRequest(const std::string& request) 
 {

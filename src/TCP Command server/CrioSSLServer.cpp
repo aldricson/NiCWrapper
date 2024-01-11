@@ -1,11 +1,11 @@
-#include "CrioTCPServer.h"
+#include "CrioSSLServer.h"
 #include <iostream>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <unistd.h>
 
 
-CrioTCPServer::CrioTCPServer(unsigned short port,
+CrioSSLServer::CrioSSLServer(unsigned short port,
                             std::shared_ptr<QNiSysConfigWrapper> aConfigWrapper,
                             std::shared_ptr<QNiDaqWrapper>       aDaqWrapper,
                             std::shared_ptr<AnalogicReader>      anAnalogicReader,
@@ -19,19 +19,21 @@ CrioTCPServer::CrioTCPServer(unsigned short port,
                             m_bridge(aBridge),
                             serverRunning_(false) 
 {
-    //
+    initializeSSLContext();
 }
 
-CrioTCPServer::~CrioTCPServer() {
+CrioSSLServer::~CrioSSLServer() 
+{
     stopServer();
+    cleanupSSLContext(); // Ensure SSL context and resources are cleaned up
 }
 
-void CrioTCPServer::startServer() {
+void CrioSSLServer::startServer() {
     serverRunning_ = true;
-    std::thread(&CrioTCPServer::acceptClients, this).detach();
+    std::thread(&CrioSSLServer::acceptClients, this).detach();
 }
 
-void CrioTCPServer::stopServer() {
+void CrioSSLServer::stopServer() {
     serverRunning_ = false;
     clientCondition_.notify_all();
     for (auto& th : clientThreads_) {
@@ -41,146 +43,164 @@ void CrioTCPServer::stopServer() {
     }
 }
 
+void CrioSSLServer::initializeSSLContext() 
+{
+    SSL_load_error_strings();
+    OpenSSL_add_ssl_algorithms();
 
-//void CrioTCPServer::acceptClients() {
-//    int serverSocket = socket(AF_INET, SOCK_STREAM, 0);
-//    if (serverSocket < 0) {
-//        throw std::runtime_error("Failed to create socket: " + std::string(strerror(errno)));
-//    }
-//
-//    auto cleanup = [&]() { close(serverSocket); };
-//
-//    int opt = 1;
-//    if (setsockopt(serverSocket, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0) {
-//        cleanup();
-//        throw std::runtime_error("Failed to set SO_REUSEADDR: " + std::string(strerror(errno)));
-//    }
-//
-//    sockaddr_in serverAddr;
-//    serverAddr.sin_family = AF_INET;
-//    serverAddr.sin_port = htons(port_);
-//    serverAddr.sin_addr.s_addr = INADDR_ANY;
-//
-//    if (bind(serverSocket, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0) {
-//        cleanup();
-//        throw std::runtime_error("Failed to bind to port: " + std::string(strerror(errno)));
-//    }
-//
-//    if (listen(serverSocket, 10) < 0) {
-//        cleanup();
-//        throw std::runtime_error("Failed to listen on socket: " + std::string(strerror(errno)));
-//    }
-//
-//    while (serverRunning_) {
-//        int clientSocket = accept(serverSocket, nullptr, nullptr);
-//        if (clientSocket < 0) {
-//            if (errno == EINTR) {
-//                // If accept was interrupted by a signal, check if server is still running, then continue
-//                continue;
-//            } else {
-//                cleanup();
-//                throw std::runtime_error("Failed to accept client: " + std::string(strerror(errno)));
-//            }
-//        }
-//        
-//        // Successfully accepted a client
-//        std::lock_guard<std::mutex> lock(clientMutex_);
-//        clientThreads_.push_back(std::thread(&CrioTCPServer::handleClient, this, clientSocket));
-//    }
-//
-//    cleanup();
-//}
-//
-//
-//
-//void CrioTCPServer::handleClient(int clientSocket) {
-//    char buffer[1024];
-//    while (serverRunning_) {
-//        ssize_t bytesRead = recv(clientSocket, buffer, 1024, 0);
-//        if (bytesRead <= 0) {
-//            break;
-//        }
-//        std::string request(buffer, bytesRead);
-//        std::string response = parseRequest(request);
-//        send(clientSocket, response.c_str(), response.size(), 0);
-//    }
-//    close(clientSocket);
-//}
+    sslContext_ = SSL_CTX_new(SSLv23_server_method());
+    if (!sslContext_) {
+        logSslErrors("Failed to create SSL context");
+        throw std::runtime_error("Failed to create SSL context");
+    }
 
-void CrioTCPServer::acceptClients() {
+    // Check if certificate file exists
+    std::ifstream certFileStream(certFile.c_str());
+    if (!certFileStream.good()) 
+    {
+        std::cerr << "Certificate file " << certFile << " does not exist." << std::endl;
+        SSL_CTX_free(sslContext_);
+        throw std::runtime_error("Certificate file does not exist");
+    }
+
+    // Now use the certificate
+    if (SSL_CTX_use_certificate_file(sslContext_, certFile.c_str(), SSL_FILETYPE_PEM) <= 0) {
+        logSslErrors("Failed to load certificate");
+        SSL_CTX_free(sslContext_);
+        throw std::runtime_error("Failed to load certificate");
+    }
+
+    if (SSL_CTX_use_PrivateKey_file(sslContext_, keyFile.c_str(), SSL_FILETYPE_PEM) <= 0) {
+        logSslErrors("Failed to load private key");
+        SSL_CTX_free(sslContext_);
+        throw std::runtime_error("Failed to load private key");
+    }
+}
+
+void CrioSSLServer::logSslErrors(const std::string& message) {
+    std::cerr << message << std::endl;
+    unsigned long errCode;
+    while((errCode = ERR_get_error())) {
+        char *err = ERR_error_string(errCode, NULL);
+        std::cerr << "OpenSSL error: " << err << std::endl;
+    }
+}
+
+void CrioSSLServer::cleanupSSLContext() {
+    // Check if the SSL context exists
+    if (sslContext_ != nullptr) {
+        // Free the SSL context
+        SSL_CTX_free(sslContext_);
+        sslContext_ = nullptr; // Set the pointer to nullptr to avoid use after free
+    }
+
+    // Clean up OpenSSL error strings and algorithms
+    ERR_free_strings();
+    EVP_cleanup();
+}
+
+
+void CrioSSLServer::acceptClients() {
+    // Create a server socket using TCP
     int serverSocket = socket(AF_INET, SOCK_STREAM, 0);
     if (serverSocket < 0) {
         throw std::runtime_error("Failed to create socket: " + std::string(strerror(errno)));
     }
 
+    // Lambda function for cleanup
     auto cleanup = [&]() { close(serverSocket); };
 
+    // Set socket options
     int opt = 1;
     if (setsockopt(serverSocket, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0) {
         cleanup();
         throw std::runtime_error("Failed to set SO_REUSEADDR: " + std::string(strerror(errno)));
     }
 
+    // Configure server address
     sockaddr_in serverAddr;
     serverAddr.sin_family = AF_INET;
     serverAddr.sin_port = htons(port_);
     serverAddr.sin_addr.s_addr = INADDR_ANY;
 
+    // Bind the server socket to the specified port
     if (bind(serverSocket, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0) {
         cleanup();
         throw std::runtime_error("Failed to bind to port: " + std::string(strerror(errno)));
     }
 
+    // Start listening on the server socket
     if (listen(serverSocket, 10) < 0) {
         cleanup();
         throw std::runtime_error("Failed to listen on socket: " + std::string(strerror(errno)));
     }
 
+    // Main loop to accept incoming connections
     while (serverRunning_) {
         int clientSocket = accept(serverSocket, nullptr, nullptr);
         if (clientSocket < 0) {
             if (errno == EINTR) {
-                // If accept was interrupted by a signal, check if server is still running, then continue
-                continue;
+                continue; // If interrupted by signal, just continue
             } else {
                 cleanup();
                 throw std::runtime_error("Failed to accept client: " + std::string(strerror(errno)));
             }
         }
-        
-        // Successfully accepted a client
+
+        // Create a new SSL object for the connection
+        SSL *ssl = SSL_new(sslContext_);
+        if (!ssl) {
+            close(clientSocket); // Close the socket if SSL creation failed
+            continue;
+        }
+
+        // Set the file descriptor for the SSL object
+        SSL_set_fd(ssl, clientSocket);
+
+        // Perform SSL handshake
+        if (SSL_accept(ssl) <= 0) {
+            SSL_free(ssl); // Free SSL object if handshake failed
+            close(clientSocket); // Close the socket
+            continue;
+        }
+
+        // Lock the mutex to safely add the client thread
         std::lock_guard<std::mutex> lock(clientMutex_);
-        clientThreads_.push_back(std::thread(&CrioTCPServer::handleClient, this, clientSocket));
+        // Start a new thread to handle the client's SSL connection
+        clientThreads_.push_back(std::thread(&CrioSSLServer::handleClient, this, clientSocket, ssl));
     }
 
+    // Cleanup the server socket
     cleanup();
 }
 
 
-
-void CrioTCPServer::handleClient(int clientSocket) {
+void CrioSSLServer::handleClient(int clientSocket, SSL* ssl) {
     char buffer[257]; // Buffer size increased by 1 for null termination
     std::string accumulatedData;
     const size_t maxMessageSize = 256;
 
     while (serverRunning_) {
         memset(buffer, 0, sizeof(buffer));
-        ssize_t bytesRead = recv(clientSocket, buffer, maxMessageSize, 0);
+        // Use SSL_read instead of recv for SSL communication
+        ssize_t bytesRead = SSL_read(ssl, buffer, maxMessageSize);
         if (bytesRead <= 0) {
-            if (bytesRead == 0) {
-                std::cout << "Client disconnected: Socket " << clientSocket << std::endl;
+            int sslError = SSL_get_error(ssl, bytesRead);
+            if (sslError == SSL_ERROR_ZERO_RETURN || sslError == SSL_ERROR_SYSCALL) {
+                std::cout << "SSL Client disconnected: Socket " << clientSocket << std::endl;
             } else {
-                std::cerr << "Error receiving data: Socket " << clientSocket << std::endl;
+                std::cerr << "SSL Error receiving data: Socket " << clientSocket << " Error: " << sslError << std::endl;
             }
-            break;
+            break; // Break on disconnect or error
         }
 
-        buffer[bytesRead] = '\0';
+        buffer[bytesRead] = '\0'; // Null-terminate the string
         accumulatedData += buffer;
 
         if (accumulatedData.length() > maxMessageSize) {
             std::string response = "NACK: command rejected";
-            send(clientSocket, response.c_str(), response.size(), 0);
+            // Use SSL_write instead of send for SSL communication
+            SSL_write(ssl, response.c_str(), response.size());
             break; // Optionally disconnect the client
         }
 
@@ -190,17 +210,19 @@ void CrioTCPServer::handleClient(int clientSocket) {
             accumulatedData.erase(0, delimiterPos + 1);
 
             std::string response = parseRequest(completeMessage);
-            send(clientSocket, response.c_str(), response.size(), 0);
+            // Use SSL_write to send response back to the client
+            SSL_write(ssl, response.c_str(), response.size());
         }
     }
 
-    close(clientSocket);
+    // Properly close the SSL connection and free resources
+    SSL_shutdown(ssl);
+    SSL_free(ssl);
+    close(clientSocket); // Close the socket
 }
 
 
-
-
-std::string CrioTCPServer::parseRequest(const std::string& request) 
+std::string CrioSSLServer::parseRequest(const std::string& request) 
 {
     std::string requestCopy = request;
     std::vector<std::string> tokens;
@@ -292,12 +314,12 @@ std::string CrioTCPServer::parseRequest(const std::string& request)
             return "NACK: Invalid command format";
         }
         
-        //broadCastStr("crio debug:\nstartModbusSimulation detected\nin std::string CrioTCPServer::parseRequest(const std::string& request)\n"); 
+        //broadCastStr("crio debug:\nstartModbusSimulation detected\nin std::string CrioSSLServer::parseRequest(const std::string& request)\n"); 
         try
         {
             if (m_bridge->getSimulateTimer()->isActive()) 
             {
-                //broadCastStr("crio debug:\nsimulation timer already active\nin std::string CrioTCPServer::parseRequest(const std::string& request)\n"); 
+                //broadCastStr("crio debug:\nsimulation timer already active\nin std::string CrioSSLServer::parseRequest(const std::string& request)\n"); 
                 //simulation already avtive
                 return "ACK";
             }
@@ -313,7 +335,7 @@ std::string CrioTCPServer::parseRequest(const std::string& request)
         catch(const std::exception& e)
         {
             std::cerr << e.what() << '\n';
-            //broadCastStr("crio debug:\n"+ std::string(e.what())+"\nin std::string CrioTCPServer::parseRequest(const std::string& request)\n");
+            //broadCastStr("crio debug:\n"+ std::string(e.what())+"\nin std::string CrioSSLServer::parseRequest(const std::string& request)\n");
             return std::string("NACK:") + std::string(e.what());
         }
     }
@@ -396,7 +418,7 @@ std::string CrioTCPServer::parseRequest(const std::string& request)
 
 
 
-void CrioTCPServer::tokenize(const std::string& input, std::vector<std::string>& tokens, bool &ok) 
+void CrioSSLServer::tokenize(const std::string& input, std::vector<std::string>& tokens, bool &ok) 
 {
     std::string inputCopy = input;
     size_t pos = 0;
@@ -422,7 +444,7 @@ void CrioTCPServer::tokenize(const std::string& input, std::vector<std::string>&
     }
 }
 
-bool CrioTCPServer::checkForReadCommand(const std::string& request, const std::string& command)
+bool CrioSSLServer::checkForReadCommand(const std::string& request, const std::string& command)
 {
     std::string mainString      =  request;
     std::string substringToFind = command;

@@ -14,7 +14,10 @@
 #include "./Bridge/niToModbusBridge.h"
 #include "./Signals/QSignalTest.h"
 #include "./stringUtils/stringUtils.h"
-#include "./TCP Command server/CrioTCPServer.h"
+
+//#include "./TCP Command server/CrioTCPServer.h"
+#include "./TCP Command server/CrioSSLServer.h"
+
 #include "./TCP Command server/CrioDebugServer.h"
 
 
@@ -30,8 +33,9 @@ std::shared_ptr<AnalogicReader>      analogReader;
 std::shared_ptr<DigitalReader>       digitalReader;
 std::shared_ptr<NewModbusServer>     modbusServer;
 std::shared_ptr<NItoModbusBridge>    m_crioToModbusBridge;
-std::shared_ptr<CrioTCPServer>       m_crioTCPServer;
 
+//std::shared_ptr<CrioTCPServer>       m_crioTCPServer;
+std::shared_ptr<CrioSSLServer>         m_crioTCPServer;
 
 void createNecessaryInstances()
 {
@@ -59,7 +63,10 @@ void createNecessaryInstances()
   m_crioToModbusBridge = std::make_shared<NItoModbusBridge>(analogReader,digitalReader,modbusServer);
   std::cout<<"modbus bridge created"<<std::endl;
   //object in charge of all non ssh commands
-  m_crioTCPServer = std::make_shared<CrioTCPServer>(8222,sysConfig,daqMx,analogReader,digitalReader, m_crioToModbusBridge);
+
+  //m_crioTCPServer = std::make_shared<CrioTCPServer>(8222,sysConfig,daqMx,analogReader,digitalReader, m_crioToModbusBridge);
+  m_crioTCPServer = std::make_shared<CrioSSLServer>(8222,sysConfig,daqMx,analogReader,digitalReader, m_crioToModbusBridge);
+  
   std::cout<<"TCP server created"<<std::endl;
 
 }

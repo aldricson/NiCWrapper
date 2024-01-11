@@ -91,15 +91,27 @@ foreach(str ${NISYSCFG_HEADER_FILES})
     FILE (APPEND ../buildLog.txt "${str}\n")
 endforeach()
 
+set (OPENSSL_LIB_DIR "C:/build/20.x/x64/sysroots/core2-64-nilrt-linux/usr/lib")
 
-add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${FTXUI_HEADER_FILES})
+
+set (OPENSSL_INCLUDE "C:/build/20.x/x64/sysroots/core2-64-nilrt-linux/usr/include/openssl")
+file(GLOB_RECURSE OPENSSL_HEADERFILES "${OPENSSL_INCLUDE}/*.h")
+FILE (APPEND ../buildLog.txt "\nList of openssl linux headers:\n")
+foreach(str ${OPENSSL_HEADERFILES})
+    FILE (APPEND ../buildLog.txt "${str}\n")
+endforeach()
+
+add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
 
 FILE (APPEND ../buildLog.txt "all files has been added to linux elf executable \n")
 
-# Update include directories and linked libraries
-target_include_directories(${PROJECT_NAME} PUBLIC ${DAQMX_INCLUDE} ${NISYSCFG_INCLUDE} ${LIBMODBUS_INCLUDE_PATH} )
-FILE (APPEND ../buildLog.txt "Nidaqmx, NiSysConfig, libmodbus headers directories are now added to the project\n")
 
-target_link_libraries(${PROJECT_NAME} PUBLIC ${DAQMX_LINUXLIB_FILES} ${LIBMODBUS_PATH} pthread)
-FILE (APPEND ../buildLog.txt "daqmx, libmodbus, FTXUI, and linux threading libraries are now linked to the project\n")
+
+# Update include directories and linked libraries
+target_include_directories(${PROJECT_NAME} PUBLIC ${DAQMX_INCLUDE} ${NISYSCFG_INCLUDE} ${LIBMODBUS_INCLUDE_PATH} ${OPENSSL_INCLUDE})
+FILE (APPEND ../buildLog.txt "Nidaqmx, NiSysConfig, libmodbus, openssl headers directories are now added to the project\n")
+
+target_link_libraries(${PROJECT_NAME} PUBLIC ${DAQMX_LINUXLIB_FILES} ${LIBMODBUS_PATH} ${OPENSSL_LIB_DIR}/libssl.so ${OPENSSL_LIB_DIR}/libcrypto.so pthread)
+FILE (APPEND ../buildLog.txt "daqmx, libmodbus, and linux threading libraries are now linked to the project\n")
+

@@ -49,6 +49,7 @@ void CrioSSLServer::initializeSSLContext()
     OpenSSL_add_ssl_algorithms();
 
     sslContext_ = SSL_CTX_new(SSLv23_server_method());
+
     if (!sslContext_) {
         logSslErrors("Failed to create SSL context");
         throw std::runtime_error("Failed to create SSL context");
@@ -77,7 +78,8 @@ void CrioSSLServer::initializeSSLContext()
     }
 }
 
-void CrioSSLServer::logSslErrors(const std::string& message) {
+void CrioSSLServer::logSslErrors(const std::string& message) 
+{
     std::cerr << message << std::endl;
     unsigned long errCode;
     while((errCode = ERR_get_error())) {
@@ -86,7 +88,8 @@ void CrioSSLServer::logSslErrors(const std::string& message) {
     }
 }
 
-void CrioSSLServer::cleanupSSLContext() {
+void CrioSSLServer::cleanupSSLContext() 
+{
     // Check if the SSL context exists
     if (sslContext_ != nullptr) {
         // Free the SSL context
@@ -100,19 +103,22 @@ void CrioSSLServer::cleanupSSLContext() {
 }
 
 
-void CrioSSLServer::acceptClients() {
+void CrioSSLServer::acceptClients() 
+{
     // Create a server socket using TCP
     int serverSocket = socket(AF_INET, SOCK_STREAM, 0);
-    if (serverSocket < 0) {
+    //security check
+    if (serverSocket < 0) 
+    {
         throw std::runtime_error("Failed to create socket: " + std::string(strerror(errno)));
     }
-
     // Lambda function for cleanup
     auto cleanup = [&]() { close(serverSocket); };
 
     // Set socket options
     int opt = 1;
-    if (setsockopt(serverSocket, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0) {
+    if (setsockopt(serverSocket, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0) 
+    {
         cleanup();
         throw std::runtime_error("Failed to set SO_REUSEADDR: " + std::string(strerror(errno)));
     }
@@ -130,18 +136,24 @@ void CrioSSLServer::acceptClients() {
     }
 
     // Start listening on the server socket
-    if (listen(serverSocket, 10) < 0) {
+    if (listen(serverSocket, 10) < 0) 
+    {
         cleanup();
         throw std::runtime_error("Failed to listen on socket: " + std::string(strerror(errno)));
     }
 
     // Main loop to accept incoming connections
-    while (serverRunning_) {
+    while (serverRunning_) 
+    {
         int clientSocket = accept(serverSocket, nullptr, nullptr);
-        if (clientSocket < 0) {
-            if (errno == EINTR) {
+        if (clientSocket < 0) 
+        {
+            if (errno == EINTR) 
+            {
                 continue; // If interrupted by signal, just continue
-            } else {
+            } 
+            else 
+            {
                 cleanup();
                 throw std::runtime_error("Failed to accept client: " + std::string(strerror(errno)));
             }
@@ -149,7 +161,8 @@ void CrioSSLServer::acceptClients() {
 
         // Create a new SSL object for the connection
         SSL *ssl = SSL_new(sslContext_);
-        if (!ssl) {
+        if (!ssl) 
+        {
             close(clientSocket); // Close the socket if SSL creation failed
             continue;
         }
@@ -158,7 +171,8 @@ void CrioSSLServer::acceptClients() {
         SSL_set_fd(ssl, clientSocket);
 
         // Perform SSL handshake
-        if (SSL_accept(ssl) <= 0) {
+        if (SSL_accept(ssl) <= 0) 
+        {
             SSL_free(ssl); // Free SSL object if handshake failed
             close(clientSocket); // Close the socket
             continue;
@@ -175,7 +189,8 @@ void CrioSSLServer::acceptClients() {
 }
 
 
-void CrioSSLServer::handleClient(int clientSocket, SSL* ssl) {
+void CrioSSLServer::handleClient(int clientSocket, SSL* ssl) 
+{
     char buffer[257]; // Buffer size increased by 1 for null termination
     std::string accumulatedData;
     const size_t maxMessageSize = 256;
@@ -184,11 +199,15 @@ void CrioSSLServer::handleClient(int clientSocket, SSL* ssl) {
         memset(buffer, 0, sizeof(buffer));
         // Use SSL_read instead of recv for SSL communication
         ssize_t bytesRead = SSL_read(ssl, buffer, maxMessageSize);
-        if (bytesRead <= 0) {
+        if (bytesRead <= 0) 
+        {
             int sslError = SSL_get_error(ssl, bytesRead);
-            if (sslError == SSL_ERROR_ZERO_RETURN || sslError == SSL_ERROR_SYSCALL) {
+            if (sslError == SSL_ERROR_ZERO_RETURN || sslError == SSL_ERROR_SYSCALL) 
+            {
                 std::cout << "SSL Client disconnected: Socket " << clientSocket << std::endl;
-            } else {
+            } 
+            else 
+            {
                 std::cerr << "SSL Error receiving data: Socket " << clientSocket << " Error: " << sslError << std::endl;
             }
             break; // Break on disconnect or error

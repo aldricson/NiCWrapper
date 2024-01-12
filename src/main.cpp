@@ -18,8 +18,8 @@
 //#include "./TCP Command server/CrioTCPServer.h"
 #include "./TCP Command server/CrioSSLServer.h"
 
-#include "./TCP Command server/CrioDebugServer.h"
-
+//#include "./TCP Command server/CrioDebugServer.h"
+#include "./TCP Command server/CrioSSLDebugServer.h"
 
 #include "testFunctions.h"
 
@@ -75,7 +75,8 @@ int main(void)
 {  
   
   unsigned short debugPort = 8223; // Choose an appropriate port number
-  CrioDebugServer debugServer(debugPort);
+  CrioSSLDebugServer debugServer(debugPort);
+  //CrioDebugServer debugServer(debugPort);
   debugServer.startServer();
   bool ok;
   double value =  testReadCurrentFromMod1AI0(ok);

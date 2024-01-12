@@ -221,6 +221,8 @@ double QNiDaqWrapper::readCurrent(NIDeviceModule *deviceModule, std::string chan
         throw std::runtime_error("Failed to stop task.");
     }
 
+    //stop the task
+    DAQmxStopTask(taskHandle);
     // Clear the task to free resources
     DAQmxClearTask(taskHandle);
 
@@ -677,13 +679,12 @@ unsigned int QNiDaqWrapper::readCounter(NIDeviceModule *deviceModule, unsigned i
 }
 
 
-
-
 void QNiDaqWrapper::handleErrorAndCleanTask()
 {
     char errBuff[2048] = {'\0'};
     DAQmxGetExtendedErrorInfo(errBuff, 2048);
     std::cerr << "Extended Error Info: " << errBuff << std::endl;
+    DAQmxStopTask(taskHandle);
     DAQmxClearTask(taskHandle);
 }
 

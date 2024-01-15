@@ -8,7 +8,6 @@
 #include <string>
 #include "../filesUtils/iniObject.h"
 #include "../filesUtils/cPosixFileHelper.h"
-#include "../TCP Command server/CrioDebugServer.h"
 
 struct SensorRigUpStruct {
     bool m_modeSRU         = true;

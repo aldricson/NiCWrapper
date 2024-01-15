@@ -3,7 +3,6 @@
 #include <iostream>
 #include <sstream>
 #include "cPosixFileHelper.h"
-#include "../TCP Command server/CrioDebugServer.h"
 
 // IniObject Implementation
 IniObject::IniObject()
@@ -40,7 +39,7 @@ T IniObject::readValue(const std::string& section, const std::string& key, T def
                 // No value found
                 if (!writeValue<T>(section, key, defaultValue, currentFilename))
                 {
-                    CrioDebugServer::broadcastMessage( "Err: IniObject Impossible to generate default value for: "+section+""+key);
+                    //TODO HANDLE ERROR
                 }
                 return defaultValue;
             }

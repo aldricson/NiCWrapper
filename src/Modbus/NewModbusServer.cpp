@@ -113,7 +113,6 @@ void NewModbusServer::handleNewConnection() {
         }
         // Add the new client to the client list and broadcast the update
         std::string ipAddress = inet_ntoa(clientaddr.sin_addr);
-        CrioDebugServer::broadcastMessage("inf:New connection from "+ipAddress+" on socket "+std::to_string(newfd));
         updateClientList(newfd, ipAddress,false);
         broadcastClientList();
     }
@@ -136,7 +135,6 @@ void NewModbusServer::broadcastClientList()
         std::string clientIp = clientPair.second;   // Extract the IP address
         message += "\nSocket " + std::to_string(clientSocket) + ": " + clientIp;
     }
-    CrioDebugServer::broadcastMessage(message);
 }
 
 
@@ -154,7 +152,6 @@ void NewModbusServer::handleClientRequest(int master_socket) {
     {
         // Connection closed by client
         std::cout << "Connection closed on socket " << master_socket << std::endl;
-        CrioDebugServer::broadcastMessage("inf:Connection closed on socket "+std::to_string(master_socket));
         // Update the client list to reflect the disconnection
         updateClientList(master_socket, "", true);  // 'true' indicates removal
         broadcastClientList();
@@ -202,14 +199,14 @@ void NewModbusServer::reMapInputRegisterValuesForAnalogics(const std::vector<uin
     std::lock_guard<std::mutex> lock(mb_mapping_mutex);
 
     // Check if mb_mapping is valid
-    if (!mb_mapping) {
-        CrioDebugServer::broadcastMessage("mb_mapping is null, cannot remap values.");
+    if (!mb_mapping) 
+    {
         return;
     }
 
     // Check if tab_input_registers is valid
-    if (!mb_mapping->tab_input_registers) {
-        CrioDebugServer::broadcastMessage("tab_input_registers is null, cannot remap values.");
+    if (!mb_mapping->tab_input_registers) 
+    {
         return;
     }
 
@@ -235,7 +232,6 @@ bool NewModbusServer::modbusSetSlaveId(int newSlaveId) {
 
     if (newSlaveId < 0 || newSlaveId > 255) {
         std::cerr << "Invalid slave ID. Must be between 0 and 255." << std::endl;
-        CrioDebugServer::broadcastMessage("err: bool NewModbusServer::modbusSetSlaveId(int newSlaveId)\nInvalid slave ID. Must be between 0 and 255.");
         return false;
     }
 
@@ -243,10 +239,8 @@ bool NewModbusServer::modbusSetSlaveId(int newSlaveId) {
     if (modbus_set_slave(ctx, newSlaveId) == -1) 
     {   
         std::string error = modbus_strerror(errno);
-        CrioDebugServer::broadcastMessage("err:Failed to set Modbus slave ID: " + error);
         return false;
     }
-    CrioDebugServer::broadcastMessage("Modbus slave ID set to: "+std::to_string(newSlaveId));
     return true;
 }
 

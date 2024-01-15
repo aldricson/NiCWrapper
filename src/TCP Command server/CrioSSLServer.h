@@ -55,10 +55,13 @@ private:
     void cleanupSSLContext();
     void acceptClients();
     void handleClient(int clientSocket, SSL* ssl);
-    std::string parseRequest(const std::string& request);
+    std::string parseRequest(const std::string& request, SSL* ssl);
     void tokenize(const std::string& input, std::vector<std::string>& tokens, bool& ok); 
     bool checkForReadCommand(const std::string& request, const std::string& command);
     void logSslErrors(const std::string& message); 
+    std::string handleFileUploadToClient(SSL* ssl, const std::vector<std::string>& tokens);
+    std::string handleFileDownloadFromClient(SSL* ssl, const std::vector<std::string>& tokens);
+ 
 };
 
 #endif // CRIO_SSLSERVER_H

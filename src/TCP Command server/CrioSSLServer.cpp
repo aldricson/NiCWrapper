@@ -88,6 +88,71 @@ void CrioSSLServer::logSslErrors(const std::string& message)
     }
 }
 
+std::string CrioSSLServer::handleFileUploadToClient(SSL* ssl, const std::vector<std::string>& tokens) 
+{
+    if (tokens.size() != 2) {
+        return "NACK: Incorrect download command format";
+    }
+
+    const std::string& filename = tokens[1];
+    std::ifstream inFile(filename, std::ios::binary | std::ios::ate);
+    if (!inFile.is_open()) {
+        return "NACK: Unable to open file for reading";
+    }
+
+    long long fileSize = inFile.tellg();
+    inFile.seekg(0, std::ios::beg);
+
+    std::string sizeResponse = "Size:" + std::to_string(fileSize);
+    SSL_write(ssl, sizeResponse.c_str(), sizeResponse.size());
+
+    char buffer[1024];
+    while (!inFile.eof()) {
+        inFile.read(buffer, sizeof(buffer));
+        std::streamsize bytesRead = inFile.gcount();
+        SSL_write(ssl, buffer, bytesRead);
+    }
+
+    return "ACK: File download successful";
+}
+
+std::string CrioSSLServer::handleFileDownloadFromClient(SSL* ssl, const std::vector<std::string>& tokens) 
+{
+    if (tokens.size() != 3) {
+        return "NACK: Incorrect upload command format";
+    }
+
+    const std::string& filename = tokens[1];
+    long long fileSize;
+    try {
+        fileSize = std::stoll(tokens[2]);
+    } catch (...) {
+        return "NACK: Invalid file size";
+    }
+
+    std::ofstream outFile(filename, std::ios::binary);
+    if (!outFile.is_open()) {
+        return "NACK: Unable to open file for writing";
+    }
+
+    char buffer[1024];
+    long long totalBytesRead = 0;
+    while (totalBytesRead < fileSize) {
+        int bytesRead = SSL_read(ssl, buffer, sizeof(buffer));
+        if (bytesRead <= 0) break;  // Error or disconnect
+        outFile.write(buffer, bytesRead);
+        totalBytesRead += bytesRead;
+    }
+
+    if (totalBytesRead != fileSize) {
+        return "NACK: File transfer incomplete";
+    }
+
+    return "ACK: File upload successful";
+}
+
+
+
 void CrioSSLServer::cleanupSSLContext() 
 {
     // Check if the SSL context exists
@@ -228,7 +293,7 @@ void CrioSSLServer::handleClient(int clientSocket, SSL* ssl)
             std::string completeMessage = accumulatedData.substr(0, delimiterPos);
             accumulatedData.erase(0, delimiterPos + 1);
 
-            std::string response = parseRequest(completeMessage);
+            std::string response = parseRequest(completeMessage,ssl);
             // Use SSL_write to send response back to the client
             SSL_write(ssl, response.c_str(), response.size());
         }
@@ -241,7 +306,7 @@ void CrioSSLServer::handleClient(int clientSocket, SSL* ssl)
 }
 
 
-std::string CrioSSLServer::parseRequest(const std::string& request) 
+std::string CrioSSLServer::parseRequest(const std::string& request, SSL* ssl) 
 {
     std::string requestCopy = request;
     std::vector<std::string> tokens;
@@ -427,6 +492,14 @@ std::string CrioSSLServer::parseRequest(const std::string& request)
             std::cerr << e.what() << '\n';
             return std::string("NACK:") + e.what();
         }
+    }
+    else if (checkForReadCommand(tokens[0], "uploadToClient")) 
+    {
+        return handleFileUploadToClient(ssl, tokens);
+    } 
+    else if (checkForReadCommand(tokens[0], "downloadFromClient")) 
+    {
+        return handleFileDownloadFromClient(ssl, tokens);
     }
 
     else

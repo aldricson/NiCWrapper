@@ -2,7 +2,6 @@
 #define AnalogicReader_H
 
 #include "baseReader.h"
-#include "../TCP Command server/CrioDebugServer.h"
 
 class AnalogicReader : public BaseReader {
 public:

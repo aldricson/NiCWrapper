@@ -14,13 +14,7 @@
 #include "./Bridge/niToModbusBridge.h"
 #include "./Signals/QSignalTest.h"
 #include "./stringUtils/stringUtils.h"
-
-//#include "./TCP Command server/CrioTCPServer.h"
 #include "./TCP Command server/CrioSSLServer.h"
-
-//#include "./TCP Command server/CrioDebugServer.h"
-#include "./TCP Command server/CrioSSLDebugServer.h"
-
 #include "testFunctions.h"
 
 
@@ -74,18 +68,16 @@ void createNecessaryInstances()
 int main(void)
 {  
   
-  unsigned short debugPort = 8223; // Choose an appropriate port number
-  CrioSSLDebugServer debugServer(debugPort);
-  //CrioDebugServer debugServer(debugPort);
-  debugServer.startServer();
-  bool ok;
-  double value =  testReadCurrentFromMod1AI0(ok);
-  if (!ok) return EXIT_FAILURE;
-  std::cout << "Read current: " << value << " Amps" << std::endl;
-  testSignalSlotMechanism(ok);
-  if (!ok) return EXIT_FAILURE;
-  testIniFileSystem(ok);
-  if (!ok) return EXIT_FAILURE;
+
+ 
+  //bool ok;
+  //double value =  testReadCurrentFromMod1AI0(ok);
+  //if (!ok) return EXIT_FAILURE;
+  //std::cout << "Read current: " << value << " Amps" << std::endl;
+  //testSignalSlotMechanism(ok);
+  //if (!ok) return EXIT_FAILURE;
+  //testIniFileSystem(ok);
+  //if (!ok) return EXIT_FAILURE;
 
   createNecessaryInstances();
 

@@ -113,7 +113,6 @@ void NItoModbusBridge::loadMapping()
 
 bool NItoModbusBridge::startModbusSimulation()
 {
-    CrioDebugServer::broadcastMessage("enter bool NItoModbusBridge::startModbusSimulation()");
     if (m_simulateTimer->isActive())
         return true;
     try
@@ -139,7 +138,6 @@ void NItoModbusBridge::stopModbusSimulation()
 
 bool NItoModbusBridge::startAcquisition()
 {
-    CrioDebugServer::broadcastMessage("enter bool NItoModbusBridge::startAcquisition()");
     if (m_dataAcquTimer->isActive())
         return true;
     try
@@ -192,7 +190,6 @@ void NItoModbusBridge::onSimulationTimerTimeOut()
     {
         str += std::to_string(analogChannelsResult[i]) + ";";
     }
-    CrioDebugServer::broadcastMessage(str);
     m_modbusServer->reMapInputRegisterValuesForAnalogics(analogChannelsResult);
     m_simulationCounter = (m_simulationCounter + 1) % maxCounterValue;
 }

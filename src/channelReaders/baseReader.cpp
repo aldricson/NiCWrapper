@@ -1,5 +1,4 @@
 #include "baseReader.h"
-#include "../TCP Command server/CrioDebugServer.h"
 
 //------- Creator --------
 
@@ -47,7 +46,6 @@ void BaseReader::onOneShotValueReaded(double aValue)
 {
    if (aValue==std::numeric_limits<double>::min())
    {
-      CrioDebugServer::broadcastMessage("Err:Read Error: value not valid");
    }
 }
 

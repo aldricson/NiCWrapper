@@ -10,7 +10,6 @@ AnalogicReader::AnalogicReader(std::shared_ptr<QNiSysConfigWrapper> aSysConfigIn
 
 void AnalogicReader::manualReadOneShot(const std::string &moduleAlias, const unsigned int &index, double &returnedValue)
 {
-     CrioDebugServer::broadcastMessage("void AnalogicReader::manualReadOneShot(const std::string &moduleAlias, const unsigned int &index, double &returnedValue)");
     unsigned int channelIndex = index;
     NIDeviceModule *deviceModule     = m_sysConfig->getModuleByAlias(moduleAlias);
 
@@ -49,7 +48,6 @@ void AnalogicReader::manualReadOneShot(const std::string &moduleAlias, const uns
 
 void AnalogicReader::manualReadOneShot(const std::string &moduleAlias, const std::string &chanName, double &returnedValue)
 {
-    CrioDebugServer::broadcastMessage("const std::string &moduleAlias, const std::string &chanName, double &returnedValue)");
     NIDeviceModule *deviceModule     = m_sysConfig->getModuleByAlias(moduleAlias);
 
     ModuleType modType = deviceModule->getModuleType();  

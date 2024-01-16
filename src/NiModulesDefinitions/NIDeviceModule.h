@@ -26,12 +26,12 @@
 class NIDeviceModule {
 private:
 bool loadChannels(std::string filename);
-bool loadCounters(std::string filename);
-bool loadModules (std::string filename);
+bool loadCounters(const std::string &filename);
+bool loadModules (const std::string &filename);
 //
-void saveChannels(std::string filename);
-void saveCounters(std::string filename);
-void saveModules (std::string filename);
+void saveChannels(const std::string &filename);
+void saveCounters(const std::string &filename);
+void saveModules (const std::string &filename);
 
 protected:
     //number of channels in the module

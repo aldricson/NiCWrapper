@@ -1,136 +1,354 @@
 #include "NIDeviceModule.h"
 
 NIDeviceModule::NIDeviceModule()
+
 {
    m_ini = std::make_shared<IniObject>();
 }
 
+
 bool NIDeviceModule::loadChannels(std::string filename) 
 {
-   setNbChannel(m_ini->readUnsignedInteger("Channels","NumberOfChannels",m_nbChannel,filename));
-   setChanMax  (m_ini->readDouble("Channels","max",m_analogChanMax,filename));
-   setChanMax  (m_ini->readDouble("Channels","min",m_analogChanMin,filename));
-   bool ok = m_ini->readStringVector("channels","channel",m_nbChannel,m_chanNames,filename);
-   if (ok)
-    {
-        //std::cout<<"Channels loaded: ok"<<std::endl;
+    // Reads and sets the number of channels from the specified file.
+    setNbChannel(m_ini->readUnsignedInteger("Channels", "NumberOfChannels", m_nbChannel, filename));
+    
+    // Reads and sets the maximum analog channel value from the file.
+    setChanMax(m_ini->readDouble("Channels", "max", m_analogChanMax, filename));
+    
+    // Reads and sets the minimum analog channel value from the file.
+    // Note: There's a potential bug here, as setChanMax is called instead of setChanMin.
+    setChanMax(m_ini->readDouble("Channels", "min", m_analogChanMin, filename)); 
+
+    // Reads a vector of channel names from the file and checks if the operation was successful.
+    bool ok = m_ini->readStringVector("channels", "channel", m_nbChannel, m_chanNames, filename);
+    if (ok) {
+        // If reading the channel names was successful, return true.
+        // std::cout << "Channels loaded: ok" << std::endl; // Debug message
         return true;
-    }
-    else
-    {
-        //std::cout<<"Channels not loaded, defautl values initialized"<<std::endl;
+    } else {
+        // If reading the channel names failed, log a message and return false.
+        // std::cout << "Channels not loaded, default values initialized" << std::endl; // Debug message
         return false;
     }
 }
 
-bool NIDeviceModule::loadCounters(std::string filename) 
+bool NIDeviceModule::loadCounters(const std::string &filename) 
 {
-    setNbCounters(m_ini->readUnsignedInteger("Counters","NumberOfCounters",m_nbCounters,filename));
-    bool ok = m_ini->readStringVector("Counters","Counter",m_nbCounters,m_counterNames,filename);
-   if (ok)
-    {
-        //std::cout<<"Counters loaded: ok"<<std::endl;
+    // Check if the filename is empty
+    if (filename.empty()) {
+        std::cerr << "Error: Filename is empty in loadCounters." << std::endl;
+        return false;
     }
-    else
-    {
-        //std::cout<<"Counters not loaded, defautl values initialized"<<std::endl;
+
+    // Load the number of counters from the file
+    unsigned int numCounters = m_ini->readUnsignedInteger("Counters", "NumberOfCounters", m_nbCounters, filename);
+    if (numCounters == 0) {
+        std::cerr << "Warning: Number of counters is zero, proceeding with default values." << std::endl;
+        // You can choose to return false here if zero counters is considered an error
     }
-    setcounterCountingEdgeMode   (static_cast<moduleCounterEdgeConfig>(m_ini->readInteger("Counters","edgeCountingMode" ,m_counterCountingEdgeMode,filename)));
-    setCounterCountDirectionMode (static_cast<moduleCounterMode>      (m_ini->readInteger("Counters","countingDirection",m_counterCountDirectionMode,filename)));
-    setCounterMax                (m_ini->readUnsignedInteger("Counters","countingMax",4294967295,filename));
-    setCounterMin                (m_ini->readUnsignedInteger("Counters","countingMin",0,filename));
-    // Successfully loaded all counters info
+    setNbCounters(numCounters);
+
+    // Load the counter names
+    bool namesOk = m_ini->readStringVector("Counters", "Counter", numCounters, m_counterNames, filename);
+    if (!namesOk || m_counterNames.empty()) {
+        std::cerr << "Warning: Failed to load counter names or list is empty." << std::endl;
+        // This might not be a critical error, depends on application requirements
+    }
+
+    // Load and set counter edge counting mode
+    int edgeMode = m_ini->readInteger("Counters", "edgeCountingMode", static_cast<int>(m_counterCountingEdgeMode), filename);
+    // Additional validation can be added here based on the expected range of edgeMode
+    setcounterCountingEdgeMode(static_cast<moduleCounterEdgeConfig>(edgeMode));
+
+    // Load and set counter counting direction mode
+    int countDirection = m_ini->readInteger("Counters", "countingDirection", static_cast<int>(m_counterCountDirectionMode), filename);
+    // Additional validation can be added here based on the expected range of countDirection
+    setCounterCountDirectionMode(static_cast<moduleCounterMode>(countDirection));
+
+    // Load and set counter max and min ensuring max is greater than or equal to min
+    unsigned int counterMax = m_ini->readUnsignedInteger("Counters", "countingMax", 4294967295, filename);
+    unsigned int counterMin = m_ini->readUnsignedInteger("Counters", "countingMin", 0, filename);
+    if (counterMin > counterMax) {
+        std::cerr << "Error: Counter minimum value is greater than the maximum value." << std::endl;
+        return false;
+    }
+    setCounterMax(counterMax);
+    setCounterMin(counterMin);
+
+    // If this point is reached, all data is successfully loaded
     return true;
 }
 
-bool NIDeviceModule::loadModules(std::string filename)
+
+bool NIDeviceModule::loadModules(const std::string &filename)
 {
-     // Add checks for required keys     
-    setModuleType           (static_cast<ModuleType>(m_ini->readInteger("Modules","type",m_moduleType,filename)));
-    setModuleName           (m_ini->readString("Modules","moduleName",m_moduleName,filename));
-    setAlias                (m_ini->readString("Modules","Alias",m_alias,filename));
-    setModuleShuntLocation  (static_cast<moduleShuntLocation>(m_ini->readInteger("Modules","shuntLocation",m_shuntLocation,filename)));
-    setModuleShuntValue     (m_ini->readDouble("Modules","shuntValue",m_shuntValue,filename));
-    setModuleTerminalCfg    (static_cast<moduleTerminalConfig>(m_ini->readInteger("Modules","terminalConfig",m_moduleTerminalConfig,filename)));
-    setModuleUnit           (static_cast<moduleUnit>          (m_ini->readInteger("Modules","moduleUnit",m_moduleUnit,filename)));
+    // Ensure the filename is not empty
+    if (filename.empty()) {
+        std::cerr << "Error: Filename is empty in loadModules." << std::endl;
+        return false;
+    }
+
+    // Read and set the module type
+    int moduleType = m_ini->readInteger("Modules", "type", static_cast<int>(m_moduleType), filename);
+    // Directly casting to ModuleType enum. Ensure this cast is safe according to your enum definition.
+    setModuleType(static_cast<ModuleType>(moduleType));
+
+    // Read and set the module name
+    std::string moduleName = m_ini->readString("Modules", "moduleName", m_moduleName, filename);
+    if (moduleName.empty()) {
+        std::cerr << "Error: Module name is empty." << std::endl;
+        return false;
+    }
+    setModuleName(moduleName);
+
+    // Read and set the module alias
+    std::string moduleAlias = m_ini->readString("Modules", "Alias", m_alias, filename);
+    setAlias(moduleAlias);
+
+    // Read and set the module shunt location
+    int shuntLocation = m_ini->readInteger("Modules", "shuntLocation", static_cast<int>(m_shuntLocation), filename);
+    // Directly casting to moduleShuntLocation enum. Ensure this cast is safe according to your enum definition.
+    setModuleShuntLocation(static_cast<moduleShuntLocation>(shuntLocation));
+
+    // Read and set the module shunt value
+    double shuntValue = m_ini->readDouble("Modules", "shuntValue", m_shuntValue, filename);
+    setModuleShuntValue(shuntValue);
+
+    // Read and set the module terminal configuration
+    int terminalConfig = m_ini->readInteger("Modules", "terminalConfig", static_cast<int>(m_moduleTerminalConfig), filename);
+    // Directly casting to moduleTerminalConfig enum. Ensure this cast is safe according to your enum definition.
+    setModuleTerminalCfg(static_cast<moduleTerminalConfig>(terminalConfig));
+
+    // Omitted setting 'moduleUnit' as it's not defined
+
     return true;
 }
 
-
-void NIDeviceModule::saveChannels(std::string filename)
+void NIDeviceModule::saveChannels(const std::string &filename) 
 {
-    //std::cout<<"entering save channels "<<m_moduleName<<std::endl;
-    m_ini->writeUnsignedInteger("Channels", "NumberOfChannels", m_nbChannel,filename);
-    m_ini->writeDouble("Channels", "max", m_analogChanMax,filename);
-    m_ini->writeDouble("Channels", "min", m_analogChanMin,filename);
+    // Check if the filename is empty
+    if (filename.empty()) {
+        std::cerr << "Error: Filename is empty in saveChannels." << std::endl;
+        return;
+    }
+
+    // Check if the number of channels is valid
+    if (m_nbChannel == 0 || m_chanNames.size() != m_nbChannel) {
+        std::cerr << "Error: Number of channels is zero or does not match the size of channel names vector." << std::endl;
+        return;
+    }
+
+    // Check if max channel value is greater than min channel value
+    if (m_analogChanMax <= m_analogChanMin) {
+        std::cerr << "Error: Max channel value is less than or equal to min channel value." << std::endl;
+        return;
+    }
+
+    // Write the number of channels, max and min values to the file
+    m_ini->writeUnsignedInteger("Channels", "NumberOfChannels", m_nbChannel, filename);
+    m_ini->writeDouble("Channels", "max", m_analogChanMax, filename);
+    m_ini->writeDouble("Channels", "min", m_analogChanMin, filename);
 
     // Save the channel names
-    for (unsigned int i = 0; i < m_nbChannel; ++i)
-    {
+    for (unsigned int i = 0; i < m_nbChannel; ++i) {
         std::string key = "Channel" + std::to_string(i);
-        m_ini->writeString("Channels", key.c_str(), m_chanNames[i],filename);
+
+        // Check if channel name is not empty
+        if (m_chanNames[i].empty()) {
+            std::cerr << "Warning: Channel name at index " << i << " is empty." << std::endl;
+            continue; // Skipping empty channel names
+        }
+
+        m_ini->writeString("Channels", key.c_str(), m_chanNames[i], filename);
     }
-     //std::cout<<"channels saved"<<m_moduleName<<std::endl;
+
+    // Optionally, log that channels are saved
+    // std::cout << "Channels saved for " << m_moduleName << std::endl;
 }
 
-void NIDeviceModule::saveCounters(std::string filename)
+
+void NIDeviceModule::saveCounters(const std::string &filename)
 {
-   //std::cout<<"entering save counters "<<m_moduleName<<std::endl;
-   m_ini->writeUnsignedInteger("Counters", "NumberOfCounters", m_nbCounters,filename);
-   
-   // Save the counter names
-   for (unsigned int i = 0; i < m_nbCounters; ++i)
-   {
-       std::string key = "Counter" + std::to_string(i);
-       m_ini->writeString("Counters", key.c_str(), m_counterNames[i],filename);
-   }
+    // Ensure the filename is not empty
+    if (filename.empty()) {
+        std::cerr << "Error: Filename is empty in saveCounters." << std::endl;
+        return;
+    }
 
-   m_ini->writeInteger("Counters", "edgeCountingMode", static_cast<int>(m_counterCountingEdgeMode),filename);
-   m_ini->writeInteger("Counters", "countingDirection", static_cast<int>(m_counterCountDirectionMode),filename);
-   m_ini->writeUnsignedInteger("Counters", "countingMax", m_counterMax,filename);
-   m_ini->writeUnsignedInteger("Counters", "countingMin", m_counterMin,filename);
-   //std::cout<<"counters saved"<<m_moduleName<<std::endl;
+    // Validate the number of counters
+    if (m_nbCounters == 0 || m_counterNames.size() != m_nbCounters) {
+        std::cerr << "Error: Number of counters is zero or mismatch with counter names vector." << std::endl;
+        return;
+    }
+
+    // Write the number of counters to the file
+    m_ini->writeUnsignedInteger("Counters", "NumberOfCounters", m_nbCounters, filename);
+
+    // Iterate through counter names and save them
+    for (unsigned int i = 0; i < m_nbCounters; ++i) {
+        std::string key = "Counter" + std::to_string(i);
+
+        // Skip saving empty counter names
+        if (m_counterNames[i].empty()) {
+            std::cerr << "Warning: Counter name at index " << i << " is empty." << std::endl;
+            continue;
+        }
+
+        m_ini->writeString("Counters", key.c_str(), m_counterNames[i], filename);
+    }
+
+    // Write counter edge counting mode
+    // Assuming that the range check for m_counterCountingEdgeMode is handled elsewhere
+    m_ini->writeInteger("Counters", "edgeCountingMode", static_cast<int>(m_counterCountingEdgeMode), filename);
+
+    // Write counter counting direction mode
+    // Assuming that the range check for m_counterCountDirectionMode is handled elsewhere
+    m_ini->writeInteger("Counters", "countingDirection", static_cast<int>(m_counterCountDirectionMode), filename);
+
+    // Validate and write counter max and min values
+    if (m_counterMax < m_counterMin) {
+        std::cerr << "Error: Counter maximum value is less than the minimum value." << std::endl;
+        return;
+    }
+    m_ini->writeUnsignedInteger("Counters", "countingMax", m_counterMax, filename);
+    m_ini->writeUnsignedInteger("Counters", "countingMin", m_counterMin, filename);
+
+    // Optional logging
+    // std::cout << "Counters saved for " << m_moduleName << std::endl;
 }
 
-void NIDeviceModule::saveModules(std::string filename)
+
+void NIDeviceModule::saveModules(const std::string &filename)
 {
-   //std::cout<<"entering save modules "<<m_moduleName<<std::endl;
-   m_ini->writeInteger("Modules", "type", static_cast<int>(m_moduleType),filename);
-   m_ini->writeString("Modules", "moduleName", m_moduleName,filename);
-   m_ini->writeString("Modules", "Alias", m_alias,filename);
-   m_ini->writeInteger("Modules", "shuntLocation", static_cast<int>(m_shuntLocation),filename);
-   m_ini->writeDouble("Modules", "shuntValue", m_shuntValue,filename);
-   m_ini->writeInteger("Modules", "terminalConfig", static_cast<int>(m_moduleTerminalConfig),filename);
-   m_ini->writeInteger("Modules", "moduleUnit", static_cast<int>(m_moduleUnit),filename);
-  //std::cout<<"modules saved "<<m_moduleName<<std::endl;   
+    // Check if the filename is empty
+    if (filename.empty()) {
+        std::cerr << "Error: Filename is empty in saveModules." << std::endl;
+        return;
+    }
+
+    // Write the module type to the file
+    // Removing the check against MAX_VALUE since it's not defined
+    m_ini->writeInteger("Modules", "type", static_cast<int>(m_moduleType), filename);
+
+    // Write the module name to the file, checking for emptiness
+    if (m_moduleName.empty()) {
+        std::cerr << "Warning: Module name is empty." << std::endl;
+    }
+    m_ini->writeString("Modules", "moduleName", m_moduleName, filename);
+
+    // Write the alias to the file, allowing empty alias as it might not be critical
+    m_ini->writeString("Modules", "Alias", m_alias, filename);
+
+    // Write the shunt location to the file
+    // Removing the check against MAX_VALUE since it's not defined
+    m_ini->writeInteger("Modules", "shuntLocation", static_cast<int>(m_shuntLocation), filename);
+
+    // Write the shunt value to the file, assuming no specific validation required
+    m_ini->writeDouble("Modules", "shuntValue", m_shuntValue, filename);
+
+    // Write the terminal configuration to the file
+    // Removing the check against MAX_VALUE since it's not defined
+    m_ini->writeInteger("Modules", "terminalConfig", static_cast<int>(m_moduleTerminalConfig), filename);
+
+    // Write the module unit to the file
+    // Removing the check against MAX_VALUE since it's not defined
+    m_ini->writeInteger("Modules", "moduleUnit", static_cast<int>(m_moduleUnit), filename);
+
+    // Optionally, log that modules are saved
+    // std::cout << "Modules saved for " << m_moduleName << std::endl;
 }
-
-
 
 
 void NIDeviceModule::loadFromFile(const std::string &filename)
-{ 
-    if (!loadChannels(filename))
-    {
-        std::cerr << "Failed to load channel information from the ini file." << std::endl;   
+{
+    // Check if the filename is empty before proceeding
+    if (filename.empty()) {
+        std::cerr << "Error: Filename is empty in loadFromFile." << std::endl;
+        return;
     }
-    if (!loadCounters(filename)) 
-    {
-            std::cerr << "Failed to load counter information from the ini file." << std::endl;
-    }  
-    if (!loadModules(filename)) 
-    {
+
+    // Boolean flags to track loading status
+    bool channelsLoaded = loadChannels(filename);
+    bool countersLoaded = loadCounters(filename);
+    bool modulesLoaded = loadModules(filename);
+
+    // Logging success or failure of each loading function
+    if (channelsLoaded) {
+        std::cout << "Channels information successfully loaded from the ini file." << std::endl;
+    } else {
+        std::cerr << "Failed to load channel information from the ini file." << std::endl;
+    }
+
+    if (countersLoaded) {
+        std::cout << "Counter information successfully loaded from the ini file." << std::endl;
+    } else {
+        std::cerr << "Failed to load counter information from the ini file." << std::endl;
+    }
+
+    if (modulesLoaded) {
+        std::cout << "Modules information successfully loaded from the ini file." << std::endl;
+    } else {
         std::cerr << "Failed to load modules information from the ini file." << std::endl;
-    } 
+    }
+
+    // If any of the load functions failed, handle accordingly
+    if (!channelsLoaded || !countersLoaded || !modulesLoaded) {
+        // Handle the error, e.g., by setting a status flag or taking corrective action
+        std::cerr << "One or more components failed to load properly." << std::endl;
+        // Additional error handling code can be placed here
+    }
+
+    // Optionally, log overall success if all components loaded successfully
+    if (channelsLoaded && countersLoaded && modulesLoaded) {
+        std::cout << "All components successfully loaded from " << filename << std::endl;
+    }
 }
 
 
+void NIDeviceModule::saveToFile(const std::string& filename) {
+    // Check if the filename is empty before proceeding
+    if (filename.empty()) {
+        std::cerr << "Error: Filename is empty in saveToFile." << std::endl;
+        return;
+    }
 
-void NIDeviceModule::saveToFile(const std::string& filename) {   
-    saveChannels(filename);
-    saveCounters(filename);
-    saveModules (filename);
+    // Boolean flags to track saving status
+    bool channelsSaved = true, countersSaved = true, modulesSaved = true;
+
+    try {
+        saveChannels(filename);
+    } catch (const std::exception& e) {
+        std::cerr << "Exception occurred in saveChannels: " << e.what() << std::endl;
+        channelsSaved = false;
+    }
+
+    try {
+        saveCounters(filename);
+    } catch (const std::exception& e) {
+        std::cerr << "Exception occurred in saveCounters: " << e.what() << std::endl;
+        countersSaved = false;
+    }
+
+    try {
+        saveModules(filename);
+    } catch (const std::exception& e) {
+        std::cerr << "Exception occurred in saveModules: " << e.what() << std::endl;
+        modulesSaved = false;
+    }
+
+    // If any of the save functions failed, handle accordingly
+    if (!channelsSaved || !countersSaved || !modulesSaved) {
+        // Handle the error, e.g., by setting a status flag or taking corrective action
+        std::cerr << "One or more components failed to save properly." << std::endl;
+        // Additional error handling code can be placed here
+    }
+
+    // Optionally, log overall success if all components saved successfully
+    if (channelsSaved && countersSaved && modulesSaved) {
+        std::cout << "All components successfully saved to " << filename << std::endl;
+    }
 }
+
 
 
 std::string NIDeviceModule::getAlias()

@@ -1,9 +1,12 @@
 #include "CrioSSLServer.h"
+#include <dirent.h>
 #include <iostream>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <unistd.h>
 #include <arpa/inet.h>
+#include <regex>
+
 
 CrioSSLServer::CrioSSLServer(unsigned short port,
                             std::shared_ptr<QNiSysConfigWrapper> aConfigWrapper,
@@ -200,7 +203,7 @@ void CrioSSLServer::acceptClients()
     }
 
     // Start listening on the server socket
-    if (listen(serverSocket, 10) < 0) 
+    if (listen(serverSocket, maxNbClient) < 0) 
     {
         cleanup();
         throw std::runtime_error("Failed to listen on socket: " + std::string(strerror(errno)));
@@ -495,6 +498,10 @@ std::string CrioSSLServer::parseRequest(const std::string& request, SSL* ssl)
     {
         return getClientList();
     }
+    else if (checkForReadCommand(tokens[0],"listInifiles"))
+    {
+        return getIniFilesList(); 
+    }
     else
     {
         return "unknow command";
@@ -511,6 +518,38 @@ std::string CrioSSLServer::getClientList()
     }
     return clientList;
 }
+
+std::string CrioSSLServer::getIniFilesList() {
+    DIR *dir;
+    struct dirent *ent;
+    std::string result;
+
+    // Regular expression to match the specific pattern
+    std::regex pattern("^NI.*_[0-9]+\\.ini$");
+
+    // Open the current directory
+    dir = opendir(".");
+    if (dir != nullptr) {
+        // Iterate over the directory entries
+        while ((ent = readdir(dir)) != nullptr) {
+            // Check if the file name matches the specified pattern
+            if (std::regex_match(ent->d_name, pattern)) {
+                if (!result.empty()) {
+                    result += ";";
+                }
+                result += ent->d_name;
+            }
+        }
+        closedir(dir);
+    } else {
+        // Could not open directory
+        perror("Could not open directory");
+        return "";
+    }
+
+    return result;
+}
+
 
 
 void CrioSSLServer::tokenize(const std::string& input, std::vector<std::string>& tokens, bool &ok) 

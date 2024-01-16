@@ -19,19 +19,24 @@ BaseReader::~BaseReader()
 {
 }
 
-//--------- ui ----------
-
-
 void BaseReader::selectModuleAndChannel(const std::string &moduleName, const std::string &channelName)
 {
-    // Copy moduleName into m_manuallySelectedModuleName, ensuring no buffer overflow
-    std::strncpy(m_manuallySelectedModuleName, moduleName.c_str(), sizeof(m_manuallySelectedModuleName) - 1);
-    m_manuallySelectedModuleName[sizeof(m_manuallySelectedModuleName) - 1] = '\0';  // Null-terminate
+    // Constants for buffer sizes
+    const size_t moduleNameSize = sizeof(m_manuallySelectedModuleName);
+    const size_t channelNameSize = sizeof(m_manuallySelectedChanName);
 
-    // Copy channelName into m_manuallySelectedChanName, ensuring no buffer overflow
-    std::strncpy(m_manuallySelectedChanName, channelName.c_str(), sizeof(m_manuallySelectedChanName) - 1);
-    m_manuallySelectedChanName[sizeof(m_manuallySelectedChanName) - 1] = '\0';  // Null-terminate
+    // Truncate and copy moduleName into m_manuallySelectedModuleName
+    std::string truncatedModuleName = moduleName.substr(0, moduleNameSize - 1);
+    std::copy(truncatedModuleName.begin(), truncatedModuleName.end(), m_manuallySelectedModuleName);
+    m_manuallySelectedModuleName[truncatedModuleName.length()] = '\0'; // Ensure null-termination
+
+    // Truncate and copy channelName into m_manuallySelectedChanName
+    std::string truncatedChannelName = channelName.substr(0, channelNameSize - 1);
+    std::copy(truncatedChannelName.begin(), truncatedChannelName.end(), m_manuallySelectedChanName);
+    m_manuallySelectedChanName[truncatedChannelName.length()] = '\0'; // Ensure null-termination
 }
+
+
 
 
 //--------- public slots ----------

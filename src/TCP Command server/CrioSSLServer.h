@@ -19,6 +19,8 @@
 #include "../stringUtils/stringUtils.h"
 #include "../NiWrappers/QNiDaqWrapper.h"
 
+#define maxNbClient 100
+
 class CrioSSLServer {
 public:
     CrioSSLServer(unsigned short port,
@@ -34,6 +36,7 @@ public:
 
 private:
     unsigned short port_;
+    
 
     std::map<int, std::string> m_clientIPs; // Map to store client sockets and their IP addresses
 
@@ -67,6 +70,7 @@ private:
     std::string handleFileUploadToClient(SSL* ssl, const std::vector<std::string>& tokens);
     std::string handleFileDownloadFromClient(SSL* ssl, const std::vector<std::string>& tokens);
     std::string getClientList();
+    std::string getIniFilesList();
  
 };
 

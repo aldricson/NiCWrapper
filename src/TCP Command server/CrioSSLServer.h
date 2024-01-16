@@ -11,6 +11,7 @@
 #include <condition_variable>
 #include <queue>
 #include <functional>
+#include <map>
 #include "../NiWrappers/QNiSysConfigWrapper.h"
 #include "../channelReaders/analogicReader.h"
 #include "../channelReaders/digitalReader.h"
@@ -33,6 +34,10 @@ public:
 
 private:
     unsigned short port_;
+
+    std::map<int, std::string> m_clientIPs; // Map to store client sockets and their IP addresses
+
+
     std::shared_ptr<QNiSysConfigWrapper> m_cfgWrapper;
     std::shared_ptr<QNiDaqWrapper>       m_daqWrapper;
     std::shared_ptr<AnalogicReader>      m_analogicReader;
@@ -61,6 +66,7 @@ private:
     void logSslErrors(const std::string& message); 
     std::string handleFileUploadToClient(SSL* ssl, const std::vector<std::string>& tokens);
     std::string handleFileDownloadFromClient(SSL* ssl, const std::vector<std::string>& tokens);
+    std::string getClientList();
  
 };
 

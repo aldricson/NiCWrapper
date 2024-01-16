@@ -3,7 +3,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <unistd.h>
-
+#include <arpa/inet.h>
 
 CrioSSLServer::CrioSSLServer(unsigned short port,
                             std::shared_ptr<QNiSysConfigWrapper> aConfigWrapper,
@@ -172,12 +172,10 @@ void CrioSSLServer::acceptClients()
 {
     // Create a server socket using TCP
     int serverSocket = socket(AF_INET, SOCK_STREAM, 0);
-    //security check
     if (serverSocket < 0) 
     {
         throw std::runtime_error("Failed to create socket: " + std::string(strerror(errno)));
     }
-    // Lambda function for cleanup
     auto cleanup = [&]() { close(serverSocket); };
 
     // Set socket options
@@ -195,7 +193,8 @@ void CrioSSLServer::acceptClients()
     serverAddr.sin_addr.s_addr = INADDR_ANY;
 
     // Bind the server socket to the specified port
-    if (bind(serverSocket, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0) {
+    if (bind(serverSocket, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0) 
+    {
         cleanup();
         throw std::runtime_error("Failed to bind to port: " + std::string(strerror(errno)));
     }
@@ -210,48 +209,46 @@ void CrioSSLServer::acceptClients()
     // Main loop to accept incoming connections
     while (serverRunning_) 
     {
-        int clientSocket = accept(serverSocket, nullptr, nullptr);
+        sockaddr_in clientAddr;  // Declare the client address structure
+        socklen_t clientAddrLen = sizeof(clientAddr);  // Length of client address structure
+
+        int clientSocket = accept(serverSocket, (struct sockaddr *)&clientAddr, &clientAddrLen);
         if (clientSocket < 0) 
         {
             if (errno == EINTR) 
             {
-                continue; // If interrupted by signal, just continue
+                continue; // If interrupted by a signal, just continue
             } 
             else 
             {
-                cleanup();
-                throw std::runtime_error("Failed to accept client: " + std::string(strerror(errno)));
+                    cleanup();
+                    throw std::runtime_error("Failed to accept client: " + std::string(strerror(errno)));
             }
         }
-
-        // Create a new SSL object for the connection
+        // Retrieve the IP address of the client
+        std::string clientIP = inet_ntoa(clientAddr.sin_addr);
         SSL *ssl = SSL_new(sslContext_);
         if (!ssl) 
         {
             close(clientSocket); // Close the socket if SSL creation failed
             continue;
         }
-
-        // Set the file descriptor for the SSL object
+    
         SSL_set_fd(ssl, clientSocket);
-
-        // Perform SSL handshake
         if (SSL_accept(ssl) <= 0) 
         {
             SSL_free(ssl); // Free SSL object if handshake failed
             close(clientSocket); // Close the socket
             continue;
         }
-
-        // Lock the mutex to safely add the client thread
+    
         std::lock_guard<std::mutex> lock(clientMutex_);
-        // Start a new thread to handle the client's SSL connection
+        m_clientIPs[clientSocket] = clientIP; // Store client IP address
         clientThreads_.push_back(std::thread(&CrioSSLServer::handleClient, this, clientSocket, ssl));
     }
-
-    // Cleanup the server socket
-    cleanup();
+    cleanup(); // Cleanup the server socket after loop ends
 }
+
 
 
 void CrioSSLServer::handleClient(int clientSocket, SSL* ssl) 
@@ -355,8 +352,6 @@ std::string CrioSSLServer::parseRequest(const std::string& request, SSL* ssl)
             unsigned int channelIndex = strToUnsignedInt(tokens[2],ok);
             if (ok)
             {
-                //std::cout<<"received readVoltage: "<<moduleAlias<<" channel index: "<<tokens[2]<<std::endl;
-
                 try 
                 {
                     NIDeviceModule *deviceModule = m_cfgWrapper->getModuleByAlias(moduleAlias);
@@ -367,20 +362,19 @@ std::string CrioSSLServer::parseRequest(const std::string& request, SSL* ssl)
                     } 
                     else 
                     {
-                        return std::string("NACK: deviceModule is nullptr");
+                        return std::string("ERR: deviceModule is nullptr");
                     }
                 }
                 catch (const std::bad_alloc& e)
                 {
                     // Handle memory allocation failure
-                    std::cerr << "Memory allocation failed: " << e.what() << '\n';
-                    return std::string("NACK: Memory allocation failed") + e.what();
+                    return std::string("ERR: Memory allocation failed") + e.what();
                 }
                 
             }
             else
             {
-                return ("NACK:Impossible to convert "+tokens[2]+"to unsignedInt");
+                return ("ERR:Impossible to convert "+tokens[2]+"to unsignedInt");
             }
         }
         catch(const std::exception& e)
@@ -396,14 +390,11 @@ std::string CrioSSLServer::parseRequest(const std::string& request, SSL* ssl)
         if (tokens.size() != 1) 
         {
             return "NACK: Invalid command format";
-        }
-        
-        //broadCastStr("crio debug:\nstartModbusSimulation detected\nin std::string CrioSSLServer::parseRequest(const std::string& request)\n"); 
+        }        
         try
         {
             if (m_bridge->getSimulateTimer()->isActive()) 
             {
-                //broadCastStr("crio debug:\nsimulation timer already active\nin std::string CrioSSLServer::parseRequest(const std::string& request)\n"); 
                 //simulation already avtive
                 return "ACK";
             }
@@ -419,7 +410,6 @@ std::string CrioSSLServer::parseRequest(const std::string& request, SSL* ssl)
         catch(const std::exception& e)
         {
             std::cerr << e.what() << '\n';
-            //broadCastStr("crio debug:\n"+ std::string(e.what())+"\nin std::string CrioSSLServer::parseRequest(const std::string& request)\n");
             return std::string("NACK:") + std::string(e.what());
         }
     }
@@ -501,13 +491,26 @@ std::string CrioSSLServer::parseRequest(const std::string& request, SSL* ssl)
     {
         return handleFileDownloadFromClient(ssl, tokens);
     }
-
+    else if (checkForReadCommand(tokens[0], "clientList"))
+    {
+        return getClientList();
+    }
     else
     {
         return "unknow command";
     }
 }
 
+std::string CrioSSLServer::getClientList()
+{
+    std::string clientList;
+    for (const auto& entry : m_clientIPs) 
+    {
+        if (!clientList.empty()) clientList += ";";
+        clientList += entry.second;
+    }
+    return clientList;
+}
 
 
 void CrioSSLServer::tokenize(const std::string& input, std::vector<std::string>& tokens, bool &ok) 

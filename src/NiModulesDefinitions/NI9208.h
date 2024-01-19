@@ -7,7 +7,10 @@
 #include <string>
 #include <fstream>
 #include "../filesUtils/cPosixFileHelper.h"
-
+#include <experimental/filesystem>
+#include <iostream>
+#include <exception>
+#include <stdexcept>
 
 
 class NI9208 : public NIDeviceModule {

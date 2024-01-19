@@ -58,7 +58,7 @@ private:
     std::shared_ptr<NewModbusServer>                     m_modbusServer;
     std::vector<MappingConfig>                           m_mappingData;
 
-    std::vector<uint16_t>                                m_realDataBufferLine;
+    std::vector<uint16_t>                                m_realDataBufferLine; // a Real Buffer Data
 
 
     void acquireData();

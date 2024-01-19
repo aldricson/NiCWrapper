@@ -6,7 +6,6 @@
 #include <string>
 #include <fstream>
 
-
 class NI9411 : public NIDeviceModule {
 private:
 

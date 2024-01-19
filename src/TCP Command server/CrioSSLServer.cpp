@@ -1,4 +1,6 @@
 #include "CrioSSLServer.h"
+#include <fcntl.h> // Include fcntl for manipulating file descriptor options
+
 #include <dirent.h>
 #include <iostream>
 #include <sys/socket.h>
@@ -7,6 +9,14 @@
 #include <arpa/inet.h>
 #include <regex>
 
+// Custom deleter for SSL objects
+struct SslDeleter {
+    void operator()(SSL* ptr) const {
+        if (ptr) {
+            SSL_free(ptr);
+        }
+    }
+};
 
 CrioSSLServer::CrioSSLServer(unsigned short port,
                             std::shared_ptr<QNiSysConfigWrapper> aConfigWrapper,
@@ -91,7 +101,7 @@ void CrioSSLServer::logSslErrors(const std::string& message)
     }
 }
 
-std::string CrioSSLServer::handleFileUploadToClient(SSL* ssl, const std::vector<std::string>& tokens) 
+std::string CrioSSLServer::handleFileUploadToClient(std::shared_ptr<SSL> ssl, const std::vector<std::string>& tokens) 
 {
     if (tokens.size() != 2) {
         return "NACK: Incorrect download command format";
@@ -107,19 +117,19 @@ std::string CrioSSLServer::handleFileUploadToClient(SSL* ssl, const std::vector<
     inFile.seekg(0, std::ios::beg);
 
     std::string sizeResponse = "Size:" + std::to_string(fileSize);
-    SSL_write(ssl, sizeResponse.c_str(), sizeResponse.size());
+    SSL_write(ssl.get(), sizeResponse.c_str(), sizeResponse.size());
 
     char buffer[1024];
     while (!inFile.eof()) {
         inFile.read(buffer, sizeof(buffer));
         std::streamsize bytesRead = inFile.gcount();
-        SSL_write(ssl, buffer, bytesRead);
+        SSL_write(ssl.get(), buffer, bytesRead);
     }
 
     return "ACK: File download successful";
 }
 
-std::string CrioSSLServer::handleFileDownloadFromClient(SSL* ssl, const std::vector<std::string>& tokens) 
+std::string CrioSSLServer::handleFileDownloadFromClient(std::shared_ptr<SSL> ssl, const std::vector<std::string>& tokens) 
 {
     if (tokens.size() != 3) {
         return "NACK: Incorrect upload command format";
@@ -141,7 +151,7 @@ std::string CrioSSLServer::handleFileDownloadFromClient(SSL* ssl, const std::vec
     char buffer[1024];
     long long totalBytesRead = 0;
     while (totalBytesRead < fileSize) {
-        int bytesRead = SSL_read(ssl, buffer, sizeof(buffer));
+        int bytesRead = SSL_read(ssl.get(), buffer, sizeof(buffer));
         if (bytesRead <= 0) break;  // Error or disconnect
         outFile.write(buffer, bytesRead);
         totalBytesRead += bytesRead;
@@ -171,142 +181,188 @@ void CrioSSLServer::cleanupSSLContext()
 }
 
 
-void CrioSSLServer::acceptClients() 
-{
-    // Create a server socket using TCP
+void CrioSSLServer::acceptClients() {
+    // Create a server socket using TCP in the IPv4 domain.
     int serverSocket = socket(AF_INET, SOCK_STREAM, 0);
-    if (serverSocket < 0) 
-    {
+    if (serverSocket < 0) {
+        // If creating the socket fails, throw an exception with details.
         throw std::runtime_error("Failed to create socket: " + std::string(strerror(errno)));
     }
+
+    // Lambda function for closing the server socket, ensuring cleanup.
     auto cleanup = [&]() { close(serverSocket); };
 
-    // Set socket options
+    // Option for the socket to reuse the address.
     int opt = 1;
-    if (setsockopt(serverSocket, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0) 
-    {
+    // Set the option on the socket for address reuse.
+    if (setsockopt(serverSocket, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0) {
+        // If setting the socket option fails, perform cleanup and throw an error.
         cleanup();
         throw std::runtime_error("Failed to set SO_REUSEADDR: " + std::string(strerror(errno)));
     }
 
-    // Configure server address
-    sockaddr_in serverAddr;
-    serverAddr.sin_family = AF_INET;
-    serverAddr.sin_port = htons(port_);
-    serverAddr.sin_addr.s_addr = INADDR_ANY;
+    // Set the server socket to non-blocking mode.
+    fcntl(serverSocket, F_SETFL, O_NONBLOCK);
 
-    // Bind the server socket to the specified port
-    if (bind(serverSocket, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0) 
-    {
+    // Create a structure to hold server address information.
+    sockaddr_in serverAddr;
+    serverAddr.sin_family = AF_INET; // Address family (IPv4).
+    serverAddr.sin_port = htons(port_); // Port in network byte order.
+    serverAddr.sin_addr.s_addr = INADDR_ANY; // Listen on all interfaces.
+
+    // Bind the socket to the server address.
+    if (bind(serverSocket, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0) {
+        // If binding fails, perform cleanup and throw an error.
         cleanup();
         throw std::runtime_error("Failed to bind to port: " + std::string(strerror(errno)));
     }
 
-    // Start listening on the server socket
-    if (listen(serverSocket, maxNbClient) < 0) 
-    {
+    // Listen for incoming connections on the socket.
+    if (listen(serverSocket, maxNbClient) < 0) {
+        // If listening fails, perform cleanup and throw an error.
         cleanup();
         throw std::runtime_error("Failed to listen on socket: " + std::string(strerror(errno)));
     }
 
-    // Main loop to accept incoming connections
-    while (serverRunning_) 
-    {
-        sockaddr_in clientAddr;  // Declare the client address structure
-        socklen_t clientAddrLen = sizeof(clientAddr);  // Length of client address structure
+    // Main loop for accepting incoming connections.
+    while (serverRunning_) {
+        sockaddr_in clientAddr; // Struct to store client address.
+        socklen_t clientAddrLen = sizeof(clientAddr); // Size of the client address structure.
 
+        // Accept a new connection.
         int clientSocket = accept(serverSocket, (struct sockaddr *)&clientAddr, &clientAddrLen);
-        if (clientSocket < 0) 
-        {
-            if (errno == EINTR) 
-            {
-                continue; // If interrupted by a signal, just continue
-            } 
-            else 
-            {
-                    cleanup();
-                    throw std::runtime_error("Failed to accept client: " + std::string(strerror(errno)));
+        // Check if the accept call was successful.
+        if (clientSocket < 0) {
+            // If no pending connections, pause to prevent CPU spinning.
+            if (errno == EAGAIN || errno == EWOULDBLOCK) {
+                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                continue;
+            } else {
+                // Log other errors and continue.
+                std::cerr << "Error accepting client: " << strerror(errno) << std::endl;
+                continue;
             }
         }
-        // Retrieve the IP address of the client
+
+        // Convert client IP to string format.
         std::string clientIP = inet_ntoa(clientAddr.sin_addr);
-        SSL *ssl = SSL_new(sslContext_);
-        if (!ssl) 
-        {
-            close(clientSocket); // Close the socket if SSL creation failed
+        // Create a shared pointer for SSL object management.
+        std::shared_ptr<SSL> ssl(SSL_new(sslContext_), [](SSL* ptr) { if (ptr) SSL_free(ptr); });
+
+        // Check if SSL object is created successfully and perform SSL handshake.
+        if (!ssl || SSL_set_fd(ssl.get(), clientSocket) <= 0 || SSL_accept(ssl.get()) <= 0) {
+            // If any SSL step fails, close the client socket and continue.
+            close(clientSocket);
             continue;
         }
-    
-        SSL_set_fd(ssl, clientSocket);
-        if (SSL_accept(ssl) <= 0) 
-        {
-            SSL_free(ssl); // Free SSL object if handshake failed
-            close(clientSocket); // Close the socket
-            continue;
-        }
-    
+
+        // Lock client list for thread safety.
         std::lock_guard<std::mutex> lock(clientMutex_);
-        m_clientIPs[clientSocket] = clientIP; // Store client IP address
+        // Store the client's IP address in the list.
+        m_clientIPs[clientSocket] = clientIP;
+
+        // Spawn a new thread to handle the client.
         clientThreads_.push_back(std::thread(&CrioSSLServer::handleClient, this, clientSocket, ssl));
     }
-    cleanup(); // Cleanup the server socket after loop ends
+
+    // Perform cleanup of the server socket after the loop ends.
+    cleanup();
 }
 
 
 
-void CrioSSLServer::handleClient(int clientSocket, SSL* ssl) 
+void CrioSSLServer::handleClient(int clientSocket, std::shared_ptr<SSL> ssl) 
 {
-    char buffer[257]; // Buffer size increased by 1 for null termination
-    std::string accumulatedData;
-    const size_t maxMessageSize = 256;
+    bool criticalError = false; // Flag to track critical SSL errors.
+    try {
+        char buffer[257]; // Buffer to store data read from SSL.
+        std::string accumulatedData; // String to accumulate received data.
+        const size_t maxMessageSize = 256; // Max size of message to read.
 
-    while (serverRunning_) {
-        memset(buffer, 0, sizeof(buffer));
-        // Use SSL_read instead of recv for SSL communication
-        ssize_t bytesRead = SSL_read(ssl, buffer, maxMessageSize);
-        if (bytesRead <= 0) 
+        // Loop while the server is running.
+        while (serverRunning_) 
         {
-            int sslError = SSL_get_error(ssl, bytesRead);
-            if (sslError == SSL_ERROR_ZERO_RETURN || sslError == SSL_ERROR_SYSCALL) 
-            {
-                std::cout << "SSL Client disconnected: Socket " << clientSocket << std::endl;
-            } 
-            else 
-            {
-                std::cerr << "SSL Error receiving data: Socket " << clientSocket << " Error: " << sslError << std::endl;
+            memset(buffer, 0, sizeof(buffer)); // Clear the buffer before reading.
+            ssize_t bytesRead = SSL_read(ssl.get(), buffer, maxMessageSize); // Read data from SSL.
+
+            // Check if SSL read was successful.
+            if (bytesRead <= 0) {
+                int sslError = SSL_get_error(ssl.get(), bytesRead); // Get SSL error code.
+
+                // Check for graceful disconnection or error.
+                if (bytesRead == 0 || sslError == SSL_ERROR_ZERO_RETURN) {
+                    std::cout << "Client disconnected gracefully: Socket " << clientSocket << std::endl;
+                } else if (sslError == SSL_ERROR_SYSCALL) {
+                    std::cerr << "SSL read error (syscall) on socket " << clientSocket << std::endl;
+                    criticalError = true; // Mark as critical error.
+                } else {
+                    std::cerr << "SSL read error on socket " << clientSocket << ": " << sslError << std::endl;
+                    criticalError = true; // Mark as critical error.
+                }
+                break; // Exit loop on disconnection or error.
             }
-            break; // Break on disconnect or error
+
+            buffer[bytesRead] = '\0'; // Null-terminate the buffer.
+            accumulatedData += buffer; // Append data to the accumulated string.
+
+             if (accumulatedData.length() > maxMessageSize) 
+             {
+                std::string response = "NACK: command rejected";
+                // Use SSL_write instead of send for SSL communication
+                SSL_write(ssl.get(), response.c_str(), response.size());
+                break; // Optionally disconnect the client
+            }
+
+            size_t delimiterPos = accumulatedData.find('\n');
+            if (delimiterPos != std::string::npos) 
+            {
+                std::string completeMessage = accumulatedData.substr(0, delimiterPos);
+                accumulatedData.erase(0, delimiterPos + 1);
+
+                std::string response = parseRequest(completeMessage,ssl);
+                // Use SSL_write to send response back to the client
+                SSL_write(ssl.get(), response.c_str(), response.size());
+            }
+    
+
         }
-
-        buffer[bytesRead] = '\0'; // Null-terminate the string
-        accumulatedData += buffer;
-
-        if (accumulatedData.length() > maxMessageSize) {
-            std::string response = "NACK: command rejected";
-            // Use SSL_write instead of send for SSL communication
-            SSL_write(ssl, response.c_str(), response.size());
-            break; // Optionally disconnect the client
-        }
-
-        size_t delimiterPos = accumulatedData.find('\n');
-        if (delimiterPos != std::string::npos) {
-            std::string completeMessage = accumulatedData.substr(0, delimiterPos);
-            accumulatedData.erase(0, delimiterPos + 1);
-
-            std::string response = parseRequest(completeMessage,ssl);
-            // Use SSL_write to send response back to the client
-            SSL_write(ssl, response.c_str(), response.size());
-        }
+    } 
+    catch (const std::exception& e) 
+    {
+        // Catch and log any exceptions in client handling.
+        std::cerr << "Exception in handleClient: " << e.what() << std::endl;
     }
 
-    // Properly close the SSL connection and free resources
-    SSL_shutdown(ssl);
-    SSL_free(ssl);
-    close(clientSocket); // Close the socket
+    // Perform graceful shutdown of SSL and closing of socket.
+    gracefulSSLShutdown(ssl, clientSocket, criticalError);
+}
+
+void CrioSSLServer::gracefulSSLShutdown(std::shared_ptr<SSL> ssl, int clientSocket, bool isCriticalError) 
+{
+
+    if (ssl && ssl.get() && !isCriticalError) 
+    {
+        // Shutdown SSL connection gracefully.
+        int shutdownResult = SSL_shutdown(ssl.get()); // First call to SSL_shutdown.
+        if (shutdownResult == 0) {
+            // Call SSL_shutdown again if the peer hasn't sent "close notify".
+            SSL_shutdown(ssl.get());
+        }
+    }
+    if (clientSocket >= 0) {
+        // Close the client socket.
+        close(clientSocket);
+    }
+
+    // Lock mutex for thread safety when modifying client list.
+    std::lock_guard<std::mutex> lock(clientMutex_);
+    // Remove the client from the list.
+    m_clientIPs.erase(clientSocket);
 }
 
 
-std::string CrioSSLServer::parseRequest(const std::string& request, SSL* ssl) 
+
+std::string CrioSSLServer::parseRequest(const std::string& request, std::shared_ptr<SSL> ssl) 
 {
     std::string requestCopy = request;
     std::vector<std::string> tokens;
@@ -504,7 +560,7 @@ std::string CrioSSLServer::parseRequest(const std::string& request, SSL* ssl)
     }
     else
     {
-        return "unknow command";
+        return "unknow command "+tokens[0];
     }
 }
 

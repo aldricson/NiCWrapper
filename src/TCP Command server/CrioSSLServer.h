@@ -62,15 +62,17 @@ private:
     void initializeSSLContext();
     void cleanupSSLContext();
     void acceptClients();
-    void handleClient(int clientSocket, SSL* ssl);
-    std::string parseRequest(const std::string& request, SSL* ssl);
+    void handleClient(int clientSocket, std::shared_ptr<SSL> ssl); 
+    std::string parseRequest(const std::string& request, std::shared_ptr<SSL> ssl);
     void tokenize(const std::string& input, std::vector<std::string>& tokens, bool& ok); 
     bool checkForReadCommand(const std::string& request, const std::string& command);
     void logSslErrors(const std::string& message); 
-    std::string handleFileUploadToClient(SSL* ssl, const std::vector<std::string>& tokens);
-    std::string handleFileDownloadFromClient(SSL* ssl, const std::vector<std::string>& tokens);
+    std::string handleFileUploadToClient(std::shared_ptr<SSL> ssl, const std::vector<std::string>& tokens);
+    std::string handleFileDownloadFromClient(std::shared_ptr<SSL> ssl, const std::vector<std::string>& tokens);
     std::string getClientList();
     std::string getIniFilesList();
+    void gracefulSSLShutdown(std::shared_ptr<SSL> ssl, int clientSocket, bool isCriticalError);
+
  
 };
 

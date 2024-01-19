@@ -508,4 +508,3 @@ void QNiSysConfigWrapper::setModuleList(const std::vector<NIDeviceModule*>& newM
         moduleListChangedSignal(moduleList, this);
     }
 }
-

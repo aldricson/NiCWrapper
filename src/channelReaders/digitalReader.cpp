@@ -53,8 +53,6 @@ void DigitalReader::manualReadOneShot(const std::string &moduleAlias, const unsi
 
 
 
-
-
 // Method to read a single shot from a digital channel specified by its module alias and channel name.
 void DigitalReader::manualReadOneShot(const std::string &moduleAlias, const std::string &chanName, double &returnedValue) {
     // Check if module alias or channel name is empty and return an error value if so.

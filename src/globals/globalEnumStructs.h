@@ -127,11 +127,20 @@ struct MappingConfig {
     uint16_t maxDest;         // Maximum value for the destination after mapping
     int modbusChannel;        // Modbus channel number, if applicable (used in industrial communication protocols)
     //These are only for counters tracking, so they are not initialized by the csv files
-    std::chrono::time_point<std::chrono::steady_clock> currentTime; 
+    std::chrono::time_point<std::chrono::steady_clock> currentTime;  //when asking for counters this variable will be filled to help for frequency calculation
+    std::chrono::time_point<std::chrono::steady_clock> previousTime; //when asking for counters this variable will keep track of the previous time , then we can calculate delta time
+    unsigned int currentCounterValue; //when asking for counters this variable will be filled with the current counter value
+    unsigned int previousCounterValue; //when asking for counters this variable will keep track of the previous counter , then we can calculate delta count between 2 acquisitions
     // Constructor to initialize a MappingConfig object with default values.
     // Sets default module type to analog input current, and initializes all numerical fields to zero.
     MappingConfig() : index(0), moduleType(ModuleType::isAnalogicInputCurrent), 
-                      minSource(0.0f), maxSource(0.0f), minDest(0), maxDest(0), modbusChannel(0) {}
+                  minSource(0.0f), maxSource(0.0f), minDest(0), maxDest(0), modbusChannel(0),
+                  currentTime(std::chrono::steady_clock::now()), // Initialize to current time
+                  previousTime(std::chrono::steady_clock::now()), // Initialize to current time, will be updated on first use
+                  currentCounterValue(0), // Initialize to zero, will be updated on first read
+                  previousCounterValue(0) // Initialize to zero, will provide delta on update
+    {}
+
 };
 
 #endif // GLOBALENUMSTRUCTS_H

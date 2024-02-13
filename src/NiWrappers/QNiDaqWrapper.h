@@ -39,6 +39,7 @@ public:
 
     void resetCounter(NIDeviceModule *deviceModule, const unsigned int &index);
     void resetCounter(NIDeviceModule *deviceModule, const std::string &chanName);
+    
     void handleErrorAndCleanTask(TaskHandle taskHandle);
 
     //signals

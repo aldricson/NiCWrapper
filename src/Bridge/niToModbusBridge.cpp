@@ -356,23 +356,36 @@ void NItoModbusBridge::stopAcquisition()
     }
 }
 
-void NItoModbusBridge::acquireCounters() {
+void NItoModbusBridge::acquireCounters() 
+{
     try {
         std::cout << "Acquiring counter data..." << std::endl;
 
         // Iterate over each mapping configuration to handle counters
         for (auto &config : m_mappingData) {
-            if (config.moduleType == ModuleType::isCounter) {
+            if (config.moduleType == ModuleType::isCounter) 
+            {
                 double counterValue = 0.0;
                 // Read the counter value using DigitalReader
                 m_digitalReader->manualReadOneShot(config.module, config.channel, counterValue);
                 // Convert the read value to an unsigned integer
                 unsigned int counterIntValue = static_cast<unsigned int>(counterValue);
                 
-                // Placeholder for initializing frequencyValue calculation
+                // Update current time and counter value
+                config.currentTime = std::chrono::steady_clock::now();
+                config.currentCounterValue = counterIntValue;
+
                 double frequencyValue = 0.0;
-                // Assuming some mechanism to calculate frequencyValue here
-                
+                // Calculate delta time in seconds
+                auto deltaTime = std::chrono::duration_cast<std::chrono::seconds>(config.currentTime - config.previousTime).count();
+
+                if (deltaTime > 0) {
+                    // Calculate the change in counter value
+                    unsigned int deltaCounter = config.currentCounterValue - config.previousCounterValue;
+                    // Calculate frequency (counts per second)
+                    frequencyValue = static_cast<double>(deltaCounter) / deltaTime;
+                }
+
                 // Use the min/max source and destination values directly from the config
                 uint16_t frequency = linearInterpolation16Bits(
                     frequencyValue, // The calculated frequency
@@ -385,14 +398,19 @@ void NItoModbusBridge::acquireCounters() {
                 uint16_t lowValue = static_cast<uint16_t>(counterIntValue & 0xFFFF);
 
                 // Update the Modbus server registers
-                // Assuming 'destinationRegister' points to the first of the three registers intended for this counter
-                int firtsDestinationRegister = config.modbusChannel;
-                m_realDataBufferLine[firtsDestinationRegister]=frequency;
-                m_realDataBufferLine[firtsDestinationRegister+1]=highValue;
-                m_realDataBufferLine[firtsDestinationRegister+2]=lowValue;
+                int firstDestinationRegister = config.modbusChannel;
+                m_realDataBufferLine[firstDestinationRegister] = frequency;
+                m_realDataBufferLine[firstDestinationRegister + 1] = highValue;
+                m_realDataBufferLine[firstDestinationRegister + 2] = lowValue;
+
+                // Prepare for next acquisition by updating previous time and counter values
+                config.previousTime = config.currentTime;
+                config.previousCounterValue = config.currentCounterValue;
             }
         }
-    } catch (const std::exception &e) {
+    } 
+    catch (const std::exception &e) 
+    {
         std::cerr << "Exception in acquireCounters: " << e.what() << std::endl;
     }
 }
@@ -404,10 +422,8 @@ uint16_t NItoModbusBridge::linearInterpolation16Bits(double value, double minSou
     {
         // Calculate the scaling factor
         double scale = (maxDestination - minDestination) / (maxSource - minSource);
-
         // Perform the linear interpolation
         double mappedValue = minDestination + scale * (value - minSource);
-
         // Clamp the value within the destination boundaries
         if (mappedValue < static_cast<double>(minDestination))
         {

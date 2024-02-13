@@ -1,5 +1,7 @@
 #ifndef GLOBALENUMSTRUCTS_H
 #define GLOBALENUMSTRUCTS_H
+#include <chrono>
+
 
 // Include the appropriate NIDAQmx.h based on whether it's a cross-compiled environment or not
 #include "../config.h"
@@ -124,7 +126,8 @@ struct MappingConfig {
     uint16_t minDest;         // Minimum value for the destination after mapping (e.g., in a control system or display)
     uint16_t maxDest;         // Maximum value for the destination after mapping
     int modbusChannel;        // Modbus channel number, if applicable (used in industrial communication protocols)
-
+    //These are only for counters tracking, so they are not initialized by the csv files
+    std::chrono::time_point<std::chrono::steady_clock> currentTime; 
     // Constructor to initialize a MappingConfig object with default values.
     // Sets default module type to analog input current, and initializes all numerical fields to zero.
     MappingConfig() : index(0), moduleType(ModuleType::isAnalogicInputCurrent), 

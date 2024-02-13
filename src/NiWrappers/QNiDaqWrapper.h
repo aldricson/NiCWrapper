@@ -35,7 +35,11 @@ public:
     double       readVoltage(NIDeviceModule *deviceModule, std::string  chanName , unsigned int maxRetries);
 
     unsigned int readCounter(NIDeviceModule *deviceModule, unsigned int chanIndex, unsigned int maxRetries);
-    void handleErrorAndCleanTask();
+    unsigned int readCounter(NIDeviceModule *deviceModule, std::string  chanName , unsigned int maxRetries);
+
+    void resetCounter(NIDeviceModule *deviceModule, const unsigned int &index);
+    void resetCounter(NIDeviceModule *deviceModule, const std::string &chanName);
+    void handleErrorAndCleanTask(TaskHandle taskHandle);
 
     //signals
     std::function<void(double lastValue,QNiDaqWrapper *sender)>    channelCurrentDataChangedSignal = nullptr;  //emited as soon as the data for a channel has changed, 
@@ -65,7 +69,7 @@ public:
 private:
     std::mutex voltageMutex;
     std::mutex currentMutex;
-    TaskHandle taskHandle;
+    //TaskHandle taskHandle;
     std::atomic<double> m_lastSingleCurrentChannelValue;
     std::atomic<double> m_lastSingleVoltageChannelValue;
     unsigned int m_lastSingleCounter             = 0;  

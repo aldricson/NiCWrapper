@@ -2,6 +2,7 @@
 #include <cmath>   // for std::sin
 #include <cstdlib> // for std::rand
 #include <vector>
+#include <chrono>
 
 // Constructor
 NItoModbusBridge::NItoModbusBridge(std::shared_ptr<AnalogicReader> analogicReader,
@@ -355,6 +356,47 @@ void NItoModbusBridge::stopAcquisition()
     }
 }
 
+void NItoModbusBridge::acquireCounters() {
+    try {
+        std::cout << "Acquiring counter data..." << std::endl;
+
+        // Iterate over each mapping configuration to handle counters
+        for (auto &config : m_mappingData) {
+            if (config.moduleType == ModuleType::isCounter) {
+                double counterValue = 0.0;
+                // Read the counter value using DigitalReader
+                m_digitalReader->manualReadOneShot(config.module, config.channel, counterValue);
+                // Convert the read value to an unsigned integer
+                unsigned int counterIntValue = static_cast<unsigned int>(counterValue);
+                
+                // Placeholder for initializing frequencyValue calculation
+                double frequencyValue = 0.0;
+                // Assuming some mechanism to calculate frequencyValue here
+                
+                // Use the min/max source and destination values directly from the config
+                uint16_t frequency = linearInterpolation16Bits(
+                    frequencyValue, // The calculated frequency
+                    config.minSource, config.maxSource, // Actual source range from configuration
+                    config.minDest, config.maxDest // Actual destination range from configuration
+                );
+
+                // Split the 32-bit counter value into two 16-bit values
+                uint16_t highValue = static_cast<uint16_t>((counterIntValue >> 16) & 0xFFFF);
+                uint16_t lowValue = static_cast<uint16_t>(counterIntValue & 0xFFFF);
+
+                // Update the Modbus server registers
+                // Assuming 'destinationRegister' points to the first of the three registers intended for this counter
+                int firtsDestinationRegister = config.modbusChannel;
+                m_realDataBufferLine[firtsDestinationRegister]=frequency;
+                m_realDataBufferLine[firtsDestinationRegister+1]=highValue;
+                m_realDataBufferLine[firtsDestinationRegister+2]=lowValue;
+            }
+        }
+    } catch (const std::exception &e) {
+        std::cerr << "Exception in acquireCounters: " << e.what() << std::endl;
+    }
+}
+
 
 uint16_t NItoModbusBridge::linearInterpolation16Bits(double value, double minSource, double maxSource, uint16_t minDestination, uint16_t maxDestination)
 {
@@ -558,13 +600,10 @@ void NItoModbusBridge::acquireData()
                 {
                     // Read analog data
                     m_analogicReader->manualReadOneShot(lineCfg.module, lineCfg.channel, result);
-                    
                     // Perform linear interpolation
                     uint16_t interpolatedResult = linearInterpolation16Bits(result, minInput, maxInput, minOutput, maxOutput);
-                    
                     // Update the real data buffer line
                     m_realDataBufferLine[destinationRegister] = interpolatedResult;
-                    
                     // Print acquired data for debugging
                     std::cout << lineCfg.module.c_str() << " " << lineCfg.channel.c_str() << " " << interpolatedResult << std::endl;
                     break;
@@ -585,8 +624,7 @@ void NItoModbusBridge::acquireData()
                     break;
                 }
             }
-        }
-        
+        }        
         // Remap the input register values for analogics
         m_modbusServer->reMapInputRegisterValuesForAnalogics(m_realDataBufferLine);
     }

@@ -47,6 +47,9 @@ public:
     bool startAcquisition();
     void stopAcquisition();
 
+    void acquireCounters();
+
+
 private:
     unsigned long long m_simulationCounter=0;
     ThreadSafeCircularBuffer<std::vector<uint16_t>>      m_simulationBuffer;

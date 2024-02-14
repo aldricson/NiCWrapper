@@ -800,6 +800,104 @@ unsigned int QNiDaqWrapper::readCounter(NIDeviceModule *deviceModule, std::strin
     return readValue;
 }
 
+void QNiDaqWrapper::setRelayState(NIDeviceModule *deviceModule, unsigned int chanIndex, const bool &state) 
+{
+    if (!deviceModule) {
+        throw std::invalid_argument("deviceModule is null");
+    }
+
+    // Construct the channel name using the index
+    const char* deviceName = deviceModule->getAlias().c_str();
+    const char* channelName = deviceModule->getChanNames()[chanIndex].c_str();
+    std::string fullChanName = std::string(deviceName) + channelName;
+    //initialize an handle for the task
+    TaskHandle taskHandle = 0;
+    int32 error;
+    // Unique task name for setting relay state
+    std::string uniqueKey = "setRelayState" + generate_hex(8);
+    error = DAQmxCreateTask(uniqueKey.c_str(), &taskHandle);
+    if (error) {
+        handleErrorAndCleanTask(taskHandle);
+        throw std::runtime_error("Failed to create task for setting relay state.");
+    }
+
+    // Create a digital output channel for the specific relay
+    error = DAQmxCreateDOChan(taskHandle, fullChanName.c_str(), "", DAQmx_Val_ChanForAllLines);
+    if (error) {
+        handleErrorAndCleanTask(taskHandle);
+        throw std::runtime_error("Failed to create digital output channel for relay.");
+    }
+
+    // Start the task to apply the configuration
+    error = DAQmxStartTask(taskHandle);
+    if (error) {
+        handleErrorAndCleanTask(taskHandle);
+        throw std::runtime_error("Failed to start task for setting relay state.");
+    }
+
+    // Data to write: 1 for ON, 0 for OFF
+    uInt8 data = state ? 1 : 0;
+    int32 written;
+
+    // Write the state to the digital output channel
+    error = DAQmxWriteDigitalLines(taskHandle, 1, true, 10.0, DAQmx_Val_GroupByChannel, &data, &written, NULL);
+    if (error) {
+        handleErrorAndCleanTask(taskHandle);
+        throw std::runtime_error("Failed to write relay state.");
+    }
+
+    // Clean up the task after setting the state
+    DAQmxClearTask(taskHandle);
+}
+
+
+void QNiDaqWrapper::setRelayState(NIDeviceModule *deviceModule, const std::string &chanName, const bool &state)
+{
+    if (!deviceModule) {
+        throw std::invalid_argument("deviceModule is null");
+    }
+
+    TaskHandle taskHandle = 0;
+    int32 error;
+
+    // Construct the full channel name including the device alias
+    const char* fullChanName = (deviceModule->getAlias() + "/" + chanName).c_str();
+
+    // Create a new task for setting the relay state
+    std::string uniqueKey = "setRelayState" + generate_hex(8);
+    error = DAQmxCreateTask(uniqueKey.c_str(), &taskHandle);
+    if (error) {
+        handleErrorAndCleanTask(taskHandle);
+        throw std::runtime_error("Failed to create task for setting relay state.");
+    }
+
+    // Create a digital output channel
+    error = DAQmxCreateDOChan(taskHandle, fullChanName, "", DAQmx_Val_ChanPerLine);
+    if (error) {
+        handleErrorAndCleanTask(taskHandle);
+        throw std::runtime_error("Failed to create digital output channel.");
+    }
+
+    // Start the task
+    error = DAQmxStartTask(taskHandle);
+    if (error) {
+        handleErrorAndCleanTask(taskHandle);
+        throw std::runtime_error("Failed to start task.");
+    }
+
+    // Write the relay state to the channel
+    uInt8 data = state ? 1 : 0; // Convert boolean state to uInt8
+    int32 written;
+    error = DAQmxWriteDigitalLines(taskHandle, 1, 1, 10.0, DAQmx_Val_GroupByChannel, &data, &written, NULL);
+    if (error) {
+        handleErrorAndCleanTask(taskHandle);
+        throw std::runtime_error("Failed to set relay state.");
+    }
+
+    // Clean up the task
+    DAQmxClearTask(taskHandle);
+}
+
 
 void QNiDaqWrapper::handleErrorAndCleanTask(TaskHandle taskHandle)
 {

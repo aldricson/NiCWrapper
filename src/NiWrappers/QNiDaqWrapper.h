@@ -37,6 +37,10 @@ public:
     unsigned int readCounter(NIDeviceModule *deviceModule, unsigned int chanIndex, unsigned int maxRetries);
     unsigned int readCounter(NIDeviceModule *deviceModule, std::string  chanName , unsigned int maxRetries);
 
+    void setRelayState(NIDeviceModule* deviceModule, unsigned int chanIndex, const bool &state);
+    void setRelayState(NIDeviceModule* deviceModule, const std::string& chanName, const bool &state);
+
+
     void resetCounter(NIDeviceModule *deviceModule, const unsigned int &index);
     void resetCounter(NIDeviceModule *deviceModule, const std::string &chanName);
     

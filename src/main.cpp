@@ -114,7 +114,7 @@ int main(void)
     std::cout << "*** Init phase 3: command server started ***" << std::endl<< std::endl; 
     clearConsole();
     showBanner();
-    std::shared_ptr<DigitalReader>                       m_TestdigitalReader;
+
     while (true) {
         std::this_thread::sleep_for(std::chrono::seconds(1));
     }

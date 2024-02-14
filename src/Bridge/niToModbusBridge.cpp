@@ -631,7 +631,7 @@ void NItoModbusBridge::acquireData()
                 }
                 case ModuleType::isCounter:
                 {
-                    // Handle counter data (Add your implementation here if needed)
+                    acquireCounters();
                     break;
                 }
                 case ModuleType::isDigitalInput:
@@ -639,6 +639,7 @@ void NItoModbusBridge::acquireData()
                     // Handle digital input data (Add your implementation here if needed)
                     break;
                 }
+
             }
         }        
         // Remap the input register values for analogics

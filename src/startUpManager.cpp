@@ -24,6 +24,7 @@ StartUpManager::StartUpManager() {
 
 void StartUpManager::loadFromFile(const std::string& filename) 
 {
+   bool ok;
    //check the INI file
    FILE* fp = std::fopen(filename.c_str(), "r");
    if (fp == nullptr) {
@@ -35,12 +36,32 @@ void StartUpManager::loadFromFile(const std::string& filename)
    std::fclose(fp);
 
    //---------- Section init order ------------
-   m_niPollingOrder =  m_ini->readInteger("InitOrder","NiPolling",0, filename);
-   m_modbusOrder    =  m_ini->readInteger("InitOrder","Modbus",1, filename);
+   m_niPollingOrder =  m_ini->readInteger("InitOrder","NiPolling",0, filename,ok);
+   if (!ok)
+   {
+        std::cout<<"WARNING: startup manager unfinished: InitOrder NiPolling does not exists in: "<<filename.c_str()<<std::endl;
+   }
+   m_modbusOrder    =  m_ini->readInteger("InitOrder","Modbus",1, filename,ok);
+   if (!ok)
+   {
+        std::cout<<"WARNING: startup manager unfinished: InitOrder Modbus does not exists in: "<<filename.c_str()<<std::endl;
+   }
    //------------  section startup -----------------
-   m_testSequenceOn = m_ini->readBoolean("startUp","testSequenceOn",true, filename);
-   m_niPollingOn    = m_ini->readBoolean("startUp","NiPollingOn"   ,true, filename);
-   m_modBusOn       = m_ini->readBoolean("startUp","ModBusOn"      ,true, filename);
+   m_testSequenceOn = m_ini->readBoolean("startUp","testSequenceOn",true, filename,ok);
+   if (!ok)
+   {
+        std::cout<<"WARNING: startup manager unfinished: startUp testSequenceOn does not exists in: "<<filename.c_str()<<std::endl;
+   }
+   m_niPollingOn    = m_ini->readBoolean("startUp","NiPollingOn"   ,true, filename,ok);
+   if (!ok)
+   {
+        std::cout<<"WARNING: startup manager unfinished: startUp NiPollingOn does not exists in: "<<filename.c_str()<<std::endl;
+   }
+   m_modBusOn       = m_ini->readBoolean("startUp","ModBusOn"      ,true, filename,ok);
+   if (!ok)
+   {
+        std::cout<<"WARNING: startup manager unfinished: startUp ModBusOn does not exists in: "<<filename.c_str()<<std::endl;
+   }
 }
 
 void StartUpManager::saveToFile(const std::string& filename) 

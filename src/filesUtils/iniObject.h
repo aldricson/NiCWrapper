@@ -26,23 +26,23 @@ public:
     bool writeValue(const std::string& section, const std::string& key, T value, const std::string& currentFilename);
 
     // Read and Write for Integer
-    int readInteger(const std::string& section, const std::string& key, int defaultValue, const std::string& currentFilename);
+    int  readInteger (const std::string& section, const std::string& key, int defaultValue, const std::string& currentFilename, bool &ok);
     bool writeInteger(const std::string& section, const std::string& key, int value, const std::string& currentFilename);
 
     // Read and Write for Double
-    double readDouble(const std::string& section, const std::string& key, double defaultValue, const std::string& currentFilename);
+    double readDouble(const std::string& section, const std::string& key, double defaultValue, const std::string& currentFilename, bool &ok);
     bool writeDouble(const std::string& section, const std::string& key, double value, const std::string& currentFilename);
 
     // Read and Write for String
-    std::string readString(const std::string& section, const std::string& key, const std::string& defaultValue, const std::string& currentFilename);
-    bool writeString(const std::string& section, const std::string& key, const std::string& value, const std::string& currentFilename);
+    std::string readString(const std::string& section, const std::string& key, const std::string& defaultValue, const std::string& currentFilename, bool &ok);
+    bool        writeString(const std::string& section, const std::string& key, const std::string& value, const std::string& currentFilename);
 
     // Read and Write for Unsigned Integer
-    unsigned int readUnsignedInteger(const std::string& section, const std::string& key, unsigned int defaultValue, const std::string& currentFilename);
-    bool writeUnsignedInteger(const std::string& section, const std::string& key, unsigned int value, const std::string& currentFilename);
+    unsigned int readUnsignedInteger (const std::string& section, const std::string& key, unsigned int defaultValue, const std::string& currentFilename);
+    bool         writeUnsignedInteger(const std::string& section, const std::string& key, unsigned int value, const std::string& currentFilename);
 
     // Read and Write for Boolean
-    bool readBoolean(const std::string& section, const std::string& key, bool defaultValue, const std::string& currentFilename);
+    bool readBoolean(const std::string& section, const std::string& key, bool defaultValue, const std::string& currentFilename, bool &ok);
     bool writeBoolean(const std::string& section, const std::string& key, bool value, const std::string& currentFilename);
 
     bool readStringVector(const std::string& section,const std::string& keyPrefix,const unsigned int& m_nbElements,std::vector<std::string>& vectorToFill,const std::string& currentFilename);

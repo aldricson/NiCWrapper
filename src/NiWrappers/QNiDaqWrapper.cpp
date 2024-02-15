@@ -807,12 +807,12 @@ void QNiDaqWrapper::setRelayState(NIDeviceModule *deviceModule, unsigned int cha
     }
 
     // Construct the channel name using the index
-    const char* deviceName = deviceModule->getAlias().c_str();
-    const char* channelName = deviceModule->getChanNames()[chanIndex].c_str();
+    const char* deviceName   = deviceModule->getAlias().c_str();
+    const char* channelName  = deviceModule->getChanNames()[chanIndex].c_str();
     std::string fullChanName = std::string(deviceName) + channelName;
     //initialize an handle for the task
     TaskHandle taskHandle = 0;
-    int32 error;
+    int32      error;
     // Unique task name for setting relay state
     std::string uniqueKey = "setRelayState" + generate_hex(8);
     error = DAQmxCreateTask(uniqueKey.c_str(), &taskHandle);

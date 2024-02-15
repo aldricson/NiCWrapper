@@ -82,22 +82,28 @@ void NI9208::saveConfig() {
     }
 }
 
-void NI9208::loadConfig() {
+void NI9208::loadConfig() 
+{
+    std::cout<<"load config NI9208_" + std::to_string(NIDeviceModule::getSlotNb()) + ".ini"<<std::endl;
     try {
         // Construct file name
         std::string fileName = "NI9208_" + std::to_string(NIDeviceModule::getSlotNb()) + ".ini";
 
         // Open the file for reading
-        FILE* file = fopen(fileName.c_str(), "r");
-        if (file == nullptr) {
-            throw std::runtime_error("Error opening file for reading");
-        }
+
+        //FILE* file = fopen(fileName.c_str(), "r");
+        //if (file == nullptr) 
+        //{
+        //    std::cout<<"Error opening " <<fileName.c_str();
+        //    throw std::runtime_error("Error opening file for reading");
+        //}
+        //        // Close the file
+        //fclose(file);
 
         // Load configuration from file using  NIDeviceModule::loadFromFile function
         NIDeviceModule::loadFromFile(fileName); // function for loading from a file
 
-        // Close the file
-        fclose(file);
+
     }
     catch (const std::exception& e) {
         // Handle exceptions

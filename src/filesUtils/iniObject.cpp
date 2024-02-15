@@ -149,15 +149,17 @@ bool IniObject::writeValue(const std::string& section, const std::string& key, T
 }
 
 
-int IniObject::readInteger(const std::string &section, const std::string &key, int defaultValue, const std::string &currentFilename)
+int IniObject::readInteger(const std::string &section, const std::string &key, int defaultValue, const std::string &currentFilename, bool &ok)
 {
-        try
+    try
     {
+        ok = true;
         return readValue<int>(section, key, defaultValue, currentFilename);
     }
     catch (const std::exception& e)
     {
         // Handle exception, maybe log it
+        ok = false;
         return defaultValue;
     }
 }
@@ -176,14 +178,16 @@ bool IniObject::writeInteger(const std::string &section, const std::string &key,
 }
 
 // Read and Write for Double
-double IniObject::readDouble(const std::string& section, const std::string& key, double defaultValue, const std::string& currentFilename)
+double IniObject::readDouble(const std::string& section, const std::string& key, double defaultValue, const std::string& currentFilename, bool &ok)
 {
     try
     {
+        ok = true;
         return readValue<double>(section, key, defaultValue, currentFilename);
     }
     catch (const std::exception& e)
     {
+        ok = false;
         return defaultValue;
     }
 }
@@ -201,14 +205,16 @@ bool IniObject::writeDouble(const std::string& section, const std::string& key, 
 }
 
 // Read and Write for String
-std::string IniObject::readString(const std::string& section, const std::string& key, const std::string& defaultValue, const std::string& currentFilename)
+std::string IniObject::readString(const std::string& section, const std::string& key, const std::string& defaultValue, const std::string& currentFilename, bool &ok)
 {
     try
     {
+        ok = true;
         return readValue<std::string>(section, key, defaultValue, currentFilename);
     }
     catch (const std::exception& e)
     {
+        ok = false;
         return defaultValue;
     }
 }
@@ -251,7 +257,7 @@ bool IniObject::writeUnsignedInteger(const std::string& section, const std::stri
 }
 
 // Read and Write for Boolean
-bool IniObject::readBoolean(const std::string& section, const std::string& key, bool defaultValue, const std::string& currentFilename)
+bool IniObject::readBoolean(const std::string& section, const std::string& key, bool defaultValue, const std::string& currentFilename, bool &ok)
 {
     try
     {
@@ -298,7 +304,7 @@ bool IniObject::readStringVector(const std::string& section,
         // Create a new string in the destination vector with the same content
         copy.emplace_back(cstr);
     }
-
+   bool ok; 
    if (isFileOk(currentFilename))
    {
        // Clear the channel names list
@@ -307,7 +313,7 @@ bool IniObject::readStringVector(const std::string& section,
         for (unsigned int i = 0; i < m_nbElements; ++i) 
         {
             std::string key   = keyPrefix + std::to_string(i);
-            std::string value = this->readString(section,key,copy[i],currentFilename);
+            std::string value = this->readString(section,key,copy[i],currentFilename,ok);
             vectorToFill.push_back(value);
         }
         return true;

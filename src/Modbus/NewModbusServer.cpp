@@ -45,22 +45,22 @@ NewModbusServer::~NewModbusServer() {
 
 void NewModbusServer::loadConfig()
 {
-    try {
+    bool ok;
+    try 
+    {
         // Read and update the 'm_modeSRU' setting from the configuration file
-        SRUMapping.m_modeSRU = m_ini->readBoolean("exlog", "compatibilitylayer", SRUMapping.m_modeSRU, fileName);
-
+        SRUMapping.m_modeSRU = m_ini->readBoolean("exlog", "compatibilitylayer", SRUMapping.m_modeSRU, fileName,ok);
         // Read and update the 'm_nbSRUAnalogsIn' setting from the configuration file
-        SRUMapping.m_nbSRUAnalogsIn = m_ini->readInteger("exlogmapping", "nbanalogsin", SRUMapping.m_nbSRUAnalogsIn, fileName);
-
+        SRUMapping.m_nbSRUAnalogsIn = m_ini->readInteger("exlogmapping", "nbanalogsin", SRUMapping.m_nbSRUAnalogsIn, fileName,ok);
         // Read and update the 'm_nbSRUAnalogsOut' setting from the configuration file
-        SRUMapping.m_nbSRUAnalogsOut = m_ini->readInteger("exlogmapping", "nbanalogsout", SRUMapping.m_nbSRUAnalogsOut, fileName);
-
+        SRUMapping.m_nbSRUAnalogsOut = m_ini->readInteger("exlogmapping", "nbanalogsout", SRUMapping.m_nbSRUAnalogsOut, fileName,ok);
         // Read and update the 'm_nbSRUCounters' setting from the configuration file
-        SRUMapping.m_nbSRUCounters = m_ini->readInteger("exlogmapping", "nbcounters", SRUMapping.m_nbSRUCounters, fileName);
-
+        SRUMapping.m_nbSRUCounters = m_ini->readInteger("exlogmapping", "nbcounters", SRUMapping.m_nbSRUCounters, fileName,ok);
         // Read and update the 'm_nbSRUAlarms' setting from the configuration file
-        SRUMapping.m_nbSRUAlarms = m_ini->readInteger("exlogmapping", "nbalarms", SRUMapping.m_nbSRUAlarms, fileName);
-    } catch (const std::exception& e) {
+        SRUMapping.m_nbSRUAlarms = m_ini->readInteger("exlogmapping", "nbalarms", SRUMapping.m_nbSRUAlarms, fileName,ok);
+    } 
+    catch (const std::exception& e) 
+    {
         // Handle any exceptions that might occur during configuration loading
         std::cerr << "Error loading configuration: " << e.what() << std::endl;
     }

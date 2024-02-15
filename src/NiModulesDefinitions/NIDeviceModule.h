@@ -25,9 +25,11 @@
 
 class NIDeviceModule {
 private:
-bool loadChannels(std::string filename);
-bool loadCounters(const std::string &filename);
-bool loadModules (const std::string &filename);
+bool loadModules (const std::string &filename,       ModuleType &aModuleType);
+bool loadChannels(const std::string &filename, const ModuleType &aModuleType);
+bool loadCounters(const std::string &filename, const ModuleType &aModuleType);
+bool loadOutputs (const std::string &filename, const ModuleType &aModuleType);
+
 //
 void saveChannels(const std::string &filename);
 void saveCounters(const std::string &filename);
@@ -44,32 +46,38 @@ protected:
     double       m_analogChanMax   = 4.0;
     //-------- counters -----------------
     unsigned int m_nbCounters       = 0;
-    
     unsigned int m_counterMin       = 0;
     unsigned int m_counterMax       = 4294967295; //32 bits
+
     moduleCounterEdgeConfig m_counterCountingEdgeMode;
     moduleCounterMode       m_counterCountDirectionMode;
-    
+    //----------- relays (digital outputs) ----------
+    unsigned int m_nbOutputs         = 0;
+
     unsigned int m_nbDigitalOutputs = 0; //number of outputs for a digital ouput channel (e.g. for relays)
 
 
 
-    moduleUnit   m_moduleUnit       = NoUnit;
-    std::string  m_moduleName      = "";
-    std::string  m_alias           = "";
-    std::string  m_moduleInfo      = "";        
-    moduleShuntLocation  m_shuntLocation = defaultLocation;
-    double               m_shuntValue    = 0.0;
+    moduleUnit           m_moduleUnit           = NoUnit          ;
+    std::string          m_moduleName           = ""              ;
+    std::string          m_alias                = ""              ;
+    std::string          m_moduleInfo           = ""              ;        
+    moduleShuntLocation  m_shuntLocation        = defaultLocation ;
+    double               m_shuntValue           = 0.0             ;
     moduleTerminalConfig m_moduleTerminalConfig = noTerminalConfig;
 
-    std::vector<std::string> m_chanNames;
-    std::vector<std::string> m_counterNames;
+    std::vector<std::string> m_chanNames         ;
+    std::vector<std::string> m_counterNames      ;
     std::vector<std::string> m_digitalOutputNames;
-    std::vector<std::string> m_digitalIoNames;
-    ModuleType m_moduleType;
+    std::vector<std::string> m_digitalIoNames    ;
+    ModuleType               m_moduleType        ;
 
-    //std::shared_ptr<IniParser> m_ini;
-     std::shared_ptr<IniObject> m_ini;  
+
+    std::shared_ptr<IniObject> m_ini;
+    bool checkAndLogEmptyFileName (const std::string& filename, const std::string& functionName); 
+    void logForReadIniError       (const bool &status, const std::string &fieldInError, const std::string &fileName); 
+    void logCountError            (const std::string &fieldInError, const std::string &fileName);
+    void logMinMaxConsitencyError (const std::string &fileName);
 public:
     NIDeviceModule();
     
@@ -116,13 +124,17 @@ public:
     virtual void setAlias                     (const std::string& newAlias);
     virtual void setChanNames                 (const std::vector<std::string>& names                     );
     //-----------Counters--------
-    virtual void setNbCounters                (unsigned int newNbCounters);
+    virtual void setNbCounters                (unsigned int                    newNbCounters             );
     virtual void setCounterNames              (const std::vector<std::string>& names                     );
     virtual void setcounterCountingEdgeMode   (moduleCounterEdgeConfig         newCounterCountingEdgeMode);
     virtual void setCounterCountDirectionMode (moduleCounterMode               newCounterCountMode       );
     virtual void setCounterMin                (unsigned int                    newCountersMin            );
     virtual void setCounterMax                (unsigned int                    newCountersMax            );
     //----------Digital outputs------------
+    virtual void setNbOutputs                 (unsigned int                    newNbCounters             );
+    
+    
+    
     virtual void setNbDigitalOutputs          (unsigned int                    newNbDigitalOutpits       );
 
     

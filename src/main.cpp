@@ -10,6 +10,7 @@
 #include "./NiWrappers/QNiDaqWrapper.h"
 #include "./channelReaders/analogicReader.h"
 #include "./channelReaders/digitalReader.h"
+#include "./channelWriters/digitalWriter.h"
 #include "./Modbus/NewModbusServer.h"
 #include "./Bridge/niToModbusBridge.h"
 #include "./Signals/QSignalTest.h"
@@ -25,6 +26,7 @@ std::shared_ptr<QNiSysConfigWrapper> sysConfig;
 std::shared_ptr<QNiDaqWrapper>       daqMx;
 std::shared_ptr<AnalogicReader>      analogReader;
 std::shared_ptr<DigitalReader>       digitalReader;
+std::shared_ptr<DigitalWriter>       digitalWriter;
 std::shared_ptr<NewModbusServer>     modbusServer;
 std::shared_ptr<NItoModbusBridge>    m_crioToModbusBridge;
 
@@ -46,6 +48,8 @@ void createNecessaryInstances()
   //object to read mainly coders and 32 bit counters
   digitalReader = std::make_shared<DigitalReader>      (sysConfig,daqMx);
   std::cout<<"digital reader created"<<std::endl;
+  digitalWriter = std::make_shared<DigitalWriter>      (sysConfig,daqMx);
+  std::cout<<"digital writer created"<<std::endl;
   //Object that handle the modbus server
   modbusServer = std::make_shared<NewModbusServer>();
   modbusServer->modbusSetSlaveId(1);
@@ -54,12 +58,12 @@ void createNecessaryInstances()
   modbusServerThread.detach(); // Detach the thread to allow it to run independently
   std::cout << "Modbus server created" << std::endl;
   //Object in charge of routing crio datas to modbus
-  m_crioToModbusBridge = std::make_shared<NItoModbusBridge>(analogReader,digitalReader,modbusServer);
+  m_crioToModbusBridge = std::make_shared<NItoModbusBridge>(analogReader,digitalReader,digitalWriter,modbusServer);
   std::cout<<"modbus bridge created"<<std::endl;
   //object in charge of all non ssh commands
 
   //m_crioTCPServer = std::make_shared<CrioTCPServer>(8222,sysConfig,daqMx,analogReader,digitalReader, m_crioToModbusBridge);
-  m_crioTCPServer = std::make_shared<CrioSSLServer>(8222,sysConfig,daqMx,analogReader,digitalReader, m_crioToModbusBridge);
+  m_crioTCPServer = std::make_shared<CrioSSLServer>(8222,sysConfig,daqMx,analogReader,digitalReader,digitalWriter, m_crioToModbusBridge);
   
   std::cout<<"TCP server created"<<std::endl;
 

@@ -16,7 +16,7 @@ void NI9481::initModule()
 
         m_nbDigitalIoPort = 1;
         m_nbDigitalOutputs = 4; // Assuming NI9481 has 4 digital outputs, adjust if necessary
-        m_moduleType = isDigitalOutput; // Setting module type to digital output
+        m_moduleType = ModuleType::isDigitalOutput; // Setting module type to digital output
 
         // Clearing any existing names
         m_counterNames.clear(); 
@@ -30,7 +30,7 @@ void NI9481::initModule()
             m_digitalIoNames.push_back(portPrefix + std::to_string(j));
 
             for (unsigned int i = 0; i < m_nbDigitalOutputs; ++i) {
-                m_digitalOutputNames.push_back(m_digitalIoNames[j] + "line/" + std::to_string(i));
+                m_digitalOutputNames.push_back(m_digitalIoNames[j] + "line" + std::to_string(i));
             }
         }
 

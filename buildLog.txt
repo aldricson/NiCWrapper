@@ -33,11 +33,11 @@ C:/Users/aldric/Desktop/dataDril20.0/build/../src/NiWrappers/QNiSysConfigWrapper
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/Signals/QSignalTest.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/TCP Command server/CrioSSLServer.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/TCP Command server/CrioTCPServer.h
-C:/Users/aldric/Desktop/dataDril20.0/build/../src/chanelWriters/baseWriter.h
-C:/Users/aldric/Desktop/dataDril20.0/build/../src/chanelWriters/digitalWriter.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/channelReaders/analogicReader.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/channelReaders/baseReader.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/channelReaders/digitalReader.h
+C:/Users/aldric/Desktop/dataDril20.0/build/../src/channelWriters/baseWriter.h
+C:/Users/aldric/Desktop/dataDril20.0/build/../src/channelWriters/digitalWriter.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/circularBuffer/ThreadSafeCircularBuffer.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/circularBuffer/algorithm.h
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/circularBuffer/circular_buffer.h
@@ -68,11 +68,11 @@ C:/Users/aldric/Desktop/dataDril20.0/build/../src/NiWrappers/QNiDaqWrapper.cpp
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/NiWrappers/QNiSysConfigWrapper.cpp
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/TCP Command server/CrioSSLServer.cpp
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/TCP Command server/CrioTCPServer.cpp
-C:/Users/aldric/Desktop/dataDril20.0/build/../src/chanelWriters/baseWriter.cpp
-C:/Users/aldric/Desktop/dataDril20.0/build/../src/chanelWriters/digitalWriter.cpp
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/channelReaders/analogicReader.cpp
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/channelReaders/baseReader.cpp
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/channelReaders/digitalReader.cpp
+C:/Users/aldric/Desktop/dataDril20.0/build/../src/channelWriters/baseWriter.cpp
+C:/Users/aldric/Desktop/dataDril20.0/build/../src/channelWriters/digitalWriter.cpp
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/circularBuffer/ThreadSafeCircularBuffer.cpp
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/filesUtils/iniObject.cpp
 C:/Users/aldric/Desktop/dataDril20.0/build/../src/main.cpp
